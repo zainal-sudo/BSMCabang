@@ -1,0 +1,84 @@
+unit ufrmBrowseKas;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ufrmCxBrowse, Menus, cxLookAndFeelPainters, cxStyles,
+  dxSkinsCore, dxSkinBlack, dxSkinBlue, dxSkinCaramel, dxSkinCoffee,
+  dxSkinDarkRoom, dxSkinDarkSide, dxSkinFoggy, dxSkinGlassOceans,
+  dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky,
+  dxSkinMcSkin, dxSkinMoneyTwins, dxSkinOffice2007Black,
+  dxSkinOffice2007Blue, dxSkinOffice2007Green, dxSkinOffice2007Pink,
+  dxSkinOffice2007Silver, dxSkinPumpkin, dxSkinSeven, dxSkinSharp,
+  dxSkinSilver, dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008,
+  dxSkinsDefaultPainters, dxSkinValentine, dxSkinXmas2008Blue,
+  dxSkinscxPCPainter, cxCustomData, cxGraphics, cxFilter, cxData,
+  cxDataStorage, cxEdit, DB, cxDBData, FMTBcd, Provider, SqlExpr, ImgList,
+  ComCtrls, StdCtrls, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
+  cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
+  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels;
+
+type
+  TfrmBrowseKas = class(TfrmCxBrowse)
+  procedure btnRefreshClick(Sender: TObject);
+  procedure FormShow(Sender: TObject);
+  procedure cxButton6Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmBrowseKas: TfrmBrowseKas;
+
+implementation
+   uses Ulib, MAIN, uModuleConnection;
+{$R *.dfm}
+
+procedure TfrmBrowseKas.btnRefreshClick(Sender: TObject);
+begin
+ xExecQuery('select   @s:=ifnull(sum(jurd_debet-jurd_kredit),0) '
+          + ' from tjurnalitem inner join tjurnal on jur_no=jurd_jur_no where jur_tanggal < '+ quotd(startdate.DateTime)
+          + ' and jurd_rek_kode='+quot('11.002'),frmMenu.conn);
+
+ Self.SQLMaster :=' select '
+                  + ' Nomor,Tanggal,Keterangan,@d:=Debet,@k:=Kredit,@s:=@s+@d-@k Saldo'
+                  + ' from (select '' Nomor, '+ FormatDateTime('yyyy-mm-dd',startdate.DateTime)+' Tanggal,"Saldo Awal" Keterangan , 0 Debet, 0 Kredit,  ifnull(sum(jurd_debet-jurd_kredit),0) Saldo'
+                  + ' from tjurnalitem inner join tjurnal on jur_no=jurd_jur_no where jur_tanggal < '+ QuotD(startdate.DateTime)
+                  + ' and jurd_rek_kode='+ Quot('11.002')
+                  + ' union'
+                  + ' select jurd_jur_no Nomor,jur_tanggal Tanggal,jur_keterangan Keterangan,'
+                  + ' jurd_debet Debet,jurd_kredit Kredit ,0'
+                  + '  from tjurnalitem a'
+                  + ' inner join tjurnal on jurd_jur_no=jur_no'
+                  + ' inner join trekening on rek_kode = jurd_rek_kode'
+                  + ' where jurd_rek_kode like '+quot('11.002')
+                  + ' and jur_tanggal between '+quotd(startdate.DateTime)+' and '+quotd(enddate.DateTime)+' ) a'
+                  + ' order by tanggal,Nomor asc';
+
+
+   inherited;
+    cxGrdMaster.ApplyBestFit();
+    cxGrdMaster.Columns[0].Width :=100;
+    cxGrdMaster.Columns[1].Width :=100;
+    cxGrdMaster.Columns[2].Width :=200;
+    cxGrdMaster.Columns[3].Width :=100;
+
+end;
+
+procedure TfrmBrowseKas.FormShow(Sender: TObject);
+begin
+  ShowWindowAsync(Handle, SW_MAXIMIZE);
+  inherited;
+  btnRefreshClick(Self);
+end;
+
+procedure TfrmBrowseKas.cxButton6Click(Sender: TObject);
+begin
+  inherited;
+  refreshdata;
+end;
+
+end.

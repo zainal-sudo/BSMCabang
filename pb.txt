@@ -1,0 +1,38 @@
+ procedure TfrmPermintaanBarang.loaddataHistoryPB(akode : string);
+var
+  s: string ;
+  tsql : TSQLQuery;
+  aisecer,i:Integer;
+begin
+  s := ' SELECT pb_nomor, pb_tanggal, pbd_brg_kode, pbd_satuan, '
+     + ' (SELECT pbd_qty - pbd_qty_iskirim FROM tpermintaanbarang_dtl '
+     + ' INNER JOIN tpermintaanbarang_hdr WHERE pb_tanggal = DATE_SUB(CURDATE(), INTERVAL 7 DAY) GROUP BY pbd_brg_kode) StokNow '
+     + ' (SELECT ROUND(AVG(a.fpd_qty)) AS rerata FROM tfp_dtl a '
+     + ' INNER JOIN tfp_hdr b ON b.fp_nomor = a.fpd_fp_nomor '
+     + ' INNER JOIN tdo_hdr c ON c.do_nomor = b.fp_do_nomor '
+     + ' INNER JOIN tso_hdr d ON d.so_nomor = c.do_so_nomor '
+     + ' INNER JOIN tso_dtl e ON e.sod_so_nomor = d.so_nomor '
+     + ' INNER JOIN tbarang f ON f.brg_kode = a.fpd_brg_kode '
+     + ' INNER JOIN tmasterstok g ON g.mst_noreferensi = c.do_nomor '
+     + ' WHERE d.so_tanggal >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AND d.so_tanggal <= CURDATE()'
+     + ' GROUP BY a.fpd_brg_kode, f.brg_nama;) ' ;
+
+    tsql := xOpenQuery(s,frmMenu.conn) ;
+   try
+      with  tsql do
+      begin
+        if not eof then
+        begin
+            edtNomor.Text   := fieldbyname('pb_nomor').AsString;
+            edtNomor.Text := getmaxkode;
+        end
+        else
+        begin
+          ShowMessage('Nomor pb tidak di temukan');
+          dttanggal.SetFocus;
+        end;
+      end;
+   finally
+     tsql.Free;
+   end;
+end;

@@ -1,0 +1,23 @@
+inherited frmBrowseKas: TfrmBrowseKas
+  Left = 394
+  Top = 139
+  Caption = 'Buku Bank'
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited AdvPanel1: TAdvPanel
+    FullHeight = 0
+    inherited cxButton3: TcxButton
+      Visible = False
+    end
+    inherited cxButton6: TcxButton
+      Visible = False
+    end
+  end
+  inherited AdvPanel2: TAdvPanel
+    FullHeight = 0
+  end
+  inherited AdvPanel3: TAdvPanel
+    FullHeight = 0
+  end
+end
