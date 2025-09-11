@@ -161,7 +161,7 @@ end;
 function TfrmBrowsePesanan.cekkirim(anomor:string) : integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := 0;
   s:='select so_iskirim from tso_hdr where so_nomor =' + Quot(anomor) ;
@@ -196,7 +196,7 @@ var
   s,ss:string;
   tt,ttt :TStrings;
   a,ii,i:integer;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
   acabang :string;
 begin
   inherited;
@@ -260,13 +260,14 @@ then
    try
         for i :=0 to tt.Count-1 do
         begin
-          xExecQuery(tt[i],frmMenu.conn);
+          EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
 
       finally
         tt.Free;
       end;
-    xCommit(frmMenu.conn);
+    
     ShowMessage('Import data berhasil');
  end
  else
@@ -281,7 +282,10 @@ then
         for a :=1 to ii+1 do
         begin
           IF (Parsing(';',tt[0],a)) <> '' THEN
-          xExecQuery(Parsing(';',tt[0],a),frmMenu.conn);
+          begin
+            EnsureConnected(frmMenu.conn);
+            ExecSQLDirect(frmMenu.conn, Parsing(';',tt[0],a));
+          end;
 
         end;
 
@@ -290,11 +294,11 @@ then
       end;
    except
      ShowMessage('gagal import');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
 
-    xCommit(frmMenu.conn);
+    
     ShowMessage('Import data berhasil');
 
   end;
@@ -319,7 +323,8 @@ begin
       then Exit ;
        s:='UPDATE tSO_hdr set SO_ISCLOSED=1 '
         + ' where SO_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
      end
      else
      begin
@@ -328,23 +333,24 @@ begin
       then Exit ;
        s:='UPDATE tSO_hdr set SO_ISCLOSED=0 '
         + ' where SO_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
      end;
 
 
    except
      MessageDlg('Gagal Closed SO',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
    btnRefreshClick(self);
 end;
 
 procedure TfrmBrowsepesanan.bacafile;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default2') +';';

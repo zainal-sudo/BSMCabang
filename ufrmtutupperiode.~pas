@@ -62,12 +62,118 @@ uses MAIN,uModuleConnection,uFrmbantuan,Ulib,uReport;
 procedure TfrmTutupPeriode.Button1Click(Sender: TObject);
 var
 s:string;
+Anilai :double;
+tsql :TmyQuery;
+akhir:TDateTime;
 begin
+    akhir := EndOfTheMonth(StrToDate(IntToStr(cbbBulan.itemindex+1)+'/01/'+edttahun.Text));
+if cbbBulan.ItemIndex+1 = 1 THEN
+begin
+S:= 'select sum(jurd_debet-jurd_kredit) from '
+    + ' TJURNAL inner join tjurnalitem on jurd_jur_no =jur_no '
+    + ' inner join trekening on rek_kode=jurd_rek_kode '
+    + ' inner join tkelompok on kol_id=rek_kol_id '
+    + ' where '
+    + ' year(jur_tanggal)='+ inttostr(strtoinT(edtTahun.Text)-1)
+    + ' And isneraca=0';
+    tsql := xOpenQuery(s,frmMenu.conn);
+    with tsql do
+    begin
+      try
+        if not eof then
+           Anilai := Fields[0].AsFloat;
+      finally
+        free;
+      end;
+    end;
+s:='delete from tjurnal where jur_no = ' +Quot('LBD'+ inttostr(cbbBulan.ItemIndex+1)+edtTahun.Text) ;
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+s:='delete from tjurnalitem where jurd_jur_no =' +Quot('LBD'+ inttostr(cbbBulan.ItemIndex+1)+edtTahun.Text) ;
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+
+s:='insert into tjurnal (jur_tanggal,jur_tipetransaksi,jur_no,jur_keterangan,jur_isclosed) '
+ + ' values ('
+ + QuotD(akhir) + ',"LABA DITAHAN",'
+ +Quot('LBD' + inttostr(cbbBulan.ItemIndex+1)+edtTahun.Text)
+ + ',"LR TAHUNAN",1)';
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+s:='insert into tjurnalitem (jurd_jur_no,jurd_rek_kode,jurd_kredit,jurd_debet)'
+ + ' values ('
+ +Quot('LBD' + inttostr(cbbBulan.ItemIndex+1)+edtTahun.Text)
+ + ',"20.004",'
+ + FloatToStr(Anilai) + ',0);';
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+s:='insert into tjurnalitem (jurd_jur_no,jurd_rek_kode,jurd_kredit,jurd_debet)'
+ + ' values ('
+ +Quot('LBD' + inttostr(cbbBulan.ItemIndex+1)+edtTahun.Text)
+ + ',"20.002",0,'
+ + FloatToStr(Anilai) + ');';
+      EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+
+end;
+
+
+  S:= 'select sum(jurd_debet-jurd_kredit) from '
++ ' TJURNAL inner join tjurnalitem on jurd_jur_no =jur_no '
++ ' inner join trekening on rek_kode=jurd_rek_kode '
++ ' inner join tkelompok on kol_id=rek_kol_id '
++ ' where month(jur_tanggal)= '
++ inttostr(cbbBulan.ItemIndex+1)
++ ' and year(jur_tanggal)='+ edtTahun.Text
++ ' And isneraca=0';
+tsql := xOpenQuery(s,frmMenu.conn);
+with tsql do
+begin
+  try
+    if not eof then
+       Anilai := Fields[0].AsFloat;
+  finally
+    free;
+  end;
+end;
+s:='delete from tjurnal where jur_no = ' +Quot('LBT' + inttostr(cbbBulan.ItemIndex+1)+edtTahun.Text) ;
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+s:='delete from tjurnalitem where jurd_jur_no =' +Quot('LBT' + inttostr(cbbBulan.ItemIndex+1)+edtTahun.Text) ;
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+
+s:='insert into tjurnal (jur_tanggal,jur_tipetransaksi,jur_no,jur_keterangan,jur_isclosed) '
+ + ' values ('
+ + QuotD(akhir) + ',"LABA RUGI",'
+ +Quot('LBT' + inttostr(cbbBulan.ItemIndex+1)+edtTahun.Text)
+ + ',"LR",1)';
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+s:='insert into tjurnalitem (jurd_jur_no,jurd_rek_kode,jurd_kredit,jurd_debet)'
+ + ' values ('
+ +Quot('LBT' + inttostr(cbbBulan.ItemIndex+1)+edtTahun.Text)
+ + ',"27.001",'
+ + FloatToStr(Anilai) + ',0);';
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+s:='insert into tjurnalitem (jurd_jur_no,jurd_rek_kode,jurd_kredit,jurd_debet)'
+ + ' values ('
+ +Quot('LBT' + inttostr(cbbBulan.ItemIndex+1)+edtTahun.Text)
+ + ',"20.004",0,'
+ + FloatToStr(Anilai) + ');';
+      EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+
+
+
+
     s:='insert ignore into ttutupperiode (tutup_bulan,tutup_tahun) values ('
    + inttostr(cbbBulan.ItemIndex+1) + ','
    + edttahun.Text + ');';
-   xExecQuery(s,frmMenu.conn);
-   xCommit(frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+   
   ShowMessage('Tutup Periode Berhasil');
 end;
 
@@ -98,8 +204,9 @@ begin
   s:='delete from ttutupperiode '
    + 'where tutup_bulan =' + inttostr(cbbBulan.ItemIndex+1) + ' and tutup_tahun = '
    + edttahun.Text + ';';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmMenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   ShowMessage('Buka Periode Berhasil');
 end;
 

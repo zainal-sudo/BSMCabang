@@ -17,7 +17,7 @@ uses
   cxDataStorage, cxEdit, DB, cxDBData, FMTBcd, Provider, SqlExpr, ImgList,
   ComCtrls, StdCtrls, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
-  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels;
+  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, MyAccess;
 
 type
   TfrmBrowseHitungStok = class(TfrmCxBrowse)
@@ -133,25 +133,27 @@ begin
       then Exit ;
        s:='delete from thitungstok '
         + ' where hit_nomor = ' + quot(CDSMaster.FieldByname('nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
        s:='delete from thitungstok_dtl '
         + ' where hitd_hit_nomor = ' + quot(CDSMaster.FieldByname('nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
       CDSMaster.Delete;
    except
      MessageDlg('Gagal Hapus',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 procedure TfrmBrowseHitungStok.cxButton5Click(Sender: TObject);
 var
   s:string;
   tt :TStrings;
-  tsql :TSQLQuery;
+  tsql :TmyQuery;
 begin
   inherited;
   if SaveDialog1.Execute then

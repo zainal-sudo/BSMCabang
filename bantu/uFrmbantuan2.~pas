@@ -154,7 +154,7 @@ s:string;
 tsql:tsqlquery;
 
  begin
-   s:='select ahost,adatabase,auser,ahost from tsetingdb where nama like '+Quot('default2') +';';
+   s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default2') +';';
    tsql:=xOpenQuery(s,frmmenu.conn);
 //   ltemp := TStringList.Create;
 //   ltemp.loadfromfile(ExtractFileDir(application.ExeName) + '\' + 'default3.cfg');

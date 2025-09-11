@@ -1,6 +1,6 @@
 object frmSetingjadwalsales: TfrmSetingjadwalsales
-  Left = 287
-  Top = 106
+  Left = 292
+  Top = 65
   Width = 1024
   Height = 644
   Caption = 'Seting Jadwal Salesman'

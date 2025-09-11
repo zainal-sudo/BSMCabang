@@ -141,7 +141,7 @@ end;
 procedure TfrmVerifikasiAbsensi.loaddata;
 var
   ssql,s: string;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   i:Integer;
   abulan,atahun : Integer;
 begin
@@ -296,7 +296,7 @@ end;
 procedure TfrmVerifikasiAbsensi.bacafile2;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default4') +';';

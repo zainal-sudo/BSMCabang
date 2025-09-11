@@ -1,6 +1,6 @@
 object frmProsesBiayaPromosi: TfrmProsesBiayaPromosi
-  Left = 214
-  Top = 221
+  Left = 357
+  Top = 105
   Width = 800
   Height = 560
   Caption = 'Proses Biaya Promosi'

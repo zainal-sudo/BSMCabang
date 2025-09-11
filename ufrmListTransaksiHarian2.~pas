@@ -19,7 +19,7 @@ uses
   dxPSPrVwStd, dxPSPrVwAdv, dxPScxPageControlProducer,
   dxPScxEditorProducers, dxPScxExtEditorProducers, dxPScxCommon, dxPSCore,
   dxSkinsCore, dxSkinsDefaultPainters, dxSkinsdxBarPainter, AdvEdit,
-  AdvEdBtn, dxPScxGrid6Lnk;
+  AdvEdBtn, dxPScxGrid6Lnk, MemDS, DBAccess, MyAccess;
 
 type
   TfrmListTransaksiHarian2 = class(TForm)
@@ -33,7 +33,7 @@ type
     SaveDialog1: TSaveDialog;
     TePanel3: TTePanel;
     dtstprvdr1: TDataSetProvider;
-    sqlqry1: TSQLQuery;
+    sqlqry2: TSQLQuery;
     ds2: TDataSource;
     ds3: TClientDataSet;
     cxStyleRepository1: TcxStyleRepository;
@@ -63,9 +63,8 @@ type
     Label5: TLabel;
     edtCustomer: TAdvEditBtn;
     edtCusNama: TAdvEdit;
-    PopupMenu1: TPopupMenu;
-    LihatFakturPenjualan1: TMenuItem;
     cxPivot: TcxDBPivotGrid;
+    sqlqry1: TMyQuery;
     procedure FormDblClick(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
     procedure sbNewClick(Sender: TObject);

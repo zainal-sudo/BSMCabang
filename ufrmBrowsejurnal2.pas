@@ -18,7 +18,8 @@ uses
   dxPSEdgePatterns, cxDrawTextUtils,
   dxPSPrVwStd, dxPSPrVwAdv, dxPScxPageControlProducer,
   dxPScxEditorProducers, dxPScxExtEditorProducers, dxPScxCommon, dxPSCore,
-  dxSkinsCore, dxSkinsDefaultPainters, dxSkinsdxBarPainter, dxPScxGrid6Lnk;
+  dxSkinsCore, dxSkinsDefaultPainters, dxSkinsdxBarPainter, dxPScxGrid6Lnk,
+  MemDS, DBAccess, MyAccess;
 
 type
   TfrmBrowseJurnal2 = class(TForm)
@@ -32,7 +33,7 @@ type
     SaveDialog1: TSaveDialog;
     TePanel3: TTePanel;
     dtstprvdr1: TDataSetProvider;
-    sqlqry1: TSQLQuery;
+    sqlqry2: TSQLQuery;
     ds2: TDataSource;
     ds3: TClientDataSet;
     cxStyleRepository1: TcxStyleRepository;
@@ -66,6 +67,7 @@ type
     PopupMenu1: TPopupMenu;
     LihatFakturPenjualan1: TMenuItem;
     cxButton5: TcxButton;
+    sqlqry1: TMyQuery;
     procedure FormDblClick(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
     procedure sbNewClick(Sender: TObject);
@@ -189,7 +191,7 @@ begin
 
 
   ds3.Close;
-        sqlqry1.SQLConnection := frmmenu.conn;
+        sqlqry1.Connection := frmmenu.conn;
         sqlqry1.SQL.Text := s;
         ds3.open;
 
@@ -376,8 +378,8 @@ var
   ss,s:String ;
   tt:tstrings;
   i:integer;
-  tsql:TSQLQuery;
-  conn2 :TSQLConnection;
+  tsql:TmyQuery;
+  conn2 :TMyConnection;
 begin
   inherited;
 
@@ -471,14 +473,12 @@ begin
        try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],conn2);
+            EnsureConnected(conn2);
+            ExecSQLDirect(conn2, tt[i]);
          end;
       finally
         tt.Free;
       end;
-
-
-  xCommit(conn2);
   conn2.free;
   showmessage('Kirim jurnal nomor ' + ds3.FieldByname('Nomor').AsString +' Berhasil');
 
@@ -488,7 +488,7 @@ end;
 function TfrmBrowseJurnal2.cekintransit(anomorjurnal:string):Boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := False;
   s:='select * from tjurnalitem where jurd_jur_no ='+ Quot(anomorjurnal)

@@ -41,7 +41,6 @@ type
     SaveDialog1: TSaveDialog;
     TePanel3: TTePanel;
     dtstprvdr1: TDataSetProvider;
-    sqlqry1: TSQLQuery;
     ds2: TDataSource;
     ds3: TClientDataSet;
     cxStyleRepository1: TcxStyleRepository;
@@ -84,6 +83,7 @@ type
     MyConnection1: TMyConnection;
     MyQuery1: TMyQuery;
     cxButton4: TcxButton;
+    sqlqry1: TMyQuery;
     procedure FormDblClick(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
     procedure sbNewClick(Sender: TObject);
@@ -347,7 +347,7 @@ s:=s
 + ' left JOIN tcustomer y ON x.cus_kode=y.cus_kode '
 + ' where tanggal between ' + QuotD(startdate.DateTime) + ' and date_add(' + QuotD(enddate.DateTime)+' , interval 1 day) ';
   ds3.Close;
-        sqlqry1.SQLConnection := frmmenu.conn;
+        sqlqry1.Connection := frmmenu.conn;
         sqlqry1.SQL.Text := s;
         ds3.open;
 
@@ -644,8 +644,9 @@ begin
     + ' and YEAR(fp_tanggal)=bpf_tahun AND MONTH(fp_tanggal)=bpf_periode'
     + ' set fpd_hrg_min=bpf_het '
     + ' where fp_tanggal between '+QuotD(startdate.date)+ ' and '+ QuotD(enddate.Date);
-    xExecQuery(s,frmMenu.conn);
-    xCommit(frmMenu.conn);
+      EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+    
     finally
     ShowMessage('update het berhasil');
     end;

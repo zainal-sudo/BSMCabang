@@ -26,7 +26,7 @@ uses
   dxSkinOffice2007Pink, dxSkinOffice2007Silver, dxSkinPumpkin,
   dxSkinSilver, dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008,
   dxSkinValentine, dxSkinXmas2008Blue, dxSkinDarkRoom, dxSkinFoggy,
-  dxSkinSeven, dxSkinSharp;
+  dxSkinSeven, dxSkinSharp, MemDS, DBAccess, MyAccess;
 
 type
   TfrmListJual3 = class(TForm)
@@ -40,7 +40,7 @@ type
     SaveDialog1: TSaveDialog;
     TePanel3: TTePanel;
     dtstprvdr1: TDataSetProvider;
-    sqlqry1: TSQLQuery;
+    sqlqry2: TSQLQuery;
     ds2: TDataSource;
     ds3: TClientDataSet;
     cxStyleRepository1: TcxStyleRepository;
@@ -71,6 +71,7 @@ type
     Label3: TLabel;
     Label4: TLabel;
     cxButton1: TcxButton;
+    sqlqry1: TMyQuery;
     procedure FormDblClick(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
     procedure sbNewClick(Sender: TObject);
@@ -199,7 +200,7 @@ begin
         + ' group by fp_nomor '
         + ' )  a group by year(tanggal),month(tanggal) ,Customer  order by Riil';
   ds3.Close;
-        sqlqry1.SQLConnection := frmmenu.conn;
+        sqlqry1.Connection := frmmenu.conn;
         sqlqry1.SQL.Text := s;
         ds3.open;
 

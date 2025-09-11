@@ -35,11 +35,4 @@ inherited frmBrowseMutasiGudang: TfrmBrowseMutasiGudang
   inherited AdvPanel3: TAdvPanel
     FullHeight = 0
   end
-  object frxDotMatrixExport1: TfrxDotMatrixExport
-    GraphicFrames = False
-    SaveToFile = False
-    UseIniSettings = True
-    Left = 264
-    Top = 225
-  end
 end

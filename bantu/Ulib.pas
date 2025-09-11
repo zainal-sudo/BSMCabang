@@ -170,7 +170,7 @@ var
   E:TEdit1;
   F:TLabel;
   G:TComboBox;
-  SQLQuery1: TSQLQuery;
+  SQLQuery1: TMyQuery;
   ds2: TDataSource;
   cds1 : TClientDataSet;
   DSP1 : TDataSetProvider;
@@ -326,7 +326,7 @@ end;
 function getnomor(akode:string;tahun:integer) : string;
 var
   ss,s: string;
-  tsql : TSQLQuery;
+  tsql: TmyQuery;
 
 begin
   ss:='select * from nomerator where kode = '+ Quot(akode)
@@ -338,8 +338,8 @@ begin
       if Eof then
       begin
         s:='insert into nomerator (kode,karakterawal,tahun,nomerator) values (' +Quot(akode)+','+quot(akode)+','+IntToStr(tahun)+', 0);';
-        xExecQuery(s,frmMenu.conn);
-        xCommit(frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+        ExecSQLDirect(frmMenu.conn, s);
       end;
     finally
       free;
@@ -443,7 +443,7 @@ end;
 function cekdatakonversi(akode:string;asatuan : string):boolean;
 var
   s:string;
-  tsql,tsql2:TSQLQuery;
+  tsql,tsql2:TmyQuery;
 begin
   Result := False;
   s:='select * from bahan.master_konversi where kodebahan = '  + Quot(akode)
@@ -484,7 +484,7 @@ end;
 function cekdatakonversi2(akode:string;asatuan : string;asatuan2 : string):boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := False;
   s:='select * from bahan.master_konversi where kodebahan = '  + Quot(akode)
@@ -505,7 +505,7 @@ end;
 function loadnilai(akode:string;asatuan : string;asatuan2 : string):Double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := 0;
   s:='select jumlah from bahan.master_konversi where kodebahan = '  + Quot(akode)
@@ -525,7 +525,7 @@ end;
 function cekdataPO(akode:string):boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := False;
    S := 'select d.quantity qty_order from '
@@ -550,7 +550,7 @@ end;
 function cekdatamutasi(akode:string):boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := False;
    S := 'select approval from '
@@ -571,7 +571,7 @@ end;
 function cekdatamutasi2(akode:string):boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := False;
    S := 'select approval from '
@@ -593,7 +593,7 @@ end;
 function cekdatamutasikode(akode:string):boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := False;
    S := 'select * from '
@@ -614,7 +614,7 @@ end;
 function cekdataPO2(akode:string):boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := False;
    S := 'select d.quantity qty_order from '
@@ -638,7 +638,7 @@ end;
 function cekdataapprovalPO(akode:string):boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := False;
    S := 'select approval from pembelian.po_header where nomor = ' + Quot(akode);
@@ -658,7 +658,7 @@ end;
 function cekdataapprovalPO2(akode:string):boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := False;
    S := 'select approval from pembelian.pobj_header where nomor = ' + Quot(akode);
@@ -678,7 +678,7 @@ end;
 function ceksatuan(asatuan:string):boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := False;
    S := 'select * from bahan.master_satuan where satuan = ' + Quot(asatuan);
@@ -707,7 +707,7 @@ end;
 function cekstatussuplier(akode:string):boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := False;
    S := 'select * from relasi.master_supplier where kode = ' + Quot(akode)
@@ -729,7 +729,7 @@ end;
 function getjumlah(kdbarang : string ; asatuan : string) : Double ;
 var
   s: string;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql: TmyQuery;
 begin
   result:=0;
   if asatuan = getnama('bahan.master_bahan','kode',kdbarang,'satuangudang') then
@@ -836,12 +836,12 @@ begin
       C.Color := clSkyBlue;
       C.ReadOnly := False;
 
-      SQLQuery1:= TSQLQuery.Create(afrm);
+      SQLQuery1:= TMyQuery.Create(afrm);
       DSP1:= TDataSetProvider.Create(afrm);
       cds1:=TClientDataSet.Create(afrm);
       ds2:= TDataSource.Create(afrm);
       cds1.close;
-      SQLQuery1.SQLConnection := frmMenu.conn;
+      SQLQuery1.Connection := frmMenu.conn;
       SQLQuery1.SQL.Text := sqlbantuan;
 //    SQLQuery1:=xOpenQuery(sqlbantuan,frmMenu.conn);
       DSP1.DataSet := SQLQuery1;
@@ -986,7 +986,7 @@ end;
 
 function cekKodeBayar(akode:string;akolom : string) : Boolean ;
 var
-  tsql : TSQLQuery;
+  tsql: TmyQuery;
   afilter,s:String;
   a,i:Integer;
 begin
@@ -1028,7 +1028,7 @@ end;
 
 function cekKodeAccount(akode:string;akolom : string) : Boolean ;
 var
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
    s:String;
 
 begin
@@ -1052,7 +1052,7 @@ end;
 
 function adaKodebayar(akode:string) : Boolean ;
 var
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
    s:String;
 
 begin
@@ -1073,7 +1073,7 @@ end;
 
 function adaKodecenter(akode:string) : Boolean ;
 var
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
    s:String;
 
 begin
@@ -1093,7 +1093,7 @@ begin
 end;
 function adaKodeVoucher(akode:string) : Boolean ;
 var
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
    s:String;
 
 begin
@@ -1115,7 +1115,7 @@ end;
 function cekdetailaccount(akode:string):Boolean;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   s:= 'select COUNT(*) jml from master_account where kode LIKE ' + Quot(akode+'%') ;
 tsql := xopenquery(s,frmmenu.conn);
@@ -1135,7 +1135,7 @@ end;
 function getmaxid(atable : string; akode : string): Integer;
 var
   S: string;
-  tsql : TSQLQuery ;
+  tsql : TmyQuery ;
 begin
 //  result := 0;
    s:= 'select max(' + akode + ') as jml from '+ atable +';';
@@ -1153,7 +1153,7 @@ end;
 function cekedit(akodeuser:string;anamaform:string) : Boolean;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   Result:= False;
   s:= ' select hak_men_edit from tuser a inner join thakuser  b on a.user_kode =b.hak_user_kode '
@@ -1175,7 +1175,7 @@ end;
 function cekview(akodeuser:string;anamaform:string) : Boolean;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   Result:= False;
   anamaform := Copy(anamaform,2,Length(anamaform));
@@ -1199,7 +1199,7 @@ end;
 function cekinsert(akodeuser:string;anamaform:string) : Boolean;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   Result:= False;
   s:= ' select hak_men_insert from tuser a inner join thakuser  b on a.user_kode =b.hak_user_kode '
@@ -1221,7 +1221,7 @@ end;
 function cekdelete(akodeuser:string;anamaform:string) : Boolean;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   Result:= False;
   s:= ' select hak_men_delete from tuser a inner join thakuser  b on a.user_kode =b.hak_user_kode'
@@ -1260,7 +1260,7 @@ end;
 
 procedure GetCompanyLine(var CL1 : String; var CL2 : String; var CL3 : String ; var CL4 : String ; var CL5 : String ;var CL6 : String ;var CL7 : STRING;var CL8 : STRING;var CL9 : STRING; var CL10 : STRING );
 var
-   Q : TSQLQuery;
+   Q : TmyQuery;
    S : String;
 begin
      CL1 := '';
@@ -1433,14 +1433,14 @@ function cOpenCDS(AQuery: string; AOwner: TComponent = nil):
     TCDS;
 var
   LDSP: TDataSetProvider;
-  LSQLQuery: TSQLQuery;
+  LSQLQuery: TmyQuery;
 begin
   Result      := TCDS.Create(AOwner);
   LDSP        := TDataSetProvider.Create(Result);
-  LSQLQuery   := tsqlquery.Create(LDSP);
+  LSQLQuery   := TmyQuery.Create(LDSP);
   try
 
-    LSQLQuery.SQLConnection := frmMenu.conn;
+    LSQLQuery.Connection := frmMenu.conn;
     LSQLQuery.SQL.Append(aQuery);
 
     LDSP.DataSet            := LSQLQuery;
@@ -1479,13 +1479,13 @@ class function TConextMain.cOpenCDS(AQuery: string;
   aOwner: TComponent = nil): TCDS;
 var
   LDSP: TDataSetProvider;
-  LSQLQuery: TSQLQuery;
+  LSQLQuery: TmyQuery;
 begin
   Result := TCDS.Create(aOwner);
   LDSP := TDataSetProvider.Create(Result);
-  LSQLQuery := TSQLQuery.Create(LDSP);
+  LSQLQuery := TmyQuery.Create(LDSP);
   try
-    LSQLQuery.SQLConnection := frmMenu.conn;
+    LSQLQuery.Connection := frmMenu.conn;
     LSQLQuery.SQL.Append(AQuery);
 
 //    cSetFDQueryProperty(LSQLQuery);
@@ -1973,7 +1973,7 @@ end;
 function cekTutupPeriode(atgl:TDateTime): Boolean;
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   s := 'select * from ttutupperiode where tutup_bulan = ' + FormatDateTime('mm',atgl)
       + ' and  tutup_tahun = ' + FormatDateTime('yyyy',atgl);
@@ -1993,7 +1993,7 @@ end;
 function cekProductFocus(akode:string): Boolean;
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   s := 'select brg_isproductfocus from tbarang where brg_kode = ' + Quot(akode) ;
 
@@ -2012,7 +2012,7 @@ end;
 function getHna(akode:string): double;
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   Result := 0;
   s := 'select brg_hrgjual from tbarang where brg_kode = ' + Quot(akode) ;
@@ -2163,7 +2163,7 @@ end;
 function getbatas(akode:String):integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select set_tgl from tsetting where set_kode='+ Quot(akode) ;

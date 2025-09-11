@@ -850,11 +850,4 @@ object frmMutasiCabang: TfrmMutasiCabang
       OnClick = HapusRecord1Click
     end
   end
-  object frxDotMatrixExport1: TfrxDotMatrixExport
-    GraphicFrames = False
-    SaveToFile = False
-    UseIniSettings = True
-    Left = 800
-    Top = 217
-  end
 end

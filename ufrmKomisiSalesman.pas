@@ -21,7 +21,7 @@ uses
     dxPScxEditorProducers, dxPScxExtEditorProducers, dxPScxCommon, dxPSCore,
   dxSkinsCore, dxSkinsDefaultPainters, dxSkinsdxBarPainter, AdvCombo,
   cxCurrencyEdit, cxGridDBBandedTableView,DateUtils, dxPScxGrid6Lnk,
-  cxTextEdit;
+  cxTextEdit, MyAccess, MemDS, DBAccess;
 
 type
   TfrmKomisisalesman = class(TForm)
@@ -34,7 +34,7 @@ type
     SaveDialog1: TSaveDialog;
     TePanel3: TTePanel;
     dtstprvdr1: TDataSetProvider;
-    sqlqry1: TSQLQuery;
+    sqlqry5: TSQLQuery;
     ds2: TDataSource;
     ds3: TClientDataSet;
     cxStyleRepository1: TcxStyleRepository;
@@ -76,7 +76,7 @@ type
     cxgridKomisiColumn2: TcxGridDBBandedColumn;
     cxgridKomisiColumn3: TcxGridDBBandedColumn;
     cxgridKomisiColumn4: TcxGridDBBandedColumn;
-    sqlqry2: TSQLQuery;
+    sqlqry8: TSQLQuery;
     ds22: TDataSource;
     dtstprvdr2: TDataSetProvider;
     ds32: TClientDataSet;
@@ -97,6 +97,8 @@ type
     clPF: TcxGridDBBandedColumn;
     clratiopf: TcxGridDBBandedColumn;
     cxgridKomisiColumn13: TcxGridDBBandedColumn;
+    sqlqry1: TMyQuery;
+    sqlqry2: TMyQuery;
     procedure FormDblClick(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
     procedure sbNewClick(Sender: TObject);
@@ -210,7 +212,7 @@ var
   apotong2,apotong,capaibulanini : double;
   akhir,akhir2 : TDateTime;
   arealisasijual,arealisasiinkaso : Double;
-  tsql,tsql2 : TSQLQuery;
+  tsql,tsql2 : TmyQuery;
 begin
   if  cbbBulan.itemindex <> 0 then
 begin
@@ -273,7 +275,7 @@ ssql:= 'select Salesman,sls_nama Nama,cast(0 as decimal(5,2)) ratiopf,cast(0 as 
       + ' group by salesman) a inner join tsalesman on a.salesman=sls_kode and sls_insentif=1';
 
         ds3.Close;
-        sqlqry1.SQLConnection := frmMenu.conn;
+        sqlqry1.Connection := frmMenu.conn;
         sqlqry1.SQL.Text := ssql;
         ds3.open;
         capaibulanini :=cVarToFloat(TcxDBGridHelper(cxGrid1DBBandedTableView1).GetFooterSummary('realisasi_jual'))/ cVarToFloat(TcxDBGridHelper(cxGrid1DBBandedTableView1).GetFooterSummary('target_jual'))*100;
@@ -547,7 +549,7 @@ ssql := 'SELECT sls_nama salesman,SUM(debet-kredit) - '
 //      + ' and nomor like "%CR%") a'
 //      + ' group  by salesman) final';
         ds32.Close;
-        sqlqry2.SQLConnection := frmMenu.conn;
+        sqlqry2.Connection := frmMenu.conn;
         sqlqry2.SQL.Text := ssql;
         ds32.open;
 
@@ -834,7 +836,7 @@ end;
 function TfrmKomisisalesman.getkomisijual(apersen:double) : double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select ksj_komisi from tkomisisales_jual where ksj_bawah <= '+ FloatToStr(apersen)
@@ -855,7 +857,7 @@ end;
 function TfrmKomisisalesman.getkomisipf(asalesman:string) : double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select sum((if(harga>=brg_harga_min,harga,0)*qty)*brg_insentif/100) from ('
@@ -885,7 +887,7 @@ end;
 function TfrmKomisisalesman.getperseninkaso(apersen:double) : double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select ksj_komisi from tkomisisales_inkaso where ksj_bawah <= '+ FloatToStr(apersen)
@@ -906,7 +908,7 @@ end;
 function TfrmKomisisalesman.getperseninkaso2(apersen:double) : double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select ksj_komisi2 from tkomisisales_inkaso where ksj_bawah <= '+ FloatToStr(apersen)
@@ -926,7 +928,7 @@ end;
 function TfrmKomisisalesman.getperseninkaso3(apersen:double) : double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select ksj_komisi3 from tkomisisales_inkaso where ksj_bawah <= '+ FloatToStr(apersen)
@@ -946,7 +948,7 @@ end;
 function TfrmKomisisalesman.getperseninkaso4(apersen:double) : double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select ksj_komisi4 from tkomisisales_inkaso where ksj_bawah <= '+ FloatToStr(apersen)
@@ -1020,12 +1022,13 @@ begin
        try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
       end;
-      xCommit(frmMenu.conn);
+      
    try
     ftsreport.Nama := 'cetakkomisi';
 

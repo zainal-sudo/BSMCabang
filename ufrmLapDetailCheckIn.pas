@@ -20,7 +20,7 @@ uses
   dxSkinOffice2007Pink, dxSkinOffice2007Silver, dxSkinPumpkin,
   dxSkinSilver, dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008,
   dxSkinValentine, dxSkinXmas2008Blue, dxSkinDarkRoom, dxSkinFoggy,
-  dxSkinSeven, dxSkinSharp;
+  dxSkinSeven, dxSkinSharp, MyAccess;
 
 type
   TfrmLapDetailCheckIn = class(TForm)
@@ -116,7 +116,7 @@ procedure TfrmLapDetailCheckIn.loaddataall ;
 var
   s: string;
   i:integer;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   aterjadwal,atidakterjadwal : Integer;
 begin
   if frmmenu.KDCABANG <> 'KRM' then

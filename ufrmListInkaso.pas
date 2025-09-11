@@ -18,7 +18,8 @@ uses
   dxPSEdgePatterns, cxDrawTextUtils,
   dxPSPrVwStd, dxPSPrVwAdv, dxPScxPageControlProducer,
   dxPScxEditorProducers, dxPScxExtEditorProducers, dxPScxCommon, dxPSCore,
-  dxSkinsCore, dxSkinsDefaultPainters, dxSkinsdxBarPainter, dxPScxGrid6Lnk;
+  dxSkinsCore, dxSkinsDefaultPainters, dxSkinsdxBarPainter, dxPScxGrid6Lnk,
+  MemDS, DBAccess, MyAccess;
 
 type
   TfrmListInkaso = class(TForm)
@@ -32,7 +33,7 @@ type
     SaveDialog1: TSaveDialog;
     TePanel3: TTePanel;
     dtstprvdr1: TDataSetProvider;
-    sqlqry1: TSQLQuery;
+    sqlqry2: TSQLQuery;
     ds2: TDataSource;
     ds3: TClientDataSet;
     cxStyleRepository1: TcxStyleRepository;
@@ -60,6 +61,7 @@ type
     TePanel5: TTePanel;
     cxButton8: TcxButton;
     cxButton7: TcxButton;
+    sqlqry1: TMyQuery;
     procedure FormDblClick(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
     procedure sbNewClick(Sender: TObject);
@@ -188,7 +190,7 @@ begin
           + ' ) a where tglBayar between ' + QuotD(startdate.DateTime) + ' and ' + QuotD(enddate.DateTime);
 
   ds3.Close;
-        sqlqry1.SQLConnection := frmmenu.conn;
+        sqlqry1.Connection := frmmenu.conn;
         sqlqry1.SQL.Text := s;
         ds3.open;
 

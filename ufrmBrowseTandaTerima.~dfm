@@ -15,9 +15,6 @@ inherited frmBrowseTandaTerima: TfrmBrowseTandaTerima
     inherited cxButton2: TcxButton
       OnClick = cxButton2Click
     end
-    inherited cxButton3: TcxButton
-      OnClick = cxButton3Click
-    end
     inherited cxButton4: TcxButton
       OnClick = cxButton4Click
     end
@@ -31,7 +28,6 @@ inherited frmBrowseTandaTerima: TfrmBrowseTandaTerima
       Height = 32
       Caption = '&Cetak V2'
       TabOrder = 7
-      OnClick = cxButton3Click
       Align = alLeft
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100

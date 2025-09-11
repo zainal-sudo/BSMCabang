@@ -121,11 +121,4 @@ inherited frmBrowseMutasiCabang: TfrmBrowseMutasiCabang
     Left = 368
     Top = 297
   end
-  object frxDotMatrixExport1: TfrxDotMatrixExport
-    GraphicFrames = False
-    SaveToFile = False
-    UseIniSettings = True
-    Left = 488
-    Top = 369
-  end
 end

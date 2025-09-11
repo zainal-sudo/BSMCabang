@@ -1,6 +1,6 @@
 object frmListFOS: TfrmListFOS
-  Left = 238
-  Top = 305
+  Left = 224
+  Top = 125
   AutoScroll = False
   Caption = 'List Faktur Outstanding'
   ClientHeight = 582

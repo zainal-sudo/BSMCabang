@@ -1,6 +1,6 @@
 object frmListTransaksiHarian: TfrmListTransaksiHarian
-  Left = 0
-  Top = 28
+  Left = 337
+  Top = 79
   AutoScroll = False
   Caption = 'List Transaksi Harian'
   ClientHeight = 582
@@ -3654,7 +3654,7 @@ object frmListTransaksiHarian: TfrmListTransaksiHarian
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -3721,5 +3721,9 @@ object frmListTransaksiHarian: TfrmListTransaksiHarian
       Caption = 'Lihat Detail'
       OnClick = LihatFakturPenjualan1Click
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 496
+    Top = 296
   end
 end

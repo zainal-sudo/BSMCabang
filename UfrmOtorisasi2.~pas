@@ -98,7 +98,7 @@ end;
 procedure TfrmOtorisasi2.cxButton2Click(Sender: TObject);
 var
   sql, username, password: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
 //  username := Trim(edtUser.Text);
 //  password := Trim(edtpassword.Text);
@@ -258,7 +258,7 @@ end;
 
 function TfrmOtorisasi2.getnomorterakhir : string;
 begin
-  Result := FormatDateTime('hhnnss',cGetServerTime);
+  Result := '99'+FormatDateTime('hhnnss',cGetServerTime);
 end;
 
 

@@ -1,13 +1,13 @@
 inherited frmBrowseFP: TfrmBrowseFP
-  Left = 192
-  Top = 164
+  Left = 23
+  Top = 44
   Caption = 'Browse Faktur Penjualan'
-  ClientWidth = 1111
+  ClientWidth = 1272
   OldCreateOrder = True
   PixelsPerInch = 96
   TextHeight = 13
   inherited AdvPanel1: TAdvPanel
-    Width = 1111
+    Width = 1272
     FullHeight = 0
     inherited cxButton1: TcxButton
       OnClick = cxButton1Click
@@ -30,7 +30,7 @@ inherited frmBrowseFP: TfrmBrowseFP
       Left = 448
     end
     inherited cxButton8: TcxButton
-      Left = 1022
+      Left = 1183
     end
     object cxButton5: TcxButton
       Left = 549
@@ -316,17 +316,17 @@ inherited frmBrowseFP: TfrmBrowseFP
     end
   end
   inherited AdvPanel2: TAdvPanel
-    Width = 1111
+    Width = 1272
     FullHeight = 0
     inherited btnRefresh: TcxButton
-      Left = 1022
+      Left = 1183
     end
   end
   inherited AdvPanel3: TAdvPanel
-    Width = 1111
+    Width = 1272
     FullHeight = 0
     inherited cxGrid: TcxGrid
-      Width = 1107
+      Width = 1268
       PopupMenu = PopupMenu1
       inherited cxGrdMaster: TcxGridDBTableView
         DataController.Summary.FooterSummaryItems = <

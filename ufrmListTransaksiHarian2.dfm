@@ -3653,7 +3653,7 @@ object frmListTransaksiHarian2: TfrmListTransaksiHarian2
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -3712,5 +3712,9 @@ object frmListTransaksiHarian2: TfrmListTransaksiHarian2
       PrinterPage._dxLastMU_ = 1
       BuiltInReportLink = True
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 480
+    Top = 296
   end
 end

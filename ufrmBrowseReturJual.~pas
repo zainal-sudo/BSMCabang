@@ -22,6 +22,7 @@ uses
 type
   TfrmBrowseReturJual = class(TfrmCxBrowse)
     cxButton5: TcxButton;
+    cxButton9: TcxButton;
   procedure btnRefreshClick(Sender: TObject);
   procedure FormShow(Sender: TObject);
     procedure cxButton2Click(Sender: TObject);
@@ -30,6 +31,7 @@ type
     procedure cxButton3Click(Sender: TObject);
     function cekbayar(anomor:string) : integer;
     procedure cxButton5Click(Sender: TObject);
+    procedure cxButton9Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -149,7 +151,7 @@ end;
 function TfrmBrowseReturJual.cekbayar(anomor:string) : integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := 0;
   s:='select fp_isbayar from tfp_hdr where fp_nomor =' + Quot(anomor) ;
@@ -171,6 +173,12 @@ procedure TfrmBrowseReturJual.cxButton5Click(Sender: TObject);
 begin
   inherited;
     frmReturJual.doslip2(CDSMaster.FieldByname('Nomor').AsString);
+end;
+
+procedure TfrmBrowseReturJual.cxButton9Click(Sender: TObject);
+begin
+  inherited;
+    frmReturJual.doslipBATCH(CDSMaster.FieldByname('Nomor').AsString);
 end;
 
 end.

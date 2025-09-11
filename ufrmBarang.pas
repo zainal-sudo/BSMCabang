@@ -11,7 +11,7 @@ uses
   cxDBExtLookupComboBox,DBClient, cxStyles, dxSkinscxPCPainter,
   cxCustomData, cxFilter, cxData, cxDataStorage, DB, cxDBData, cxSpinEdit,
   cxCurrencyEdit, cxGridLevel, cxGridCustomTableView, cxGridTableView,
-  cxGridDBTableView, cxClasses, cxGridCustomView, cxGrid;
+  cxGridDBTableView, cxClasses, cxGridCustomView, cxGrid, MyAccess;
 
 type
   TfrmBarang = class(TForm)
@@ -186,10 +186,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -202,7 +202,7 @@ end;
 procedure TfrmBarang.loaddata(akode:string) ;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   s:= 'select *  from tbarang where brg_kode = ' + Quot(akode) ;
 tsql := xOpenQuery(s,frmMenu.conn);
@@ -326,7 +326,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 end;
-    xExecQuery(s,frmmenu.conn);
+      EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
      tt := TStringList.Create;
    s:= ' delete from Thargajualjenis '
@@ -353,7 +354,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -391,10 +393,10 @@ begin
       refreshdata;
    except
       MessageDlg('Gagal Simpan',mtWarning, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmBarang.cxButton8Click(Sender: TObject);
@@ -424,10 +426,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -544,7 +546,7 @@ end;
 procedure TfrmBarang.initgrid;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 
 begin
   CDS.EmptyDataSet;

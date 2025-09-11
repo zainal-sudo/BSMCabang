@@ -33,69 +33,170 @@ var
   conDBX: TSQLConnection;
   transDBX: TTransactionDesc;
 
-  
+  function xCreateConnection(aConnection: TConnectionType; aHost: string;
+    aDatabase: string; aUserName: string; aPassword: string; aPort: string): TMyConnection;
+  function xOpenQuery(aSQL: string; out RecCount: Integer; aMyConn: TMyConnection = nil): TMyQuery; overload;
+  function xOpenQuery(aSQL: string; aMyConn: TMyConnection = nil): TMyQuery; overload;
+  procedure EnsureConnected(AConn: TMyConnection);
+  function ExecSQLDirect(AConnection: TMyConnection; const ASQL: string): Integer;
 
-
-function xCreateConnection(aConnection: TConnectionType; aHost: string;
-  aDatabase: string; aUserName: string; aPassword: string): TSQLConnection;
-function xCreateConnection2(aConnection: TConnectionType; aHost: string;
-  aDatabase: string; aUserName: string; aPassword: string): TMyConnection;
-function xOpenQuery(aSQL: string; aSQLConnection: TMyConnection = nil): TSQLQuery; overload;
-function xOpenQuery(aSQL: string; out RecCount: Integer; aSQLConnection: TSQLConnection = nil): TSQLQuery; overload;
-procedure xExecQuery(aSQL: string; aSQLConnection: TSQLConnection = nil); overload;
-procedure xExecQuery(aSQL: string; out aTransactionID: TTransactionDesc; aSQLConnection: TSQLConnection = nil); overload;
-procedure xCommit(aSQLConnection: TSQLConnection = nil); overload;
-procedure xCommit(aTransactionID: TTransactionDesc; aSQLConnection: TSQLConnection = nil); overload;
-procedure xRollback(aSQLConnection: TSQLConnection = nil); overload;
-procedure xRollback(aTransactionID: TTransactionDesc; aSQLConnection: TSQLConnection = nil); overload;
+  function xCreateConnection2(aConnection: TConnectionType; aHost: string;
+    aDatabase: string; aUserName: string; aPassword: string): TSQLConnection;
+  function xOpenQuery(aSQL: string; aSQLConnection: TSQLConnection = nil): TSQLQuery; overload;
+  function xOpenQuery(aSQL: string; out RecCount: Integer; aSQLConnection: TSQLConnection = nil): TSQLQuery; overload;
+  procedure xExecQuery(aSQL: string; aSQLConnection: TSQLConnection = nil); overload;
+  procedure xExecQuery(aSQL: string; out aTransactionID: TTransactionDesc; aSQLConnection: TSQLConnection = nil); overload;
+  procedure xCommit(aSQLConnection: TSQLConnection = nil); overload;
+  procedure xCommit(aTransactionID: TTransactionDesc; aSQLConnection: TSQLConnection = nil); overload;
+  procedure xRollback(aSQLConnection: TSQLConnection = nil); overload;
+  procedure xRollback(aTransactionID: TTransactionDesc; aSQLConnection: TSQLConnection = nil); overload;
 
 
 implementation
 
-function xCreateConnection2(aConnection: TConnectionType; aHost: string;
-  aDatabase: string; aUserName: string; aPassword: string): TMyConnection;
+{* MyDAC Connection *}
+
+function xCreateConnection(aConnection: TConnectionType; aHost: string;
+  aDatabase: string; aUserName: string; aPassword: string; aPort: string): TMyConnection;
 begin
   Result := TMyConnection.Create(nil);
   with Result do
   begin
-     if aConnection = ctMySQL then
+    if aConnection = ctMySQL then
     begin
-        Username := 'root';
-        Password := 'password';
-        Database := 'bsmcabang';
-        Port     := 3306;
-        server   := 'localhost';
-        LoginPrompt := False;
-//      DriverName := 'MySQL';
-////      LibraryName := 'dbexpmysql';
-//      LibraryName := 'dbxopenmysql50.dll';
-//      GetDriverFunc := 'getSQLDriverMYSQL50';
-//
-//      VendorLib := 'libmysql.dll';
-//      Params.Append('HostName=' + aHost);
-//      Params.Append('Database=' + aDatabase);
-//      Params.Append('User_Name=' + aUserName);
-//      Params.Append('Password=' + aPassword);
+      Username := aUserName;
+      Password := aPassword;
+      Database := aDatabase;
+      Server   := aHost;
+      Port     := aPort;
+     // LoginPrompt := False;
+      Connected := True;
     end;
+  end;
+end;
 
-//    if ConnectionState = csStateClosed then
-//    begin
-//      try
-//        LoginPrompt := False;
-//        Connected := True;
-//      except
-//        on E: Exception do
-//        begin
-//          raise Exception.Create(E.Message);
-//        end;
-//      end;
-//    end;
+function xOpenQuery(aSQL: string; out RecCount: Integer; aMyConn: TMyConnection = nil): TMyQuery;
+begin
+  Result := TMyQuery.Create(nil);
+  RecCount := 0;
+
+  if (UpperCase(LeftStr(aSQL,6)) <> 'SELECT') and (Length(Trim(aSQL)) = 0) then
+  begin
+    FreeAndNil(Result);
+    Exit;
+  end;
+
+  with Result do
+  begin
+    EnsureConnected(aMyConn);
+    Connection := aMyConn;
+
+    SQL.Text := aSQL;
+    try
+      Open;
+      First;
+      while not Eof do
+      begin
+        Inc(RecCount);
+        Next;
+      end;
+      First;
+    except
+      FreeAndNil(Result);
+    end;
+  end;
+end;
+
+function xOpenQuery(aSQL: string; aMyConn: TMyConnection = nil): TMyQuery;
+begin
+  Result := TMyQuery.Create(nil);
+  
+  if (UpperCase(LeftStr(aSQL,6)) <> 'SELECT') and (Length(Trim(aSQL)) = 0) then
+  begin
+    FreeAndNil(Result);
+    Exit;
+  end;
+
+  with Result do
+  begin
+    EnsureConnected(aMyConn);
+    Connection := aMyConn;
+
+    SQL.Text := aSQL;
+    try
+      Open;
+      First;
+    except
+      FreeAndNil(Result);
+    end;
   end;
 
 end;
 
+procedure EnsureConnected(AConn: TMyConnection);
+var
+  Retry: Integer;
+begin
+  if (AConn = nil) then Exit;
 
-function xCreateConnection(aConnection: TConnectionType; aHost: string;
+  if not AConn.Connected then
+  begin
+    Retry := 0;
+    while Retry < 3 do
+    begin
+      try
+        AConn.Connect;
+        Exit;
+      except
+        Inc(Retry);
+        Sleep(1000);
+      end;
+    end;
+    raise Exception.Create('Gagal konek ke database setelah retry');
+  end
+  else
+  begin
+    try
+      AConn.Ping;
+    except
+      if AConn.Connected then
+        AConn.Disconnect;
+
+      Retry := 0;
+      while Retry < 3 do
+      begin
+        try
+          Sleep(1000);
+          AConn.Connect;
+          Exit;
+        except
+          Inc(Retry);
+        end;
+      end;
+      raise Exception.Create('Koneksi database terputus dan gagal reconnect');
+    end;
+  end;
+end;
+
+function ExecSQLDirect(AConnection: TMyConnection; const ASQL: string): Integer;
+var
+  Q: TMyQuery;
+begin
+  Result := 0;
+  Q := TMyQuery.Create(nil);
+  try
+    Q.Connection := AConnection;
+    Q.SQL.Text := ASQL;
+    Q.ExecSQL;
+    Result := Q.RowsAffected; // kalau INSERT/UPDATE/DELETE akan return jumlah row
+  finally
+    Q.Free;
+  end;
+end;
+
+{* DBExpress  *}
+
+function xCreateConnection2(aConnection: TConnectionType; aHost: string;
   aDatabase: string; aUserName: string; aPassword: string): TSQLConnection;
 begin
   Result := TSQLConnection.Create(nil);
@@ -178,7 +279,7 @@ begin
 
 end;
 
-function xOpenQuery(aSQL: string; aSQLConnection: TMyConnection = nil): TSQLQuery;
+function xOpenQuery(aSQL: string; aSQLConnection: TSqlConnection = nil): TSQLQuery;
 begin
   Result := TSQLQuery.Create(nil);
   if (UpperCase(LeftStr(aSQL,6)) <> 'SELECT') and (Length(Trim(aSQL)) = 0) then

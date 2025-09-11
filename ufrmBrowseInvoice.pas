@@ -17,7 +17,7 @@ uses
   cxDataStorage, cxEdit, DB, cxDBData, FMTBcd, Provider, SqlExpr, ImgList,
   ComCtrls, StdCtrls, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
-  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels;
+  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, MyAccess;
 
 type
   TfrmBrowseInvoice = class(TfrmCxBrowse)
@@ -141,7 +141,7 @@ end;
 function TfrmBrowseInvoice.cekbayar(anomor:string) : integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := 0;
   s:='select inv_isbayar from tinv_hdr where inv_nomor =' + Quot(anomor) ;

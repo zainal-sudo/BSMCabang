@@ -720,6 +720,8 @@ object frmFakturPajak3: TfrmFakturPajak3
         object clperiodeDokPendukung: TcxGridDBColumn
           Caption = 'Periode Dok Pendukung'
           DataBinding.FieldName = 'PeriodeDokPendukung'
+          HeaderAlignmentHorz = taCenter
+          HeaderAlignmentVert = vaCenter
           Width = 139
         end
         object clreferensi: TcxGridDBColumn

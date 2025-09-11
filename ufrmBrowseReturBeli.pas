@@ -17,7 +17,7 @@ uses
   cxDataStorage, cxEdit, DB, cxDBData, FMTBcd, Provider, SqlExpr, ImgList,
   ComCtrls, StdCtrls, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
-  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels;
+  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, MyAccess;
 
 type
   TfrmBrowseReturBeli = class(TfrmCxBrowse)
@@ -137,7 +137,7 @@ end;
 function TfrmBrowseReturBeli.cekbayar(anomor:String): Boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 
 begin
   Result :=False;

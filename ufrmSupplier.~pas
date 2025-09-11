@@ -11,7 +11,6 @@ uses
 type
   TfrmSupplier = class(TForm)
     AdvPanel1: TAdvPanel;
-    StatusBar1: TStatusBar;
     Label2: TLabel;
     edtKode: TAdvEdit;
     Label3: TLabel;
@@ -57,6 +56,7 @@ type
     procedure cxButton1Click(Sender: TObject);
     procedure cxButton8Click(Sender: TObject);
     procedure cxButton2Click(Sender: TObject);
+    procedure edtKodeExit(Sender: TObject);
 
   private
     FFLAGEDIT: Boolean;
@@ -81,7 +81,9 @@ uses MAIN,uModuleConnection,uFrmbantuan,Ulib, DB;
 procedure TfrmSupplier.refreshdata;
 begin
   FID:='';
-  edtKode.Text := getmaxkode;
+  edtKode.Text := '';
+  edtKode.Enabled := True;
+
   edtNama.Clear;
   edtKota.Clear;
   edtAlamat.Clear;
@@ -95,7 +97,7 @@ begin
   edtrekening.clear;
   edtatasnama.clear;
   edtcabang.clear;
-  edtNama.SetFocus;
+  edtKode.SetFocus;
 end;
 procedure TfrmSupplier.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
@@ -110,6 +112,11 @@ begin
   if Key= VK_F10 then
   begin
     try
+      if edtKode.Text = '' then
+       begin
+         MessageDlg('Kode Belum diisi',mtWarning, [mbOK],0);
+         Exit;
+       end;
       if (FLAGEDIT) and ( not cekedit(frmMenu.KDUSER,self.name)) then
         begin
            MessageDlg('Anda tidak berhak Edit di Modul ini',mtWarning, [mbOK],0);
@@ -120,7 +127,7 @@ begin
            MessageDlg('Anda tidak berhak Insert di Modul ini',mtWarning, [mbOK],0);;
            Exit;
         End;
-      
+
       if MessageDlg('Yakin ingin simpan ?',mtCustom,
                                   [mbYes,mbNo], 0)= mrNo
       then Exit ;
@@ -129,10 +136,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -145,7 +152,7 @@ end;
 procedure TfrmSupplier.loaddata(akode:string) ;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   s:= 'select * from tsupplier where sup_kode = ' + Quot(akode) ;
 tsql := xOpenQuery(s,frmMenu.conn);
@@ -155,6 +162,7 @@ begin
     if not Eof then
     begin
       FLAGEDIT := True;
+      edtKode.Enabled:=False;
       edtNama.Text := fieldbyname('sup_nama').AsString;
       edtkota.Text := fieldbyname('sup_kota').AsString;
       edtAlamat.Text := fieldbyname('sup_alamat').AsString;
@@ -204,7 +212,7 @@ if FLAGEDIT then
     + ' where sup_kode = ' + quot(FID) + ';'
 else
 begin
-  edtKode.Text := getmaxkode;
+//  edtKode.Text := getmaxkode;
   s :=  ' insert into tsupplier '
              + ' (sup_kode,sup_nama,sup_kota,sup_alamat,sup_telp,sup_fax,sup_cp,sup_email,sup_top,'
              + ' sup_rekening,sup_bank,sup_cabang,sup_atasnama,date_create,user_create) '
@@ -225,7 +233,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 end;
 
@@ -258,6 +267,11 @@ end;
 procedure TfrmSupplier.cxButton1Click(Sender: TObject);
 begin
     try
+      if edtKode.Text = '' then
+       begin
+         MessageDlg('Kode Belum diisi',mtWarning, [mbOK],0);
+         Exit;
+       end;
       if (FLAGEDIT) and ( not cekedit(frmMenu.KDUSER,self.name)) then
         begin
            MessageDlg('Anda tidak berhak Edit di Modul ini',mtWarning, [mbOK],0);
@@ -277,10 +291,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmSupplier.cxButton8Click(Sender: TObject);
@@ -291,6 +305,12 @@ end;
 procedure TfrmSupplier.cxButton2Click(Sender: TObject);
 begin
    try
+     if edtKode.Text = '' then
+       begin
+         MessageDlg('Kode Belum diisi',mtWarning, [mbOK],0);
+         Exit;
+       end;
+
       if (FLAGEDIT) and ( not cekedit(frmMenu.KDUSER,self.name)) then
         begin
            MessageDlg('Anda tidak berhak Edit di Modul ini',mtWarning, [mbOK],0);
@@ -310,11 +330,16 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
+end;
+
+procedure TfrmSupplier.edtKodeExit(Sender: TObject);
+begin
+loaddata(edtkode.Text);
 end;
 
 end.

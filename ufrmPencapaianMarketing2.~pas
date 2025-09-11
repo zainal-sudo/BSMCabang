@@ -1,4 +1,4 @@
-unit ufrmPencapaianMarketing;
+unit ufrmPencapaianMarketing2;
 
 interface
 
@@ -131,7 +131,7 @@ end;
 procedure TfrmPencapaianMarketing.loaddata;
 var
   sfilter,s,ss: string;
-  tsql,tsql2 : TSQLQuery;
+  tsql,tsql2 : TmyQuery;
   i:Integer;
 
 begin

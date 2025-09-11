@@ -1,6 +1,6 @@
 inherited frmBrowseCostCenter: TfrmBrowseCostCenter
-  Left = 304
-  Top = 157
+  Left = 618
+  Top = 180
   Caption = 'Browse CostCenter'
   OldCreateOrder = True
   PixelsPerInch = 96

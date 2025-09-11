@@ -62,6 +62,7 @@ type
     procedure simpandata;
     procedure loaddataall(akode : string);
     procedure doslipmutasi(anomor : string );
+    procedure doslipmutasi2(anomor : string );
     function GetCDS: TClientDataSet;
 
     function getmaxkode:string;
@@ -200,7 +201,8 @@ begin
          + QuotD(cGetServerTime,True) + ','
          + Quot(frmMenu.KDUSER)+')';
    end;
-   xExecQuery(s,frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
    tt := TStringList.Create;
    s:= ' delete from tmutcab_dtl '
       + ' where  mutcd_mutc_nomor =' + quot(FID) ;
@@ -231,7 +233,8 @@ while not CDS.Eof do
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -240,7 +243,7 @@ end;
 procedure TfrmMutasiCabang.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
   if akode = '' then
@@ -332,19 +335,45 @@ begin
   end;
 end;
 
+procedure TfrmMutasiCabang.doslipmutasi2(anomor : string );
+var
+  s: string ;
+  ftsreport : TTSReport;
+begin
+  insertketampungan(anomor);
+  ftsreport := TTSReport.Create(nil);
+  try
+    ftsreport.Nama := 'mutasi4';
+
+          s:= ' select '
+       + ' *,(select cbg_nama from tcabang where cbg_kode=a.mutc_cbg_asal) asal ,'
+       + ' (select cbg_nama from tcabang where cbg_kode=a.mutc_cbg_tujuan) tujuan'
+       + ' from tmutcab_hdr a '
+       + ' left join  tmutcab_dtl b on mutc_nomor=mutcd_mutc_nomor '
+       + ' LEFT join tgudang z on z.gdg_kode=b.mutcd_gdg_kode '
+       + ' left join tbarang c on b.mutcd_brg_kode=c.brg_kode '
+       + ' where '
+       + ' a.mutc_nomor=' + quot(anomor);
+    ftsreport.AddSQL(s);
+    ftsreport.ShowReport;
+  finally
+     ftsreport.Free;
+  end;
+end;
 
 
 procedure TfrmMutasiCabang.insertketampungan(anomor:string);
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   a:=14;
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   s := 'select mutcd_BRG_kode,mutcd_expired from tmutcab_dtl where mutcd_mutc_nomor =' + Quot(anomor) ;
   tsql := xOpenQuery(s,frmMenu.conn) ;
   x:=0;
@@ -388,12 +417,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 
@@ -534,10 +564,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -567,10 +597,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 
@@ -677,7 +707,7 @@ end;
 procedure TfrmMutasiCabang.bantuansku;
   var
     s:string;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     i:Integer;
 begin
     sqlbantuan := 'select brg_kode Sku, mst_expired_date Expired,brg_nama NamaBarang, brg_satuan Satuan,sum(mst_stok_in-mst_stok_out) stok from Tbarang '
@@ -750,7 +780,7 @@ procedure TfrmMutasiCabang.clQTYPropertiesValidate(Sender: TObject;
   i:integer;
   aqtystok:integer;
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   aqtystok:=0;
   s:='select sum(mst_stok_in-mst_stok_out) stok from Tbarang '

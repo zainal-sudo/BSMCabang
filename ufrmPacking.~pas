@@ -59,13 +59,10 @@ type
     cxGrid: TcxGrid;
     cxGrdMain: TcxGridDBTableView;
     cxGridDBColumn1: TcxGridDBColumn;
-
-
-
-    cxGridDBColumn5: TcxGridDBColumn;
-    cxGridDBColumn8: TcxGridDBColumn;
-    cxGridDBColumn9: TcxGridDBColumn;
-    cxGridDBColumn10: TcxGridDBColumn;
+    clExpired: TcxGridDBColumn;
+    clQty: TcxGridDBColumn;
+    clHarga: TcxGridDBColumn;
+    clNilai: TcxGridDBColumn;
     cxGridDBTableView2: TcxGridDBTableView;
     cxGridLevel1: TcxGridLevel;
     edtJml: TAdvEdit;
@@ -91,7 +88,6 @@ type
       ARecord: TcxCustomGridRecord; var AText: String);
     procedure cxLookupGudangAsalPropertiesEditValueChanged(
       Sender: TObject);
-    procedure clQTYPropertiesEditValueChanged(Sender: TObject);
     procedure clSKUPropertiesButtonClick(Sender: TObject;
       AButtonIndex: Integer);
     procedure bantuansku;
@@ -201,7 +197,8 @@ begin
          + QuotD(cGetServerTime,True) + ','
          + Quot(frmMenu.KDUSER)+')';
    end;
-   xExecQuery(s,frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
    tt := TStringList.Create;
    s:= ' delete from tpack_dtl '
       + ' where packd_pack_nomor =' + quot(FID) ;
@@ -231,7 +228,8 @@ while not CDS.Eof do
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
          end;
       finally
         tt.Free;
@@ -267,14 +265,15 @@ end;
 procedure TfrmPacking.insertketampungan(anomor:String);
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   a:=14;
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   s := 'select packd_BRG_kode,packd_expired from tpack_dtl where packd_pack_nomor =' + Quot(anomor) ;
   tsql := xOpenQuery(s,frmMenu.conn) ;
   x:=0;
@@ -318,12 +317,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 
@@ -459,10 +459,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -490,10 +490,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 
@@ -566,27 +566,6 @@ begin
 //initViewSKU;
 end;
 
-procedure TfrmPacking.clQTYPropertiesEditValueChanged(
-  Sender: TObject);
-  var
-    i:integer;
-    lVal : double;
-begin
- If CDS.State <> dsEdit then
-   CDS.Edit;
-  cxGrdMain.DataController.Post;
-   i := cxGrdMain.DataController.FocusedRecordIndex;
-  cxGrdMain.DataController.Values[i, clQTYkoreksi.Index] := cxGrdMain.DataController.Values[i, clfisik.Index]-cxGrdMain.DataController.Values[i, clstoksystem.Index];
-
-  lVal := cxGrdMain.DataController.Values[i, clQTYkoreksi.Index] *  cxGrdMain.DataController.Values[i, clHarga.Index];
-
-  If CDS.State <> dsEdit then CDS.Edit;
-  CDS.FieldByName('qty').AsFloat := cxGrdMain.DataController.Values[i, clfisik.Index]-cxGrdMain.DataController.Values[i, clstoksystem.Index];
-  CDS.FieldByName('nilai').AsFloat := lVal;
-  CDS.Post;
-
-end;
-
 procedure TfrmPacking.clSKUPropertiesButtonClick(Sender: TObject;
   AButtonIndex: Integer);
 begin
@@ -597,7 +576,7 @@ end;
 procedure TfrmPacking.bantuansku;
   var
     s:string;
-    tsql2,tsql:TSQLQuery;
+    tsql2,tsql:TmyQuery;
     i:Integer;
 begin
     sqlbantuan := 'select brg_kode Sku, mst_expired_date  Expired,brg_nama NamaBarang, brg_satuan Satuan,sum(mst_stok_in-mst_stok_out) stok from Tbarang '
@@ -679,7 +658,7 @@ end;
 procedure TfrmPacking.Button1Click(Sender: TObject);
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   s:='select brg_kode Kode,brg_nama Nama,brg_satuan Satuan,mst_expired_date Expired,'
       + ' gdg_nama Gudang,sum(mst_stok_in - mst_stok_out) Stok, '
@@ -802,7 +781,7 @@ end;
 procedure TfrmPacking.clExpiredPropertiesEditValueChanged(
   Sender: TObject);
   var
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     s:string;
     i:integer;
 begin

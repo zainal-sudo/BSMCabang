@@ -95,10 +95,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -111,7 +111,7 @@ end;
 procedure TfrmEkspedisi.loaddata(akode:string) ;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   s:= 'SELECT ekspedisi_id, ekspedisi_nama FROM tekspedisi WHERE ekspedisi_id = ' + Quot(akode) ;
 tsql := xOpenQuery(s,frmMenu.conn);
@@ -155,7 +155,8 @@ begin
              + Quot(edtNamaEkspedisi.Text)
              + ');';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 end;
 
@@ -207,10 +208,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmEkspedisi.cxButton8Click(Sender: TObject);
@@ -240,10 +241,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 

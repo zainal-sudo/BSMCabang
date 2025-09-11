@@ -73,7 +73,7 @@ object frmListTransaksiHarian2: TfrmListTransaksiHarian2
           Top = 1
           Width = 1016
           Height = 559
-          ActivePage = TabSheet2
+          ActivePage = TabSheet1
           Align = alClient
           TabOrder = 0
           OnChange = cxPageControl1Click
@@ -91,7 +91,6 @@ object frmListTransaksiHarian2: TfrmListTransaksiHarian2
               Font.Name = 'Verdana'
               Font.Style = []
               ParentFont = False
-              PopupMenu = PopupMenu1
               TabOrder = 0
               LookAndFeel.Kind = lfOffice11
               object cxGrid1DBTableView1: TcxGridDBTableView
@@ -3654,7 +3653,7 @@ object frmListTransaksiHarian2: TfrmListTransaksiHarian2
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -3714,12 +3713,8 @@ object frmListTransaksiHarian2: TfrmListTransaksiHarian2
       BuiltInReportLink = True
     end
   end
-  object PopupMenu1: TPopupMenu
-    Left = 120
-    Top = 217
-    object LihatFakturPenjualan1: TMenuItem
-      Caption = 'Lihat Detail'
-      OnClick = LihatFakturPenjualan1Click
-    end
+  object sqlqry1: TMyQuery
+    Left = 480
+    Top = 296
   end
 end

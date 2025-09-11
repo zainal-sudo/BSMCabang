@@ -341,7 +341,7 @@ object frmJurnalUmum: TfrmJurnalUmum
     Left = 0
     Top = 129
     Width = 1162
-    Height = 358
+    Height = 357
     Align = alClient
     TabOrder = 2
     UseDockManager = True
@@ -406,7 +406,7 @@ object frmJurnalUmum: TfrmJurnalUmum
       Left = 1
       Top = 1
       Width = 1160
-      Height = 356
+      Height = 355
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -419,6 +419,7 @@ object frmJurnalUmum: TfrmJurnalUmum
       LookAndFeel.Kind = lfUltraFlat
       LookAndFeel.NativeStyle = False
       object cxGrdMain: TcxGridDBTableView
+        NavigatorButtons.ConfirmDelete = False
         DataController.Filter.Options = [fcoCaseInsensitive]
         DataController.Summary.DefaultGroupSummaryItems = <>
         DataController.Summary.FooterSummaryItems = <
@@ -509,6 +510,7 @@ object frmJurnalUmum: TfrmJurnalUmum
         end
       end
       object cxGrdDetail: TcxGridDBTableView
+        NavigatorButtons.ConfirmDelete = False
         DataController.Summary.DefaultGroupSummaryItems = <>
         DataController.Summary.FooterSummaryItems = <>
         DataController.Summary.SummaryGroups = <>
@@ -527,7 +529,7 @@ object frmJurnalUmum: TfrmJurnalUmum
   end
   object AdvPanel4: TAdvPanel
     Left = 0
-    Top = 487
+    Top = 486
     Width = 1162
     Height = 35
     Align = alBottom

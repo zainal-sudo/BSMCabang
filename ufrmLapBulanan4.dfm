@@ -4072,7 +4072,7 @@ object frmLapBulanan4: TfrmLapBulanan4
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -4157,5 +4157,9 @@ object frmLapBulanan4: TfrmLapBulanan4
       Font.Name = 'MS Sans Serif'
       Font.Style = []
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 496
+    Top = 272
   end
 end

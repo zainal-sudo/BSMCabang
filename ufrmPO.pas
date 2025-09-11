@@ -18,7 +18,7 @@ uses
   dxSkinOffice2007Black, dxSkinOffice2007Blue, dxSkinOffice2007Green,
   dxSkinOffice2007Pink, dxSkinOffice2007Silver, dxSkinPumpkin,
   dxSkinSilver, dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008,
-  dxSkinValentine, dxSkinXmas2008Blue;
+  dxSkinValentine, dxSkinXmas2008Blue, MyAccess;
 
 type
   TfrmPO = class(TForm)
@@ -242,10 +242,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmPO.cxButton8Click(Sender: TObject);
@@ -277,10 +277,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -514,7 +514,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
      tt := TStringList.Create;
@@ -545,7 +546,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -592,7 +594,7 @@ end;
 procedure TfrmPO.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
   if akode = '' then
@@ -722,14 +724,15 @@ end;
 procedure TfrmPO.insertketampungan(anomor:string);
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   a:=9;
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   s := 'select POD_brg_kode from tpo_dtl where pod_po_nomor =' + Quot(anomor) ;
   tsql := xOpenQuery(s,frmMenu.conn) ;
   x:=0;
@@ -772,12 +775,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 

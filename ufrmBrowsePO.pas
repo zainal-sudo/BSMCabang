@@ -17,7 +17,7 @@ uses
   cxDataStorage, cxEdit, DB, cxDBData, FMTBcd, Provider, SqlExpr, ImgList,
   ComCtrls, StdCtrls, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
-  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels;
+  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, MyAccess;
 
 type
   TfrmBrowsePO = class(TfrmCxBrowse)
@@ -156,7 +156,8 @@ begin
       then Exit ;
        s:='UPDATE tpo_hdr set po_isclosed=1 '
         + ' where po_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
      end
      else
      begin
@@ -165,23 +166,24 @@ begin
       then Exit ;
        s:='UPDATE tpo_hdr set po_isclosed=0 '
         + ' where po_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
      end;
 
 
    except
      MessageDlg('Gagal Closed',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
    btnRefreshClick(self);
 end;
 
 function TfrmBrowsePO.cekreceipt(anomor:string) : integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := 0;
   s:='select po_status_rec from tpo_hdr where po_nomor =' + Quot(anomor) ;

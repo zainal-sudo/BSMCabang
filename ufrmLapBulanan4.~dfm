@@ -1,10 +1,10 @@
 object frmLapBulanan4: TfrmLapBulanan4
-  Left = -188
+  Left = 137
   Top = 90
   AutoScroll = False
   Caption = 'Lap Bulanan New'
-  ClientHeight = 631
-  ClientWidth = 1525
+  ClientHeight = 590
+  ClientWidth = 1162
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -24,8 +24,8 @@ object frmLapBulanan4: TfrmLapBulanan4
   object tscrlbx1: TTeScrollBox
     Left = 0
     Top = 28
-    Width = 1525
-    Height = 565
+    Width = 1162
+    Height = 524
     HorzScrollBar.Range = 1020
     VertScrollBar.Range = 500
     Align = alClient
@@ -35,8 +35,8 @@ object frmLapBulanan4: TfrmLapBulanan4
     object TePanel4: TTePanel
       Left = 0
       Top = 0
-      Width = 1521
-      Height = 561
+      Width = 1158
+      Height = 520
       Align = alClient
       Color = clWhite
       TabOrder = 0
@@ -62,8 +62,8 @@ object frmLapBulanan4: TfrmLapBulanan4
       object TePanel1: TTePanel
         Left = 1
         Top = 38
-        Width = 1519
-        Height = 522
+        Width = 1156
+        Height = 481
         Align = alClient
         Caption = 'TePanel1'
         TabOrder = 0
@@ -71,8 +71,8 @@ object frmLapBulanan4: TfrmLapBulanan4
         object cxGrid1: TcxGrid
           Left = 1
           Top = 1
-          Width = 1517
-          Height = 520
+          Width = 1154
+          Height = 479
           Align = alClient
           TabOrder = 0
           object cxGrid1DBBandedTableView1: TcxGridDBBandedTableView
@@ -672,7 +672,7 @@ object frmLapBulanan4: TfrmLapBulanan4
       object TePanel2: TTePanel
         Left = 1
         Top = 1
-        Width = 1519
+        Width = 1156
         Height = 37
         Align = alTop
         Color = clMoneyGreen
@@ -693,7 +693,7 @@ object frmLapBulanan4: TfrmLapBulanan4
           Caption = 'Tahun'
         end
         object btnRefresh: TcxButton
-          Left = 1431
+          Left = 1068
           Top = 1
           Width = 87
           Height = 35
@@ -803,7 +803,7 @@ object frmLapBulanan4: TfrmLapBulanan4
   object TePanel3: TTePanel
     Left = 0
     Top = 0
-    Width = 1525
+    Width = 1162
     Height = 28
     Align = alTop
     Alignment = taLeftJustify
@@ -821,15 +821,15 @@ object frmLapBulanan4: TfrmLapBulanan4
   end
   object TePanel5: TTePanel
     Left = 0
-    Top = 593
-    Width = 1525
+    Top = 552
+    Width = 1162
     Height = 38
     Align = alBottom
     Color = clMoneyGreen
     TabOrder = 4
     ThemeObject = 'default'
     object cxButton8: TcxButton
-      Left = 1437
+      Left = 1074
       Top = 1
       Width = 87
       Height = 36

@@ -19,7 +19,7 @@ uses
   dxSkinOffice2007Black, dxSkinOffice2007Blue, dxSkinOffice2007Green,
   dxSkinOffice2007Pink, dxSkinOffice2007Silver, dxSkinPumpkin, dxSkinSeven,
   dxSkinSharp, dxSkinSilver, dxSkinSpringTime, dxSkinStardust,
-  dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue;
+  dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue, MyAccess;
 
 type
   TfrmBayarCustomer = class(TForm)
@@ -289,10 +289,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmBayarCustomer.cxButton8Click(Sender: TObject);
@@ -327,10 +327,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -508,7 +508,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
      tt := TStringList.Create;
@@ -536,7 +537,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -699,7 +701,7 @@ end;
 procedure TfrmBayarCustomer.loaddataInvoice(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
 
@@ -778,7 +780,7 @@ end;
 procedure TfrmBayarCustomer.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtyterima : Integer;

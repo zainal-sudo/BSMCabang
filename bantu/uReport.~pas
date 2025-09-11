@@ -16,14 +16,14 @@ type
   private
     FDataSetProvider: TDataSetProvider;
     FQ: TClientDataSet;
-    FSQLQuery: TSQLQuery;
+    FSQLQuery: TMyQuery;
   public
     constructor Create(aCollection : TCollection); override;
     destructor Destroy; override;
     property DataSetProvider: TDataSetProvider read FDataSetProvider write
         FDataSetProvider;
     property Q: TClientDataSet read FQ write FQ;
-    property SQLQuery: TSQLQuery read FSQLQuery write FSQLQuery;
+    property SQLQuery: TMyQuery read FSQLQuery write FSQLQuery;
   end;
 
   TSQLQueriyItems = class(TCollection)
@@ -94,7 +94,7 @@ begin
   DataSetProvider         := TDataSetProvider.Create(Application);
   FSQLQuery               := TSQLQuery.Create(Application);
 
-  SQLQuery.SQLConnection  := frmmenu.conn;
+  SQLQuery.Connection  := frmmenu.conn;
   DataSetProvider.DataSet := SQLQuery;
 
   Q.SetProvider(DataSetProvider);
@@ -149,7 +149,7 @@ begin
   for i := 0 to Queries.Count - 1 do
   begin
     try
-       Queries[i].Q.Active := True;
+        Queries[i].Q.Active := True;
 //      Queries[i].Q.FetchAll;
     except
        raise;

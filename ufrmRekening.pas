@@ -8,7 +8,7 @@ uses
   cxLookAndFeelPainters, cxButtons,StrUtils, cxGraphics, cxLookAndFeels,
   dxSkinsCore, dxSkinsDefaultPainters, cxControls, cxContainer, cxEdit,
   cxTextEdit, cxMaskEdit, cxDropDownEdit, cxLookupEdit, cxDBLookupEdit,
-  cxDBExtLookupComboBox, DBClient;
+  cxDBExtLookupComboBox, DBClient, MyAccess;
 
 type
   TfrmRekening = class(TForm)
@@ -103,10 +103,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -119,7 +119,7 @@ end;
 procedure TfrmRekening.loaddata(akode:string) ;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   s:= 'select rek_kode,rek_nama,rek_kol_id,rek_isaktif from trekening where rek_kode = ' + Quot(akode) ;
 tsql := xOpenQuery(s,frmMenu.conn);
@@ -178,7 +178,8 @@ begin
              + IntToStr(isaktif)
              + ');';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 end;
 
@@ -227,10 +228,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmRekening.cxButton8Click(Sender: TObject);
@@ -260,10 +261,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -291,7 +292,7 @@ end;
 function TfrmRekening.cekKode(akode:string):boolean;
 var
   s:string;
-  tsql:tsqlquery;
+  tsql:TmyQuery;
 begin
   Result := False;
   s:='select * from trekening where rek_kode='+ quot(akode);

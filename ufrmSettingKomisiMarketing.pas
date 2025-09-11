@@ -10,7 +10,8 @@ uses
   DBClient, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage,
   cxEdit, DB, cxDBData, cxSpinEdit, cxButtonEdit, cxTextEdit, cxGridLevel,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxClasses,
-  cxControls, cxGridCustomView, cxGrid, AdvEdBtn, cxCurrencyEdit, AdvCombo;
+  cxControls, cxGridCustomView, cxGrid, AdvEdBtn, cxCurrencyEdit, AdvCombo,
+  MyAccess;
 
 type
   TfrmSettingKomisiMarketing = class(TForm)
@@ -135,10 +136,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -151,7 +152,7 @@ end;
 procedure TfrmSettingKomisiMarketing.loaddata(akode:string) ;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
   s:= 'select kode_grouppf,nama_grouppf,hna_grouppf,ifnull(tm_target,0) qty,ifnull(tm_target,0)*hna_grouppf total from '
@@ -224,7 +225,8 @@ begin
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -260,10 +262,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmSettingKomisiMarketing.cxButton8Click(Sender: TObject);
@@ -293,10 +295,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 procedure TfrmSettingKomisiMarketing.FormShow(Sender: TObject);

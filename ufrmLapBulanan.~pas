@@ -195,7 +195,7 @@ ssql:= ' select *,cast(0 as decimal(5,2)) pfratio, ifnull(realisasi,0)-ifnull(ko
         + ' (ifnull(realisasi,0)-ifnull(kontrak,0)-ifnull(biaya_promosi,0)-ifnull(retur,0))/targetbulanini *100 persenbulanini,'
         + ' riilsdbulanini/targetsdbulanini*100 persensdbulanini ,'
         + ' (select '
-        + ' sum((100-fpd_discpr)*(fpd_harga*fpd_qty)/100*if(fp_istax=1,if(fp_tanggal<'2021/04/01',1.1,1.11),1)) Nilai '
+        + ' sum((100-fpd_discpr)*(fpd_harga*fpd_qty)/100*if(fp_istax=1,if(fp_tanggal<"2022/04/01",1.1,1.11),1)) Nilai '
         + ' from tfp_dtl inner join tfp_hdr on fp_nomor=fpd_fp_nomor '
         + ' inner join tdo_hdr on do_nomor=fp_do_nomor '
         + ' inner join tso_hdr on so_nomor =do_so_nomor '

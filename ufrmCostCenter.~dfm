@@ -23,7 +23,7 @@ object frmCostCenter: TfrmCostCenter
     Left = 0
     Top = 41
     Width = 492
-    Height = 265
+    Height = 283
     Align = alClient
     BevelInner = bvRaised
     Color = clWhite
@@ -224,29 +224,15 @@ object frmCostCenter: TfrmCostCenter
       OnKeyPress = FormKeyPress
     end
   end
-  object StatusBar1: TStatusBar
-    Left = 0
-    Top = 341
-    Width = 492
-    Height = 19
-    Panels = <
-      item
-        Width = 50
-      end
-      item
-        Text = 'F8 : Keluar  ; F10 : Simpan  ; '
-        Width = 50
-      end>
-  end
   object AdvPanel3: TAdvPanel
     Left = 0
-    Top = 306
+    Top = 324
     Width = 492
     Height = 35
     Align = alBottom
     BevelInner = bvRaised
     Color = clWhite
-    TabOrder = 2
+    TabOrder = 1
     UseDockManager = True
     AnchorHint = False
     AutoSize.Enabled = False
@@ -455,7 +441,7 @@ object frmCostCenter: TfrmCostCenter
     Align = alTop
     BevelInner = bvRaised
     Color = clWhite
-    TabOrder = 3
+    TabOrder = 2
     UseDockManager = True
     AnchorHint = False
     AutoSize.Enabled = False

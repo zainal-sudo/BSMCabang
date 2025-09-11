@@ -93,6 +93,8 @@ type
     procedure clQTYPropertiesValidate(Sender: TObject;
       var DisplayValue: Variant; var ErrorText: TCaption;
       var Error: Boolean);
+    procedure doslipBPB(anomor : string );
+    procedure insertketampungan(anomor:string);
   private
     FCDSSupplier: TClientDataset;
     FCDSSKU : TClientDataset;
@@ -123,7 +125,7 @@ var
 const
    NOMERATOR = 'RI';
 implementation
-uses MAIN,uModuleConnection,uFrmbantuan,Ulib;
+uses MAIN,uModuleConnection,uFrmbantuan,Ulib,uReport;
 
 {$R *.dfm}
 
@@ -230,10 +232,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmBPB.cxButton8Click(Sender: TObject);
@@ -265,10 +267,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -451,7 +453,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
      tt := TStringList.Create;
@@ -483,7 +486,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -537,7 +541,7 @@ end;
 procedure TfrmBPB.loaddataPO(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
 
@@ -624,7 +628,7 @@ end;
 procedure TfrmBPB.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtyterima : Integer;
@@ -709,7 +713,7 @@ end;
 function TfrmBPB.getqtyPO(anomor:string;asku:integer): integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result :=0;
   s:='select pod_qty from tpo_dtl where pod_po_nomor ='+Quot(anomor)
@@ -730,7 +734,7 @@ end;
 function TfrmBPB.getstatusexpired(asku:integer): integer;
 var
   s:string  ;
-  tsql:TSQLQuery  ;
+  tsql:TmyQuery  ;
 begin
     Result :=0;
   s:='select brg_isexpired from tbarang where brg_kode ='+inttostr(asku);
@@ -750,7 +754,7 @@ end;
 function TfrmBPB.getqtyterima(anomor:string;asku:integer): integer;
 var
   s:string  ;
-  tsql:TSQLQuery  ;
+  tsql:TmyQuery  ;
 begin
   Result :=0;
   s:='select pod_qty_terima from tpo_dtl where pod_po_nomor ='+Quot(anomor)
@@ -796,5 +800,99 @@ begin
     end;
 
 end;
+
+procedure Tfrmbpb.doslipBPB(anomor : string );
+var
+  s: string ;
+  ftsreport : TTSReport;
+begin
+  insertketampungan(anomor);
+  ftsreport := TTSReport.Create(nil);
+  try
+    ftsreport.Nama := 'BPB';
+
+          s:= ' select '
+       + ' *,if(bpbd_nourut is null ,1000,bpbd_nourut) nourut '
+       + ' from tbpb_hdr '
+       + ' inner join tpo_hdr on po_nomor=bpb_po_nomor'
+       + ' inner join tampung on nomor=bpb_nomor '
+       + ' inner join tsupplier on po_sup_kode=sup_kode '
+       + ' inner join tgudang on gdg_kode=bpb_gdg_kode '
+       + ' left join  tbpb_dtl on bpb_nomor=bpbd_bpb_nomor and tam_nama = bpbd_brg_kode '
+       + ' left join tbarang on bpbd_brg_kode=brg_kode '
+       + ' where '
+       + ' bpb_nomor=' + quot(anomor)
+       + ' order by nourut';
+    ftsreport.AddSQL(s);
+    ftsreport.ShowReport;
+  finally
+     ftsreport.Free;
+  end;
+end;
+
+procedure Tfrmbpb.insertketampungan(anomor:string);
+var
+  s:string;
+  tsql : TmyQuery;
+  a,i,x:integer;
+  tt : TStrings;
+begin
+  a:=14;
+  s:='delete from tampung ';
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
+  s := 'select bpbd_brg_kode from tbpb_dtl where bpbd_bpb_nomor =' + Quot(anomor) ;
+  tsql := xOpenQuery(s,frmMenu.conn) ;
+  x:=0;
+  tt:=TStringList.Create;
+
+    with tsql do
+    begin
+      try
+       while not Eof do
+       begin
+         x:=x+1;
+          s :=   'insert  into tampung '
+                  + '(nomor,tam_nama'
+                  + ')values ('
+                  + Quot(anomor) + ','
+                  + Quot(Fields[0].Asstring)
+                  + ');';
+          tt.Append(s);
+        Next
+       end;
+       finally
+          free;
+      end;
+    end;
+
+
+  for i := x to a do
+   begin
+
+
+        s :='insert  into tampung '
+            + '(nomor,tam_nama'
+            + ')values ('
+            + Quot(anomor) + ','
+            + Quot('-')
+            + ');';
+        tt.Append(s);
+
+   end;
+   try
+    for i:=0 to tt.Count -1 do
+    begin
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
+    end;
+  finally
+    tt.Free;
+  end;
+    
+
+end;
+
 
 end.

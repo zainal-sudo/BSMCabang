@@ -262,6 +262,7 @@ object frmPencairanGiro: TfrmPencairanGiro
       Date = 42648.237043148150000000
       Time = 42648.237043148150000000
       TabOrder = 1
+      OnChange = dtTanggalChange
       OnKeyPress = FormKeyPress
     end
     object dttanggalcair: TDateTimePicker

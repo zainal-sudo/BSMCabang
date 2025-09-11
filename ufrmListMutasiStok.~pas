@@ -216,7 +216,7 @@ begin
         ds3.open;
 
 //
-        Skolom :='Kode,Nama,Kategori,Hbeli,_Awal,_in,_out,_Akhir';
+        Skolom :='Kode,Nama,Kategori,Hbeli,_Awal,V_awal,_in,V_in,_out,V_out,_Akhir,V_Akhir';
         QueryToDBGrid(cxGrid1DBTableView1, s,skolom ,ds2);
            cxGrid1DBTableView1.Columns[0].MinWidth := 60;
            cxGrid1DBTableView1.Columns[1].MinWidth := 60;
@@ -237,8 +237,8 @@ begin
 
         end;
          Label4.Caption := IntToStr(ds3.RecordCount);
-       if frmmenu.KDUSER <> 'FINANCE' then
-          cxGrid1DBTableView1.Columns[3].Visible := False;
+//       if frmmenu.KDUSER <> 'FINANCE' then
+//          cxGrid1DBTableView1.Columns[3].Visible := False;
 
 //  hitung;
 //          TcxDBPivotHelper(cxPivot).LoadFromCDS(ds3);

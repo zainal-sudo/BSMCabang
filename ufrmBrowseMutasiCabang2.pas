@@ -147,18 +147,19 @@ begin
     try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
       end;
    except
      ShowMessage('gagal import');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
 
-    xCommit(frmMenu.conn);
+    
     ShowMessage('Import data berhasil');
 
   end;

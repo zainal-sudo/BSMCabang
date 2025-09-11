@@ -715,6 +715,7 @@ object frmSetingPacking: TfrmSetingPacking
         object clQty: TcxGridDBColumn
           DataBinding.FieldName = 'Qty'
           PropertiesClassName = 'TcxCurrencyEditProperties'
+          Properties.DecimalPlaces = 4
           Properties.DisplayFormat = ',0.0000;(,0.0000)'
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter

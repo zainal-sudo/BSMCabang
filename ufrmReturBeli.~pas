@@ -235,10 +235,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmReturBeli.cxButton8Click(Sender: TObject);
@@ -270,10 +270,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -439,7 +439,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
      tt := TStringList.Create;
    s:= ' delete from tret_dtl '
@@ -471,7 +472,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -529,7 +531,7 @@ end;
 procedure TfrmReturBeli.bantuansku;
   var
     s:string;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     i:Integer;
 begin
     sqlbantuan := 'select brg_kode Sku, mst_expired_date Expired,brg_nama NamaBarang, brg_satuan Satuan,sum(mst_stok_in-mst_stok_out) stok from Tbarang '
@@ -594,7 +596,7 @@ end;
 procedure TfrmReturBeli.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtyterima : Integer;
@@ -683,8 +685,8 @@ begin
   asubtotal := asubtotal - cStrToFloat(edtDiscFaktur.Text);
   if chkPajak.Checked then
   begin
-    edtTotal.Text :=FloatToStr(asubtotal*1.1);
-    edtPPN.Text := FloatToStr(asubtotal *0.1);
+    edtTotal.Text :=FloatToStr(asubtotal*getangkappn(dtTanggal.DateTime));
+    edtPPN.Text := FloatToStr(asubtotal *getangkappn2(dtTanggal.DateTime));
   end
   else
   begin
@@ -742,7 +744,7 @@ procedure TfrmReturBeli.clQTYPropertiesValidate(Sender: TObject;
  var
   aqtyinvoice:integer;
   s:string;
-  tsql:tsqlquery;
+  tsql:TmyQuery;
   i:integer;
 begin
   aqtyinvoice := 0;
@@ -799,14 +801,15 @@ end;
 procedure TfrmReturBeli.insertketampungan(anomor:string);
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   a:=9;
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   s := 'select retd_brg_kode from tret_dtl where retd_ret_nomor =' + Quot(anomor) ;
   tsql := xOpenQuery(s,frmMenu.conn) ;
   x:=0;
@@ -849,12 +852,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 

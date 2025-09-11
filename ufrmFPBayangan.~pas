@@ -267,10 +267,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmFPBayangan.cxButton8Click(Sender: TObject);
@@ -305,10 +305,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -486,7 +486,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
      tt := TStringList.Create;
    s:= ' delete from tfp_dtl_bayangan '
@@ -522,7 +523,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -568,7 +570,7 @@ end;
 procedure TfrmFPBayangan.loaddataDO(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
 
@@ -656,7 +658,7 @@ end;
 procedure TfrmFPBayangan.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtyterima : Integer;
@@ -838,31 +840,31 @@ var
   i:integer;
   aqtykurang,aqtylain:integer;
 begin
-        for i := 0 to cxGrdMain.DataController.RecordCount-1 do
-    begin
-      If (cVarToInt(cxGrdMain.DataController.Values[i, clSKU.Index]) = (cVarToInt(cxGrdMain.DataController.Values[cxGrdMain.DataController.FocusedRecordIndex, clSKU.Index])))
-      and (cxGrdMain.DataController.FocusedRecordIndex <> i) then
-      begin
-        aqtylain  := aqtylain + cVarToInt(cxGrdMain.DataController.Values[i, clQTY.Index]);
-      end;
-      If (cVarToInt(cxGrdMain.DataController.Values[i, clSKU.Index]) = (cVarToInt(cxGrdMain.DataController.Values[cxGrdMain.DataController.FocusedRecordIndex, clSKU.Index]))) then
-      begin
-        aqtykurang :=aqtykurang+ cVarToInt(cxGrdMain.DataController.Values[i, clKurang.Index]);
-      end;
-    end;
-    if cVarToInt(DisplayValue)+aqtylain > aqtykurang then
-    begin
-
-     error := true;
-        ErrorText :='Qty melebihi qty kurang';
-        exit;
-    end;
+//        for i := 0 to cxGrdMain.DataController.RecordCount-1 do
+//    begin
+//      If (cVarToInt(cxGrdMain.DataController.Values[i, clSKU.Index]) = (cVarToInt(cxGrdMain.DataController.Values[cxGrdMain.DataController.FocusedRecordIndex, clSKU.Index])))
+//      and (cxGrdMain.DataController.FocusedRecordIndex <> i) then
+//      begin
+//        aqtylain  := aqtylain + cVarToInt(cxGrdMain.DataController.Values[i, clQTY.Index]);
+//      end;
+//      If (cVarToInt(cxGrdMain.DataController.Values[i, clSKU.Index]) = (cVarToInt(cxGrdMain.DataController.Values[cxGrdMain.DataController.FocusedRecordIndex, clSKU.Index]))) then
+//      begin
+//        aqtykurang :=aqtykurang+ cVarToInt(cxGrdMain.DataController.Values[i, clKurang.Index]);
+//      end;
+//    end;
+//    if cVarToInt(DisplayValue)+aqtylain > aqtykurang then
+//    begin
+//
+//     error := true;
+//        ErrorText :='Qty melebihi qty kurang';
+//        exit;
+//    end;
 
 end;
 procedure TfrmFPBayangan.chkDPClick(Sender: TObject);
 var
   s:string;
-  tsql :TSQLQuery ;
+  tsql :TmyQuery ;
   adp,ainvdp :double;
   anomorso :string;
 begin
@@ -910,7 +912,7 @@ end;
 procedure TfrmFPBayangan.chkCNClick(Sender: TObject);
 var
   s:string;
-  tsql :TSQLQuery ;
+  tsql :TmyQuery ;
   acn : Double;
   apotong : double;
 
@@ -1013,14 +1015,15 @@ end;
 procedure TfrmFPBayangan.insertketampungan(anomor:string);
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   a:=9;
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   s := 'select fpd_brg_kode,fpd_expired from tfp_dtl_bayangan where fpd_fp_nomor =' + Quot(anomor) ;
   tsql := xOpenQuery(s,frmMenu.conn) ;
   x:=0;
@@ -1064,12 +1067,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 
@@ -1077,7 +1081,7 @@ end;
 procedure TfrmFPBayangan.doslip2(anomor : string );
 var
   s: string ;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   anamabarang,TERBILANG : String;
   anilaipiutang:double;
@@ -1303,16 +1307,16 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 function TfrmFPBayangan.gettop(akode:String):integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select cus_top from tcustomer where cus_kode='+ Quot(akode) ;
@@ -1331,7 +1335,7 @@ end;
 function TfrmFPBayangan.cariNomor(anomor:string): Boolean;
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   s := 'select * from tfp_hdr_bayangan where fp_nomor='+quot(anomor);
   tsql := xOpenQuery(s,frmMenu.conn);

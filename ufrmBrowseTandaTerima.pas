@@ -18,7 +18,7 @@ uses
   ComCtrls, StdCtrls, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
   cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, frxClass,
-  frxDMPExport;
+  frxDMPExport, MyAccess;
 
 type
   TfrmBrowseTandaTerima = class(TfrmCxBrowse)
@@ -141,7 +141,7 @@ end;
 function TfrmBrowseTandaTerima.cekinvoice(anomor:string) : integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := 0;
   s:='select tt_isclosed from ttt_hdr where tt_nomor =' + Quot(anomor) ;
@@ -185,27 +185,29 @@ begin
       then Exit ;
        s:='delete from ttt_dtl '
         + ' where ttd_tt_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
        s:='delete from ttt_hdr '
         + ' where tt_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
       CDSMaster.Delete;
    except
      MessageDlg('Gagal Hapus',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 
 end;
 
 procedure TfrmBrowseTandaTerima.UpdateStatusKembali1Click(Sender: TObject);
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
    If CDSMaster.FieldByname('Nomor').IsNull then exit;
    If CDSMaster.FieldByname('kembali').AsString='0' then
@@ -223,8 +225,9 @@ begin
      CDSMaster.Post;
    end;
 
-   xExecQuery(s,frmMenu.conn);
-   xCommit(frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+   
    ShowMessage('Update Status Berhasil');
 
 

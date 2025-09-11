@@ -580,7 +580,7 @@ object frmPacking: TfrmPacking
           item
             Format = '0,00;(0,00)'
             Kind = skSum
-            Column = cxGridDBColumn10
+            Column = clNilai
           end
           item
             Format = ',0;(,0)'
@@ -641,7 +641,7 @@ object frmPacking: TfrmPacking
           Options.Focusing = False
           Width = 61
         end
-        object cxGridDBColumn5: TcxGridDBColumn
+        object clExpired: TcxGridDBColumn
           Caption = 'Expired'
           DataBinding.FieldName = 'expired'
           PropertiesClassName = 'TcxDateEditProperties'
@@ -650,7 +650,7 @@ object frmPacking: TfrmPacking
           HeaderAlignmentVert = vaCenter
           Width = 122
         end
-        object cxGridDBColumn8: TcxGridDBColumn
+        object clQty: TcxGridDBColumn
           DataBinding.FieldName = 'Qty'
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
@@ -658,15 +658,14 @@ object frmPacking: TfrmPacking
           Options.Focusing = False
           Width = 67
         end
-        object cxGridDBColumn9: TcxGridDBColumn
+        object clHarga: TcxGridDBColumn
           DataBinding.FieldName = 'Harga'
           PropertiesClassName = 'TcxCurrencyEditProperties'
-          Properties.OnEditValueChanged = clQTYPropertiesEditValueChanged
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
           Width = 85
         end
-        object cxGridDBColumn10: TcxGridDBColumn
+        object clNilai: TcxGridDBColumn
           DataBinding.FieldName = 'Nilai'
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter

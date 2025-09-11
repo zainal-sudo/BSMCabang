@@ -211,7 +211,6 @@ object frmTandaTerima: TfrmTandaTerima
       StyleFocused.LookAndFeel.Kind = lfFlat
       StyleHot.LookAndFeel.Kind = lfFlat
       TabOrder = 0
-      OnExit = cxLookupCustomerExit
       OnKeyPress = FormKeyPress
       Width = 288
     end

@@ -88,8 +88,8 @@ begin
   + ' inner join tfp_dtl on fpd_fp_nomor=fp_nomor and fpd_brg_kode=bpd_brg_kode '
   + ' set fpd_bp_rp=bpd_rupiah,fpd_bp_pr=bpd_persen '
   + ' where month(fp_tanggal)='+inttostr(cbbBulan.ItemIndex+1)+' and year(fp_tanggal)='+ edtTahun.Text;
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmMenu.conn);
+  EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
   s:= 'update tfp_hdr b inner join ( '
 + ' select fp_nomor,sum((((100-fpd_discpr)*fpd_harga*(fpd_qty-ifnull(retjd_qty,0))/100)*fpd_bp_pr/100)+fpd_bp_rp*(fpd_qty-ifnull(retjd_qty,0))) nilai from tfp_hdr'
@@ -101,8 +101,8 @@ begin
 + ' group by fp_nomor) a on a.fp_nomor=b.FP_nomor '
 + ' set fp_biayarp=nilai ' ;
 
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmMenu.conn);
+  EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
   cCloseWaitWindow();
 
 showmessage('Proses Biaya Promosi Selesaai')

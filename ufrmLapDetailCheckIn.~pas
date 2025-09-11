@@ -116,9 +116,21 @@ procedure TfrmLapDetailCheckIn.loaddataall ;
 var
   s: string;
   i:integer;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   aterjadwal,atidakterjadwal : Integer;
 begin
+  if frmmenu.KDCABANG <> 'KRM' then
+s:= '  SELECT Nama,Tanggal,cus_kode,latitude,longitude,cabang,cbg_database, '
+    + ' customer Customer,jam FROM ( '
+    + ' SELECT USER Nama,tanggal Tanggal,cus_kode,latitude,longitude,cbg_nama cabang,cbg_database,'
+    + ' (SELECT cus_nama FROM tcustomer where cus_kode=a.cus_kode LIMIT 1) customer,time_format(tanggal,"%H:%i:%s") Jam'
+    + ' FROM tkunjungan a INNER JOIN bsm.tkaryawan ON kar_nama =USER'
+    + ' INNER JOIN bsm.tcabang x on kar_cabang=cbg_nama'
+    + ' where '
+    + ' tanggal between  '+QuotD(startdate.DateTime)+' and '+QuotD(enddate.DateTime)
+    +' ) final '
+
+  else
 s:= '  SELECT Nama,Tanggal,cus_kode,latitude,longitude,cabang,cbg_database, '
     + ' if(customer IS null,(SELECT cus_nama FROM krm.tcustomer WHERE cus_kode=final.cus_kode),customer) Customer,jam FROM ( '
     + ' SELECT USER Nama,tanggal Tanggal,cus_kode,latitude,longitude,cbg_nama cabang,cbg_database,'

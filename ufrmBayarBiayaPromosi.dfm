@@ -421,7 +421,7 @@ object frmBayarBiayaPromosi: TfrmBayarBiayaPromosi
   end
   object AdvPanel3: TAdvPanel
     Left = 0
-    Top = 502
+    Top = 501
     Width = 1008
     Height = 35
     Align = alBottom
@@ -713,7 +713,7 @@ object frmBayarBiayaPromosi: TfrmBayarBiayaPromosi
     Left = 0
     Top = 153
     Width = 1008
-    Height = 349
+    Height = 348
     Align = alClient
     BevelInner = bvRaised
     Color = clWhite
@@ -780,7 +780,7 @@ object frmBayarBiayaPromosi: TfrmBayarBiayaPromosi
       Left = 2
       Top = 2
       Width = 1004
-      Height = 345
+      Height = 344
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText

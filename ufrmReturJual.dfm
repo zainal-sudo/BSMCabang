@@ -1101,7 +1101,7 @@ object frmReturJual: TfrmReturJual
       OleDropSource = False
       Signed = False
       TabOrder = 1
-      Text = '0,00'
+      Text = '0.00'
       Transparent = False
       Visible = True
       OnExit = edtDiscprExit
@@ -1163,7 +1163,7 @@ object frmReturJual: TfrmReturJual
       ReadOnly = True
       Signed = False
       TabOrder = 3
-      Text = '0,00'
+      Text = '0.00'
       Transparent = False
       Visible = True
       OnKeyPress = FormKeyPress
@@ -1224,7 +1224,7 @@ object frmReturJual: TfrmReturJual
       ReadOnly = True
       Signed = False
       TabOrder = 4
-      Text = '0,00'
+      Text = '0.00'
       Transparent = False
       Visible = True
       OnKeyPress = FormKeyPress
@@ -1291,7 +1291,7 @@ object frmReturJual: TfrmReturJual
       ReadOnly = True
       Signed = False
       TabOrder = 5
-      Text = '0,00'
+      Text = '0.00'
       Transparent = False
       Visible = True
       OnKeyPress = FormKeyPress
@@ -1351,7 +1351,7 @@ object frmReturJual: TfrmReturJual
       OleDropSource = False
       Signed = False
       TabOrder = 2
-      Text = '0,00'
+      Text = '0.00'
       Transparent = False
       Visible = True
       OnExit = edtDiscExit
@@ -1434,7 +1434,7 @@ object frmReturJual: TfrmReturJual
       ReadOnly = True
       Signed = False
       TabOrder = 7
-      Text = '0,00'
+      Text = '0.00'
       Transparent = False
       Visible = True
       OnKeyPress = FormKeyPress

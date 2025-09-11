@@ -83,8 +83,4 @@ inherited frmBrowseFPBayangan: TfrmBrowseFPBayangan
       end
     end
   end
-  object frxPDFExport1: TfrxPDFExport
-    Left = 408
-    Top = 185
-  end
 end

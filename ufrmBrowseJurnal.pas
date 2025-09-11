@@ -16,7 +16,7 @@ uses
   cxDataStorage, cxEdit, DB, cxDBData, FMTBcd, Provider, SqlExpr, ImgList,
   ComCtrls, StdCtrls, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
-  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels;
+  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, MyAccess;
 
 type
   TfrmBrowseJurnal = class(TfrmCxBrowse)
@@ -137,8 +137,8 @@ var
   ss,s:String ;
   tt:tstrings;
   i:integer;
-  tsql:TSQLQuery;
-  conn2 :TSQLConnection;
+  tsql:TmyQuery;
+  conn2 :TMyConnection;
 begin
   inherited;
     tt := TStringList.Create;
@@ -223,14 +223,12 @@ begin
        try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],conn2);
+            EnsureConnected(conn2);
+            ExecSQLDirect(conn2, tt[i]);
          end;
       finally
         tt.Free;
       end;
-
-
-  xCommit(conn2);
   conn2.free;
 
 

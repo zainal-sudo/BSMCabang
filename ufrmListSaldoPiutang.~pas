@@ -179,16 +179,16 @@ begin
 
 
         s:= 'select Customer,cus_nama Nama,Tax,ifnull(saldo_awal,0) Saldo_awal,ifnull(Total,0) Total,'
-      + ' ifnull(retur,0) Retur,Bayar_cash,Bayar_transfer,Giro,Potongan,Deposit,Koreksi_LR,Hutang_Internal,UM_Penjualan,'
+      + ' ifnull(retur,0) Retur,Bayar_cash,Bayar_transfer,Giro,Potongan,Deposit,Koreksi_LR,Hutang_Internal,UM_Penjualan,PPN_Keluaran,PPh_22,'
       + ' (ifnull(saldo_awal,0)+ifnull(Total,0))- '
-      + ' (ifnull(retur,0)+ifnull(bayar_cash,0)+ifnull(bayar_transfer,0)+ifnull(giro,0)+ifnull(potongan,0)+ifnull(deposit,0)+ifnull(KOREKSI_LR,0)+ifnull(um_penjualan,0)+ifnull(hutang_internal,0)) Saldo_Akhir from ('
+      + ' (ifnull(retur,0)+ifnull(bayar_cash,0)+ifnull(bayar_transfer,0)+ifnull(giro,0)+ifnull(potongan,0)+ifnull(deposit,0)+ifnull(KOREKSI_LR,0)+ifnull(um_penjualan,0)+ifnull(hutang_internal,0)+ifnull(ppn_keluaran,0)++ifnull(pph_22,0)) Saldo_Akhir from ('
       + ' select aa.customer,aa.tax,'
       + ' ifnull(( select sum(kredit-debet) from kartu_piutang where tanggal < '+quotd(startdate.Date)
       + ' and customer= aa.customer and tax=aa.tax),0) Saldo_Awal ,'
       + ' sum(Bruto) Bruto,sum(Disc)Disc,sum(Dpp) Dpp,'
       + ' sum(Pajak) Pajak,sum(Total) Total ,sum(Biaya_Promosi) Biaya_Promosi,sum(Kontrak) Kontrak,sum(freight) Freight,'
       + '  sum(Retur) Retur,sum(Bayar_Cash) Bayar_Cash,sum(Bayar_Transfer) Bayar_Transfer,sum(Giro) Giro,'
-      + ' sum(Deposit) Deposit,sum(Potongan) Potongan,sum(koreksi_lr) koreksi_lr,sum(hutang_internal) Hutang_Internal,sum(um_penjualan) Um_Penjualan'
+      + ' sum(Deposit) Deposit,sum(Potongan) Potongan,sum(koreksi_lr) koreksi_lr,sum(hutang_internal) Hutang_Internal,sum(um_penjualan) Um_Penjualan,sum(PPn_Keluaran) PPn_Keluaran,sum(PPh_22) PPh_22'
       + ' from '
       + ' (select customer,tax from transaksi_harian group by customer,tax) aa'
       + ' left join transaksi_harian A on  aa.customer=a.customer and a.tax=aa.tax'
@@ -212,7 +212,7 @@ begin
         ds3.open;
 
 
-        Skolom :='Customer,Nama,Tax,Saldo_Awal,Total,Retur,Bayar_Cash,Bayar_Transfer,Giro,Potongan,Deposit,Koreksi_LR,Hutang_Internal,UM_Penjualan,Saldo_Akhir';
+        Skolom :='Customer,Nama,Tax,Saldo_Awal,Total,Retur,Bayar_Cash,Bayar_Transfer,Giro,Potongan,Deposit,Koreksi_LR,Hutang_Internal,UM_Penjualan,PPN_Keluaran,Pph_22,Saldo_Akhir';
         QueryToDBGrid(cxGrid1DBTableView1, s,skolom ,ds2);
            cxGrid1DBTableView1.Columns[0].MinWidth := 60;
            cxGrid1DBTableView1.Columns[1].MinWidth := 60;
@@ -260,6 +260,10 @@ begin
         cxGrid1DBTableView1.Columns[13].Summary.FooterFormat:='###,###,###,###';
         cxGrid1DBTableView1.Columns[14].Summary.FooterKind:=skSum;
         cxGrid1DBTableView1.Columns[14].Summary.FooterFormat:='###,###,###,###';
+        cxGrid1DBTableView1.Columns[15].Summary.FooterKind:=skSum;
+        cxGrid1DBTableView1.Columns[15].Summary.FooterFormat:='###,###,###,###';
+        cxGrid1DBTableView1.Columns[16].Summary.FooterKind:=skSum;
+        cxGrid1DBTableView1.Columns[16].Summary.FooterFormat:='###,###,###,###';
 
         cxGrid1DBTableView1.Columns[8].Summary.FooterKind:=skSum;
         cxGrid1DBTableView1.Columns[8].Summary.FooterFormat:='###,###,###,###';

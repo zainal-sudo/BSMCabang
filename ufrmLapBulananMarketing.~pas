@@ -198,27 +198,28 @@ begin
 + ' SELECT tm_salesman,nama_grouppf Nama,tm_target target,tm_hna hna, ('
 + ' SELECT IFNULL(SUM(fpd_qty),0)'
 + ' FROM tfp_dtl'
-+ ' INNER JOIN tbarangpf ON bpf_brg_kode=fpd_brg_kode'
++ ' INNER JOIN tbarangpf ON bpf_brg_kode=fpd_brg_kode and bpf_periode = '+ IntToStr(cbbBulan.itemindex +1)+ ' and bpf_tahun='+edttahun.text
 + ' INNER JOIN tfp_hdr ON fp_nomor=fpd_fp_nomor AND MONTH(fp_tanggal)='+ IntToStr(cbbBulan.itemindex +1)+' AND YEAR(fp_tanggal)='+ edttahun.text
 + ' INNER JOIN tsalescustomer ON sc_cus_kode=fp_cus_kode'
-+ ' WHERE sc_sls_kode=x.tm_salesman AND bpf_kode_grouppf=tm_grouppf) jual, ('
++ ' WHERE sc_sls_kode=x.tm_salesman AND bpf_kode_grouppf=tm_grouppf '
++ ' ) jual, ('
 + ' SELECT IFNULL(SUM(fpd_qty*(((100-fpd_discpr)*fpd_harga/100)-(fpd_cn*((100-fpd_discpr)*fpd_harga/100)/100)- ((fpd_bp_pr*((100-fpd_discpr)*fpd_harga/100)/100)+fpd_bp_rp))),0)'
 + ' FROM tfp_dtl'
-+ ' INNER JOIN tbarangpf ON bpf_brg_kode=fpd_brg_kode'
++ ' INNER JOIN tbarangpf ON bpf_brg_kode=fpd_brg_kode and bpf_periode = '+ IntToStr(cbbBulan.itemindex +1)+ ' and bpf_tahun='+edttahun.text
 + ' INNER JOIN tfp_hdr ON fp_nomor=fpd_fp_nomor AND MONTH(fp_tanggal)='+ IntToStr(cbbBulan.itemindex +1)+' AND YEAR(fp_tanggal)='+ edttahun.text
 + ' INNER JOIN tsalescustomer ON sc_cus_kode=fp_cus_kode'
 + ' WHERE sc_sls_kode=x.tm_salesman AND bpf_kode_grouppf=tm_grouppf AND (((100-fpd_discpr)*fpd_harga/100)-(fpd_cn*((100-fpd_discpr)*fpd_harga/100)/100)- ((fpd_bp_pr*((100-fpd_discpr)*fpd_harga/100)/100)+fpd_bp_rp)) >= fpd_hrg_min) pengali, ('
 + ' SELECT IFNULL(SUM(retjd_qty*(((100-fpd_discpr)*fpd_harga/100)-(fpd_cn*((100-fpd_discpr)*fpd_harga/100)/100)- ((fpd_bp_pr*((100-fpd_discpr)*fpd_harga/100)/100)+fpd_bp_rp))),0)'
 + ' FROM tretj_dtl'
 + ' INNER JOIN tretj_hdr ON retjd_retj_nomor=retj_nomor AND MONTH(retj_tanggal)='+ IntToStr(cbbBulan.itemindex +1)+' AND YEAR(retj_tanggal)= ' + edttahun.text
-+ ' INNER JOIN tbarangpf ON bpf_brg_kode=retjd_brg_kode'
++ ' INNER JOIN tbarangpf ON bpf_brg_kode=retjd_brg_kode and bpf_periode = '+ IntToStr(cbbBulan.itemindex +1)+ ' and bpf_tahun='+edttahun.text
 + ' INNER JOIN tfp_hdr ON fp_nomor=retj_fp_nomor'
 + ' INNER JOIN tfp_dtl ON fp_nomor=fpd_fp_nomor AND fpd_brg_kode=retjd_brg_kode'
 + ' INNER JOIN tsalescustomer ON sc_cus_kode=fp_cus_kode'
 + ' WHERE sc_sls_kode=x.tm_salesman AND bpf_kode_grouppf=tm_grouppf AND (((100-fpd_discpr)*fpd_harga/100)-(fpd_cn*((100-fpd_discpr)*fpd_harga/100)/100)- ((fpd_bp_pr*((100-fpd_discpr)*fpd_harga/100)/100)+fpd_bp_rp)) >= fpd_hrg_min) pengurang, ('
 + ' SELECT IFNULL(SUM(retjd_qty),0)'
 + ' FROM tretj_dtl'
-+ ' INNER JOIN tbarangpf ON bpf_brg_kode=retjd_brg_kode'
++ ' INNER JOIN tbarangpf ON bpf_brg_kode=retjd_brg_kode and bpf_periode = '+ IntToStr(cbbBulan.itemindex +1)+ ' and bpf_tahun='+edttahun.text
 + ' INNER JOIN tretj_hdr ON retj_nomor=retjd_retj_nomor AND MONTH(retj_tanggal)='+ IntToStr(cbbBulan.itemindex +1)+' AND YEAR(retj_tanggal)='+  edttahun.text
 + ' INNER JOIN tsalescustomer ON sc_cus_kode=retj_cus_kode'
 + ' WHERE sc_sls_kode=x.tm_salesman AND bpf_kode_grouppf=tm_grouppf) retur'

@@ -369,11 +369,4 @@ inherited frmBrowseFP: TfrmBrowseFP
     object cxStyle2: TcxStyle
     end
   end
-  object frxDotMatrixExport1: TfrxDotMatrixExport
-    GraphicFrames = False
-    SaveToFile = False
-    UseIniSettings = True
-    Left = 600
-    Top = 105
-  end
 end

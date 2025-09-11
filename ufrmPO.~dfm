@@ -344,7 +344,7 @@ object frmPO: TfrmPO
   end
   object AdvPanel3: TAdvPanel
     Left = 0
-    Top = 502
+    Top = 501
     Width = 1129
     Height = 35
     Align = alBottom
@@ -636,7 +636,7 @@ object frmPO: TfrmPO
     Left = 0
     Top = 129
     Width = 1129
-    Height = 282
+    Height = 281
     Align = alClient
     BevelInner = bvRaised
     Color = clWhite
@@ -703,7 +703,7 @@ object frmPO: TfrmPO
       Left = 2
       Top = 2
       Width = 1125
-      Height = 278
+      Height = 277
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -849,7 +849,7 @@ object frmPO: TfrmPO
   end
   object AdvPanel5: TAdvPanel
     Left = 0
-    Top = 411
+    Top = 410
     Width = 1129
     Height = 91
     Align = alBottom

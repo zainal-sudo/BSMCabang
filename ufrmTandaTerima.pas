@@ -19,7 +19,7 @@ uses
   dxSkinOffice2007Blue, dxSkinOffice2007Green, dxSkinOffice2007Pink,
   dxSkinOffice2007Silver, dxSkinPumpkin, dxSkinSilver, dxSkinSpringTime,
   dxSkinStardust, dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue,
-  frxClass, frxDMPExport;
+  frxClass, frxDMPExport, MyAccess;
 
 type
   TfrmTandaTerima = class(TForm)
@@ -228,10 +228,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmTandaTerima.cxButton8Click(Sender: TObject);
@@ -266,10 +266,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -440,7 +440,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
      tt := TStringList.Create;
@@ -472,7 +473,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -553,7 +555,7 @@ end;
 procedure TfrmTandaTerima.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtykirim : Integer;
@@ -625,7 +627,7 @@ end;
 function TfrmTandaTerima.getqtyPO(anomor:string;asku:integer): integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result :=0;
   s:='select sod_qty from tso_dtl where sod_so_nomor ='+Quot(anomor)
@@ -646,7 +648,7 @@ end;
 function TfrmTandaTerima.cari(anomor:string): Boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result :=False;
   s:='select so_nomor from tso_hdr where so_nomor ='+Quot(anomor);
@@ -666,7 +668,7 @@ end;
 function TfrmTandaTerima.getstatusexpired(asku:integer): integer;
 var
   s:string  ;
-  tsql:TSQLQuery  ;
+  tsql:TmyQuery  ;
 begin
     Result :=0;
   s:='select brg_isexpired from tbarang where brg_kode ='+inttostr(asku);
@@ -708,7 +710,7 @@ end;
 procedure TfrmTandaTerima.bantuansku;
   var
     s:string;
-    tsql2,tsql:TSQLQuery;
+    tsql2,tsql:TmyQuery;
     i:Integer;
 begin
     sqlbantuan := 'select brg_kode Sku, mst_expired_date  Expired,brg_nama NamaBarang, brg_satuan Satuan,sum(mst_stok_in-mst_stok_out) stok from Tbarang '
@@ -820,7 +822,7 @@ end;
 function TfrmTandaTerima.getstok(aid:Integer;atgl:TDateTime):integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result:=0;
   s:='select sum(mst_stok_in-mst_stok_out) from tmasterstok where mst_expired_date ='+QuotD(atgl)
@@ -868,10 +870,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmTandaTerima.edtNomorSoClickBtn(Sender: TObject);

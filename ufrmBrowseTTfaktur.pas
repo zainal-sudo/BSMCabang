@@ -17,7 +17,7 @@ uses
   cxDataStorage, cxEdit, DB, cxDBData, FMTBcd, Provider, SqlExpr, ImgList,
   ComCtrls, StdCtrls, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
-  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels;
+  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, MyAccess;
 
 type
   TfrmBrowseTTFaktur = class(TfrmCxBrowse)
@@ -69,7 +69,7 @@ end;
 procedure TfrmBrowseTTFaktur.FormShow(Sender: TObject);
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 
 begin
     ShowWindowAsync(Handle, SW_MAXIMIZE);
@@ -84,7 +84,7 @@ end;
 procedure TfrmBrowseTTFaktur.cxButton3Click(Sender: TObject);
 var
   s: string ;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   anamabarang: String;
   anilai : double;
@@ -265,20 +265,22 @@ begin
       then Exit ;
        s:='delete from '+adatabase+'.ttt_hdr '
         + ' where tt_nomor = ' + quot(CDSMaster.FieldByname('nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
        s:='delete from '+adatabase+'.ttt_dtl '
         + ' where ttd_tt_nomor = ' + quot(CDSMaster.FieldByname('nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
 
       CDSMaster.Delete;
    except
      MessageDlg('Gagal Hapus',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmBrowseTTFaktur.cxButton1Click(Sender: TObject);

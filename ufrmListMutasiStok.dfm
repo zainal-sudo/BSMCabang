@@ -1,9 +1,9 @@
 object frmListMutasiStok: TfrmListMutasiStok
-  Left = 155
-  Top = 191
+  Left = 213
+  Top = 174
   AutoScroll = False
   Caption = 'List Mutasi Stok'
-  ClientHeight = 582
+  ClientHeight = 583
   ClientWidth = 1008
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -26,7 +26,7 @@ object frmListMutasiStok: TfrmListMutasiStok
     Left = 0
     Top = 28
     Width = 1008
-    Height = 516
+    Height = 517
     HorzScrollBar.Range = 1020
     VertScrollBar.Range = 600
     Align = alClient
@@ -304,7 +304,7 @@ object frmListMutasiStok: TfrmListMutasiStok
   end
   object TePanel5: TTePanel
     Left = 0
-    Top = 544
+    Top = 545
     Width = 1008
     Height = 38
     Align = alBottom
@@ -3580,7 +3580,7 @@ object frmListMutasiStok: TfrmListMutasiStok
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -3639,5 +3639,9 @@ object frmListMutasiStok: TfrmListMutasiStok
       PrinterPage._dxLastMU_ = 1
       BuiltInReportLink = True
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 496
+    Top = 296
   end
 end

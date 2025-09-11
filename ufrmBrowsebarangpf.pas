@@ -43,18 +43,18 @@ implementation
 
 procedure TfrmBrowseBarangPF.btnRefreshClick(Sender: TObject);
 begin
-  Self.SQLMaster := 'select '
-  + ' bpf_periode Periode,bpf_tahun Tahun,bpf_brg_kode Kode,bpf_nama Nama,bpf_grup Grup,bpf_het Het,bpf_dept Dept,bpf_hna HNA'
-  + '  from tbarangpf';
-   inherited;
-    cxGrdMaster.ApplyBestFit();
-    cxGrdMaster.Columns[0].Width :=100;
-    cxGrdMaster.Columns[1].Width :=100;
+  Self.SQLMaster := ' select '
+                  + ' bpf_periode Periode, bpf_tahun Tahun, bpf_brg_kode Kode, bpf_nama Nama, bpf_grup Grup,bpf_het Het,bpf_dept Dept,bpf_hna HNA'
+                  + ' from tbarangpf';
+  inherited;
+  cxGrdMaster.ApplyBestFit();
+  cxGrdMaster.Columns[0].Width := 100;
+  cxGrdMaster.Columns[1].Width := 100;
 end;
 
 procedure TfrmBrowseBarangPF.FormShow(Sender: TObject);
 begin
-    ShowWindowAsync(Handle, SW_MAXIMIZE);
+  ShowWindowAsync(Handle, SW_MAXIMIZE);
   inherited;
   btnRefreshClick(Self);
 end;
@@ -70,28 +70,29 @@ var
   s:string;
 begin
   inherited;
-     try
-       if not cekdelete(frmMenu.KDUSER,'frmGudang') then
-      begin
-         MessageDlg('Anda tidak berhak Menghapus di Modul ini',mtWarning, [mbOK],0);
-         Exit;
-      End;
-      if MessageDlg('Yakin ingin hapus ?',mtCustom,
-                                  [mbYes,mbNo], 0)= mrNo
-      then Exit ;
-       s:='delete from tsetingbarangpf '
-        + ' where set_periode = ' + quot(CDSMaster.FieldByname('periode').AsString)
-        + ' and set_tahun = ' + quot(CDSMaster.FieldByname('tahun').AsString)+';' ;
-      xExecQuery(s,frmmenu.conn);
+  try
+  if not cekdelete(frmMenu.KDUSER,'frmGudang') then
+  begin
+    MessageDlg('Anda tidak berhak Menghapus di Modul ini',mtWarning, [mbOK],0);
+    Exit;
+  End;
 
+  if MessageDlg('Yakin ingin hapus ?',mtCustom,
+                        [mbYes,mbNo], 0)= mrNo
+  then Exit ;
 
-//      CDSMaster.Delete;
-   except
-     MessageDlg('Gagal Hapus',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
-     Exit;
-   end;
-    xCommit(frmMenu.conn);
+  s := 'delete from tsetingbarangpf '
+     + ' where set_periode = ' + quot(CDSMaster.FieldByname('periode').AsString)
+     + ' and set_tahun = ' + quot(CDSMaster.FieldByname('tahun').AsString)+';' ;
+  EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+
+  //      CDSMaster.Delete;
+  except
+    MessageDlg('Gagal Hapus',mtError, [mbOK],0);
+    Exit;
+  end;
+    
   btnRefreshClick(self);
 end;
 
@@ -110,18 +111,19 @@ begin
     try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
       end;
    except
      ShowMessage('gagal import');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
 
-    xCommit(frmMenu.conn);
+    
     ShowMessage('Import data berhasil');
 
 

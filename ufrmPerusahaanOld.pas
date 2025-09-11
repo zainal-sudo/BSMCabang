@@ -106,10 +106,10 @@ begin
 
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     refreshdata;
   end;
 
@@ -128,7 +128,7 @@ procedure TfrmPerusahaan.loaddata;
 
  var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   s:= ' select PERUSH_NAMA,PERUSH_ALAMAT,PERUSH_KOTA,PERUSH_TELP,PERUSH_FAX,perush_email,'
       + ' perush_npwp,perush_namanpwp,perush_alamatnpwp,perush_kotanpwp,perush_rekening, '
@@ -190,7 +190,8 @@ begin
        + ' perush_bank = ' + Quot(edtBank.Text) + ','
        + ' perush_cabang = ' + Quot(edtCabang.Text)
        + ';';
-            xExecQuery(s,frmMenu.conn);
+              EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 end;
 
 
@@ -231,10 +232,10 @@ begin
 
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     refreshdata;
 end;
 

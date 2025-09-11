@@ -1,6 +1,6 @@
 object frmListJualvsTarget: TfrmListJualvsTarget
-  Left = 4
-  Top = 1
+  Left = 346
+  Top = 44
   AutoScroll = False
   Caption = 'List Penjualan vs Target'
   ClientHeight = 520
@@ -3525,14 +3525,6 @@ object frmListJualvsTarget: TfrmListJualvsTarget
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
-    MaxBlobSize = -1
-    Params = <>
-    SQL.Strings = (
-      '')
-    Left = 451
-    Top = 249
-  end
   object ds2: TDataSource
     DataSet = ds3
     Left = 475
@@ -3584,5 +3576,9 @@ object frmListJualvsTarget: TfrmListJualvsTarget
       PrinterPage._dxLastMU_ = 1
       BuiltInReportLink = True
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 384
+    Top = 264
   end
 end

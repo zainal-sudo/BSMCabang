@@ -227,37 +227,37 @@ var
 begin
   if chkPajak.Checked then
   begin
-  s:='select max(right(so_nomor,4)) from tso_hdr where so_nomor like ' + quot(frmMenu.kdcabang + '-' +NOMERATOR+'.'+FormatDateTime('yymm',dtTanggal.Date)+'.%')
-  + ' and so_istax=1 ';
-  with xOpenQuery(s,frmMenu.conn) do
-  begin
-    try
-      if Fields[0].AsString = '' then
-         result:= frmMenu.kdcabang + '-' +NOMERATOR+'.'+FormatDateTime('yymm',dtTanggal.Date)+'.'+RightStr(IntToStr(10000+1),4)
-      else
-         result:= frmMenu.kdcabang + '-' +NOMERATOR+'.'+FormatDateTime('yymm',dtTanggal.Date)+'.'+RightStr(IntToStr(10000+fields[0].AsInteger+1),4);
+    s := ' select max(right(so_nomor,4)) from tso_hdr where so_nomor like ' + quot(frmMenu.kdcabang + '-' +NOMERATOR+'.'+FormatDateTime('yymm',dtTanggal.Date)+'.%')
+       + ' and so_istax = 1';
 
-    finally
-      free;
+    with xOpenQuery(s, frmMenu.conn) do
+    begin
+      try
+        if Fields[0].AsString = '' then
+           result:= frmMenu.kdcabang + '-' +NOMERATOR+'.'+FormatDateTime('yymm',dtTanggal.Date)+'.'+RightStr(IntToStr(10000+1),4)
+        else
+           result:= frmMenu.kdcabang + '-' +NOMERATOR+'.'+FormatDateTime('yymm',dtTanggal.Date)+'.'+RightStr(IntToStr(10000+fields[0].AsInteger+1),4);
+      finally
+        free;
+      end;
     end;
-  end;
   end
   else
   begin
-    s:='select max(right(so_nomor,3)) from tso_hdr where so_nomor like ' + quot(frmMenu.kdcabang + '-' +NOMERATOR+'.'+FormatDateTime('yymm',dtTanggal.Date)+'.%')
-      + ' and so_istax =0 ';
-  with xOpenQuery(s,frmMenu.conn) do
-  begin
-    try
-      if Fields[0].AsString = '' then
-         result:= frmMenu.kdcabang + '-' +NOMERATOR+'.'+FormatDateTime('yymm',dtTanggal.Date)+'.'+RightStr(IntToStr(15000+1),4)
-      else
-         result:= frmMenu.kdcabang + '-' +NOMERATOR+'.'+FormatDateTime('yymm',dtTanggal.Date)+'.'+RightStr(IntToStr(15000+fields[0].AsInteger+1),4);
-
-    finally
-      free;
+    s := ' select max(right(so_nomor,3)) from tso_hdr where so_nomor like ' + quot(frmMenu.kdcabang + '-' +NOMERATOR+'.'+FormatDateTime('yymm',dtTanggal.Date)+'.%')
+       + ' and so_istax = 0';
+       
+    with xOpenQuery(s,frmMenu.conn) do
+    begin
+      try
+        if Fields[0].AsString = '' then
+           result:= frmMenu.kdcabang + '-' +NOMERATOR+'.'+FormatDateTime('yymm',dtTanggal.Date)+'.'+RightStr(IntToStr(15000+1),4)
+        else
+           result:= frmMenu.kdcabang + '-' +NOMERATOR+'.'+FormatDateTime('yymm',dtTanggal.Date)+'.'+RightStr(IntToStr(15000+fields[0].AsInteger+1),4);
+      finally
+        free;
+      end;
     end;
-  end;
   end;
 end;
 
@@ -285,10 +285,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmPesanan.cxButton8Click(Sender: TObject);
@@ -320,10 +320,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -580,15 +580,15 @@ end;
 
 procedure TfrmPesanan.simpandata;
 var
-  s:string;
-  i:integer;
-  tt:TStrings;
-  aisecer,aisproforma,aistax : integer;
+  s: String;
+  i: integer;
+  tt: TStrings;
+  aisecer, aisproforma, aistax: integer;
 begin
   if chkEceran.Checked then
     aisecer :=  1
   else
-    aisecer := 0;
+   aisecer := 0;
 
   if chkProforma.Checked then
     aisproforma :=  1
@@ -599,89 +599,93 @@ begin
     aistax :=  1
   else
     aistax := 0;
-if FLAGEDIT then
-  s:='update TSO_HDR set '
-    + ' so_cus_kode = ' + Quot(cxLookupCustomer.EditValue) + ','
-    + ' so_memo = ' + Quot(edtmemo.Text) + ','
-    + ' so_shipaddress = ' + Quot(edtShip.Text)+','
-    + ' so_sls_kode = ' + Quot(cxLookupSales.EditValue) + ','
-    + ' so_disc_faktur =' + floattostr(cStrToFloat(edtDisc.Text))+ ','
-    + ' so_disc_fakturpr = '+ floattostr(cStrToFloat(edtDiscpr.Text))+ ','
-    + ' so_amount = '+ floattostr(cstrtoFloat(edtTotal.Text))+ ','
-    + ' so_taxamount = '+ floattostr(cStrToFloat(edtPPN.Text))+ ','
-    + ' so_istax = ' + IntToStr(aistax)+  ','
-    + ' so_isecer = ' + IntToStr(aisecer)+  ','
-    + ' so_DP = ' +floattostr(cStrToFloat(edtDp.Text))+ ','
-    + ' so_rek_dp = ' + Quot(VarToStr(cxLookupRekening.EditValue))+','
-    + ' so_isproforma = ' + IntToStr(aisproforma) + ','
-    + ' date_modified  = ' + QuotD(cGetServerTime,True) + ','
-    + ' user_modified = ' + Quot(frmMenu.KDUSER)
-    + ' where so_nomor = ' + quot(FID) + ';'
-else
-begin
-  edtNomor.Text := getmaxkode;
-  s :=  ' insert into TSO_HDR '
-             + ' (so_nomor,so_tanggal,so_memo,so_cus_kode,so_shipaddress,so_sls_kode,so_disc_faktur,'
-             + ' so_disc_fakturpr,so_amount,so_taxamount,so_DP,so_rek_dp,so_istax,so_isecer,so_isproforma,date_create,user_create) '
-             + ' values ( '
-             + Quot(edtNomor.Text) + ','
-             + Quotd(dtTanggal.Date) + ','
-             + Quot(edtmemo.Text)+','
-             + Quot(cxLookupCustomer.EditValue) + ','
-             + Quot(edtShip.Text)  + ','
-             + Quot(cxLookupSales.EditValue)+','
-             + floattostr(cStrToFloat(edtDisc.Text))+ ','
-             + floattostr(cStrToFloat(edtDiscpr.Text))+ ','
-             + floattostr(cStrToFloat(edtTotal.Text))+ ','
-             + floattostr(cStrToFloat(edtPPN.Text))+ ','
-             + floattostr(cStrToFloat(edtDP.Text))+ ','
-             + Quot(VarToStr(cxLookupRekening.EditValue))+','
-             + IntToStr(aistax)+  ','
-             + IntToStr(aisecer)+  ','
-             + IntToStr(aisproforma)+  ','
-             + QuotD(cGetServerTime,True) + ','
-             + Quot(frmMenu.KDUSER)+')';
-end;
-  xExecQuery(s,frmmenu.conn);
 
+  if FLAGEDIT then
+    s := 'update TSO_HDR set '
+       + ' so_cus_kode = ' + Quot(cxLookupCustomer.EditValue) + ','
+       + ' so_memo = ' + Quot(edtmemo.Text) + ','
+       + ' so_shipaddress = ' + Quot(edtShip.Text) + ','
+       + ' so_sls_kode = ' + Quot(cxLookupSales.EditValue) + ','
+       + ' so_disc_faktur =' + floattostr(cStrToFloat(edtDisc.Text)) + ','
+       + ' so_disc_fakturpr = '+ floattostr(cStrToFloat(edtDiscpr.Text)) + ','
+       + ' so_amount = '+ floattostr(cstrtoFloat(edtTotal.Text)) + ','
+       + ' so_taxamount = '+ floattostr(cStrToFloat(edtPPN.Text)) + ','
+       + ' so_istax = ' + IntToStr(aistax) + ','
+       + ' so_isecer = ' + IntToStr(aisecer) + ','
+       + ' so_DP = ' + floattostr(cStrToFloat(edtDp.Text)) + ','
+       + ' so_rek_dp = ' + Quot(VarToStr(cxLookupRekening.EditValue)) + ','
+       + ' so_isproforma = ' + IntToStr(aisproforma) + ','
+       + ' date_modified  = ' + QuotD(cGetServerTime,True) + ','
+       + ' user_modified = ' + Quot(frmMenu.KDUSER)
+       + ' where so_nomor = ' + quot(FID) + ';'
+  else
+  begin
+    edtNomor.Text := getmaxkode;
+    s := ' insert into TSO_HDR '
+       + ' (so_nomor,so_tanggal,so_memo,so_cus_kode,so_shipaddress,so_sls_kode,so_disc_faktur,'
+       + ' so_disc_fakturpr,so_amount,so_taxamount,so_DP,so_rek_dp,so_istax,so_isecer,so_isproforma,date_create,user_create) '
+       + ' values ( '
+       + Quot(edtNomor.Text) + ','
+       + Quotd(dtTanggal.Date) + ','
+       + Quot(edtmemo.Text)+','
+       + Quot(cxLookupCustomer.EditValue) + ','
+       + Quot(edtShip.Text)  + ','
+       + Quot(cxLookupSales.EditValue)+','
+       + floattostr(cStrToFloat(edtDisc.Text))+ ','
+       + floattostr(cStrToFloat(edtDiscpr.Text))+ ','
+       + floattostr(cStrToFloat(edtTotal.Text))+ ','
+       + floattostr(cStrToFloat(edtPPN.Text))+ ','
+       + floattostr(cStrToFloat(edtDP.Text))+ ','
+       + Quot(VarToStr(cxLookupRekening.EditValue))+','
+       + IntToStr(aistax)+  ','
+       + IntToStr(aisecer)+  ','
+       + IntToStr(aisproforma)+  ','
+       + QuotD(cGetServerTime,True) + ','
+       + Quot(frmMenu.KDUSER)+')';
+  end;
 
-     tt := TStringList.Create;
-   s:= ' delete from TSO_DTL '
-      + ' where  sod_so_nomor =' + quot(FID);
+  EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
-   tt.Append(s);
-   CDS.First;
+  tt := TStringList.Create;
+  s := ' delete from TSO_DTL '
+     + ' where  sod_so_nomor =' + quot(FID);
+  tt.Append(s);
+
+  CDS.First;
   while not CDS.Eof do
   begin
-    i:=1;
-    S:='insert into tso_DTL (sod_so_nomor,sod_brg_kode,sod_brg_satuan,sod_qty,sod_discpr,sod_harga,sod_keterangan,sod_nourut) values ('
-      + Quot(edtNomor.Text) +','
-      + IntToStr(CDS.FieldByName('SKU').AsInteger) +','
-      + Quot(CDS.FieldByName('satuan').AsString) +','
-      + IntToStr(CDS.FieldByName('QTY').AsInteger) +','
-      + FloatToStr(cVarToFloat(CDS.FieldByName('DISC').AsFloat))+','
-      + FloatToStr(cVarToFloat(CDS.FieldByName('harga').AsFloat))+','
-      + quot(CDS.FieldByName('keterangan').AsString) +','
-      + IntToStr(i)
-      + ');';
+    i := 1;
+    S := 'insert into tso_DTL (sod_so_nomor,sod_brg_kode,sod_brg_satuan,sod_qty,sod_discpr,sod_harga,sod_keterangan,sod_nourut) values ('
+       + Quot(edtNomor.Text) +','
+       + IntToStr(CDS.FieldByName('SKU').AsInteger) +','
+       + Quot(CDS.FieldByName('satuan').AsString) +','
+       + IntToStr(CDS.FieldByName('QTY').AsInteger) +','
+       + FloatToStr(cVarToFloat(CDS.FieldByName('DISC').AsFloat))+','
+       + FloatToStr(cVarToFloat(CDS.FieldByName('harga').AsFloat))+','
+       + quot(CDS.FieldByName('keterangan').AsString) +','
+       + IntToStr(i)
+       + ');';
     tt.Append(s);
     CDS.Next;
     Inc(i);
   end;
 
-     try
-        for i:=0 to tt.Count -1 do
-        begin
-            xExecQuery(tt[i],frmMenu.conn);
-        end;
-      finally
-        tt.Free;
-      end;
+  try
+    for i:=0 to tt.Count -1 do
+    begin
+      EnsureConnected(frmMenu.conn);
+      ExecSQLDirect(frmMenu.conn, tt[i]);
+    end;
+  finally
+    tt.Free;
+  end;
 
-    //--- update eksekusi
+  //--- update eksekusi
 
-    s:='update tampung.tso_hdr set so_statuseksekusi=1 where so_nomor='+QuotedStr(edtNomorsosales.Text)+';';
-    xExecQuery(s,frmMenu.conn);
+  s:='update tampung.tso_hdr set so_statuseksekusi=1 where so_nomor='+QuotedStr(edtNomorsosales.Text)+';';
+  EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 end;
 
 
@@ -747,7 +751,7 @@ end;
 procedure TfrmPesanan.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
   if akode = '' then
@@ -871,14 +875,15 @@ end;
 procedure TfrmPesanan.insertketampungan(anomor:string);
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   A:=getbarisslip('SO');
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   s := 'select sod_brg_kode from tso_dtl where sod_so_nomor =' + Quot(anomor) ;
   tsql := xOpenQuery(s,frmMenu.conn) ;
   x:=0;
@@ -921,12 +926,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+        ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 
@@ -965,7 +971,7 @@ end;
 procedure TfrmPesanan.doslipSO3(anomor : string );
 var
   s: string ;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   anamabarang,TERBILANG : String;
   anilaipiutang:double;
@@ -1136,7 +1142,7 @@ end;
 procedure TfrmPesanan.Button1Click(Sender: TObject);
   var
     s:string;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     i:Integer;
 begin
 
@@ -1266,10 +1272,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 
 end;
 
@@ -1280,10 +1286,11 @@ begin
   try
   s:='update tso_hdr set so_sls_kode='+Quot(cxLookupSales.EditValue)
    + ' where so_nomor = ' + Quot(edtNomor.Text)+ ';';
-   xExecQuery(s,frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
    finally
      ShowMessage('Update Id sales berhasil');
-   xCommit(frmMenu.conn);
+   
   end;
 
 end;
@@ -1343,7 +1350,7 @@ procedure TfrmPesanan.clHargaPropertiesValidate(Sender: TObject;
   i:integer;
   aharga:Double;
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   aharga:=0;
    s:='select ifnull(MST_HARGABELI,0) from tmasterstok where mst_brg_kode= ' + Quot(CDS.Fieldbyname('sku').AsString)
@@ -1387,7 +1394,7 @@ end;
 procedure TfrmPesanan.doslipSO2(anomor : string );
 var
   s: string ;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   anamabarang,TERBILANG : String;
   anilaipiutang:double;
@@ -1580,7 +1587,7 @@ end;
 
 function TfrmPesanan.ceklocked(akode:string):boolean;
 var s:String;
-tsql :TSQLQuery;
+tsql :TmyQuery;
 begin
       Result := False;
     S := 'select * '
@@ -1602,7 +1609,7 @@ end;
 procedure TfrmPesanan.doslipSO4(anomor : string );
 var
   s: string ;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   anamabarang,TERBILANG : String;
   anilaipiutang:double;

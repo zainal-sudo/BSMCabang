@@ -1,6 +1,6 @@
 object frmLapBulananMarketing2: TfrmLapBulananMarketing2
-  Left = 323
-  Top = 13
+  Left = 261
+  Top = 99
   AutoScroll = False
   Caption = 'Laporan Sales Bulanan Marketing'
   ClientHeight = 582
@@ -3722,7 +3722,7 @@ object frmLapBulananMarketing2: TfrmLapBulananMarketing2
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -3784,5 +3784,9 @@ object frmLapBulananMarketing2: TfrmLapBulananMarketing2
     PixelsPerInch = 96
     object cxStyle2: TcxStyle
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 496
+    Top = 272
   end
 end

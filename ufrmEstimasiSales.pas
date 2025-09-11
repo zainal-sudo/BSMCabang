@@ -10,7 +10,8 @@ uses
   DBClient, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage,
   cxEdit, DB, cxDBData, cxSpinEdit, cxButtonEdit, cxTextEdit, cxGridLevel,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxClasses,
-  cxControls, cxGridCustomView, cxGrid, AdvEdBtn, AdvCombo, cxCurrencyEdit,DateUtils;
+  cxControls, cxGridCustomView, cxGrid, AdvEdBtn, AdvCombo, cxCurrencyEdit,DateUtils,
+  MyAccess;
 
 type
   TfrmEstimasiSales = class(TForm)
@@ -157,10 +158,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -174,7 +175,7 @@ end;
 procedure TfrmEstimasiSales.loaddata(akode:string) ;
 var
   ssql,s: string;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   i:Integer;
   akhir,awal : TDateTime;
   abulan,atahun : Integer;
@@ -404,8 +405,9 @@ begin
       + ' and esh_tahun = ' + edtTahun.Text
       + ' and esh_sls_kode = ' + Quot(edtKode.Text)
       + ' and esh_lock=0 ';
-       xExecQuery(s,frmMenu.conn);
-       xCommit(frmMenu.conn);
+         EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+       
 
    tt := TStringList.Create;
    s:='insert into testimasisales_hdr (esh_id,esh_sls_kode,esh_periode,esh_tahun)'
@@ -444,7 +446,8 @@ begin
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -481,10 +484,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmEstimasiSales.cxButton8Click(Sender: TObject);
@@ -515,10 +518,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 procedure TfrmEstimasiSales.edtKodeClickBtn(Sender: TObject);
@@ -622,7 +625,7 @@ end;
 function TfrmEstimasiSales.gettarget(akode:string): double;
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   Result := 0;
   s := 'select st_targetsales from tsalesmantarget where st_sls_kode = ' + Quot(akode)
@@ -641,7 +644,7 @@ function TfrmEstimasiSales.cekdata(atahun:string;abulan:string;akode:string):Boo
 var
   i:integer;
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result:=true;
         s:= ' select * from testimasisales_hdr where esh_sls_kode='+ Quot(akode)
@@ -678,7 +681,7 @@ function TfrmEstimasiSales.cekada(atahun:string;abulan:string;akode:string):Bool
 var
   i:integer;
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result:=false;
         s:= ' select * from testimasisales_hdr where esh_sls_kode='+ Quot(akode)

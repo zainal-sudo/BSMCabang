@@ -1,6 +1,6 @@
 object frmListJual3: TfrmListJual3
-  Left = 0
-  Top = 28
+  Left = 249
+  Top = 45
   AutoScroll = False
   Caption = 'List Penjualan per Outlet'
   ClientHeight = 582
@@ -3601,7 +3601,7 @@ object frmListJual3: TfrmListJual3
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -3660,5 +3660,9 @@ object frmListJual3: TfrmListJual3
       PrinterPage._dxLastMU_ = 1
       BuiltInReportLink = True
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 496
+    Top = 296
   end
 end

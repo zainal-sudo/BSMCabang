@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, AdvPanel, ComCtrls, StdCtrls, AdvEdit,SqlExpr, Menus,
   cxLookAndFeelPainters, cxButtons,StrUtils, cxGraphics, cxLookAndFeels,
-  dxSkinsCore, dxSkinsDefaultPainters;
+  dxSkinsCore, dxSkinsDefaultPainters, MyAccess;
 
 type
   TfrmCostCenter = class(TForm)
@@ -56,105 +56,100 @@ uses MAIN,uModuleConnection,uFrmbantuan,Ulib, DB;
 
 procedure TfrmCostCenter.refreshdata;
 begin
-  FID:='';
+  FID := '';
   edtKode.Enabled := True;
+  edtKode.Clear;
   edtNama.Clear;
   edtNama.SetFocus;
 end;
+
 procedure TfrmCostCenter.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-
   if Key = VK_F8 then
   begin
-      Release;
+    Release;
   end;
 
-
-  if Key= VK_F10 then
+  if Key = VK_F10 then
   begin
     try
       if (FLAGEDIT) and ( not cekedit(frmMenu.KDUSER,self.name)) then
-        begin
-           MessageDlg('Anda tidak berhak Edit di Modul ini',mtWarning, [mbOK],0);
-           Exit;
-        End;
-         if (not FLAGEDIT) and ( not cekinsert(frmMenu.KDUSER,self.name)) then
-        begin
-           MessageDlg('Anda tidak berhak Insert di Modul ini',mtWarning, [mbOK],0);;
-           Exit;
-        End;
+      begin
+        MessageDlg('Anda tidak berhak Edit di Modul ini',mtWarning, [mbOK],0);
+        Exit;
+      End;
       
+      if (not FLAGEDIT) and ( not cekinsert(frmMenu.KDUSER,self.name)) then
+      begin
+        MessageDlg('Anda tidak berhak Insert di Modul ini',mtWarning, [mbOK],0);;
+        Exit;
+      End;
+
       if MessageDlg('Yakin ingin simpan ?',mtCustom,
-                                  [mbYes,mbNo], 0)= mrNo
+                            [mbYes,mbNo], 0)= mrNo
       then Exit ;
 
       simpandata;
       refreshdata;
-   except
-     ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
-     Exit;
-   end;
-    xCommit(frmMenu.conn);
+    except
+      ShowMessage('Gagal Simpan');
+      Exit;
+    end;
   end;
 end;
 
 procedure TfrmCostCenter.FormKeyPress(Sender: TObject; var Key: Char);
 begin
-   if Key = #13 then
-      SelectNext(ActiveControl,True,True);
+  if Key = #13 then
+    SelectNext(ActiveControl,True,True);
 end;
 
 procedure TfrmCostCenter.loaddata(akode:string) ;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
-  s:= 'select cc_kode,cc_nama from tcostcenter where cc_kode = ' + Quot(akode) ;
-tsql := xOpenQuery(s,frmMenu.conn);
-with tsql do
-begin
-  try
-    if not Eof then
-    begin
-      FLAGEDIT := True;
-      edtKode.Enabled := False;
-      edtNama.Text := fieldbyname('cc_nama').AsString;
-      FID :=fieldbyname('cc_kode').Asstring;
-    end
-    else
-     FLAGEDIT := False;
-
-  finally
-    Free;
+  s:= 'select cc_kode, cc_nama from tcostcenter where cc_kode = ' + Quot(akode) ;
+  tsql := xOpenQuery(s,frmMenu.conn);
+  with tsql do
+  begin
+    try
+      if not Eof then
+      begin
+        FLAGEDIT := True;
+        edtKode.Enabled := False;
+        edtNama.Text := fieldbyname('cc_nama').AsString;
+        FID := fieldbyname('cc_kode').Asstring;
+      end
+      else
+        FLAGEDIT := False;
+    finally
+      Free;
+    end;
   end;
 end;
-
-end;
-
 
 procedure TfrmCostCenter.simpandata;
 var
   s:string;
 begin
-if FLAGEDIT then
-  s:='update tcostcenter set '
-    + ' cc_nama = ' + Quot(edtNama.Text)
-
-    + ' where cc_kode = ' + quot(FID) + ';'
-else
-begin
+  if FLAGEDIT then
+    s := ' update tcostcenter set '
+       + ' cc_nama = ' + Quot(edtNama.Text)
+       + ' where cc_kode = ' + quot(FID) + ';'
+  else
+  begin
+    s :=  ' insert into tcostcenter '
+        + ' (cc_kode,cc_nama) '
+        + ' values ( '
+        + Quot(edtKode.Text) + ','
+        + Quot(edtNama.Text)
+        + ');';
+  end;
   
-  s :=  ' insert into tcostcenter '
-             + ' (cc_kode,cc_nama) '
-             + ' values ( '
-             + Quot(edtKode.Text) + ','
-             + Quot(edtNama.Text)
-             + ');';
-end;
-  xExecQuery(s,frmmenu.conn);
-
+  EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn,s);
 end;
 
 
@@ -168,15 +163,14 @@ function TfrmCostCenter.getmaxkode:string;
 var
   s:string;
 begin
-  s:='select max(SUBSTR(cc_kode,4,2)) from tcostcenter';
+  s := 'select max(SUBSTR(cc_kode,4,2)) from tcostcenter';
   with xOpenQuery(s,frmMenu.conn) do
   begin
     try
       if Fields[0].AsString = '' then
-         result:= 'WH-'+RightStr(IntToStr(100+1),2)
+        result := 'WH-'+RightStr(IntToStr(100+1),2)
       else
-         result:= 'WH-'+RightStr(IntToStr(100+fields[0].AsInteger+1),2);
-
+        result := 'WH-'+RightStr(IntToStr(100+fields[0].AsInteger+1),2);
     finally
       free;
     end;
@@ -185,69 +179,68 @@ end;
 
 procedure TfrmCostCenter.cxButton1Click(Sender: TObject);
 begin
-    try
-      if (FLAGEDIT) and ( not cekedit(frmMenu.KDUSER,self.name)) then
-        begin
-           MessageDlg('Anda tidak berhak Edit di Modul ini',mtWarning, [mbOK],0);
-           Exit;
-        End;
-         if (not FLAGEDIT) and ( not cekinsert(frmMenu.KDUSER,self.name)) then
-        begin
-           MessageDlg('Anda tidak berhak Insert di Modul ini',mtWarning, [mbOK],0);;
-           Exit;
-        End;
+  try
+    if (FLAGEDIT) and ( not cekedit(frmMenu.KDUSER,self.name)) then
+    begin
+      MessageDlg('Anda tidak berhak Edit di Modul ini',mtWarning, [mbOK],0);
+      Exit;
+    End;
 
-      if MessageDlg('Yakin ingin simpan ?',mtCustom,
-                                  [mbYes,mbNo], 0)= mrNo
-      then Exit ;
+    if (not FLAGEDIT) and ( not cekinsert(frmMenu.KDUSER,self.name)) then
+    begin
+      MessageDlg('Anda tidak berhak Insert di Modul ini',mtWarning, [mbOK],0);;
+      Exit;
+    End;
 
-      simpandata;
-      refreshdata;
-   except
-     ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
-     Exit;
-   end;
-    xCommit(frmMenu.conn);
+    if MessageDlg('Yakin ingin simpan ?',mtCustom,
+                          [mbYes,mbNo], 0)= mrNo
+    then Exit ;
+
+    simpandata;
+    refreshdata;
+  except
+    ShowMessage('Gagal Simpan');
+    Exit;
+  end;
 end;
 
 procedure TfrmCostCenter.cxButton8Click(Sender: TObject);
 begin
-Release;
+  Release;
 end;
 
 procedure TfrmCostCenter.cxButton2Click(Sender: TObject);
 begin
-   try
-      if (FLAGEDIT) and ( not cekedit(frmMenu.KDUSER,self.name)) then
-        begin
-           MessageDlg('Anda tidak berhak Edit di Modul ini',mtWarning, [mbOK],0);
-           Exit;
-        End;
-         if (not FLAGEDIT) and ( not cekinsert(frmMenu.KDUSER,self.name)) then
-        begin
-           MessageDlg('Anda tidak berhak Insert di Modul ini',mtWarning, [mbOK],0);;
-           Exit;
-        End;
+  try
+    if (FLAGEDIT) and ( not cekedit(frmMenu.KDUSER,self.name)) then
+    begin
+      MessageDlg('Anda tidak berhak Edit di Modul ini',mtWarning, [mbOK],0);
+      Exit;
+    End;
 
-      if MessageDlg('Yakin ingin simpan ?',mtCustom,
-                                  [mbYes,mbNo], 0)= mrNo
-      then Exit ;
+    if (not FLAGEDIT) and ( not cekinsert(frmMenu.KDUSER,self.name)) then
+    begin
+      MessageDlg('Anda tidak berhak Insert di Modul ini',mtWarning, [mbOK],0);;
+      Exit;
+    End;
 
-      simpandata;
-      refreshdata;
-   except
-     ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
-     Exit;
-   end;
-    xCommit(frmMenu.conn);
-    Release;
+    if MessageDlg('Yakin ingin simpan ?',mtCustom,
+                            [mbYes,mbNo], 0)= mrNo
+    then Exit ;
+
+    simpandata;
+    refreshdata;
+  except
+    ShowMessage('Gagal Simpan');
+    Exit;
+  end;
+
+  Release;
 end;
 
 procedure TfrmCostCenter.edtKodeExit(Sender: TObject);
 begin
-loaddata(edtKode.Text);
+  loaddata(edtKode.Text);
 end;
 
 end.

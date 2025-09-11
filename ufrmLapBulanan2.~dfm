@@ -432,7 +432,9 @@ object frmLapBulanan2: TfrmLapBulanan2
             '2017'
             '2018'
             '2019'
-            '2020')
+            '2020'
+            '2021'
+            '2022')
         end
       end
     end

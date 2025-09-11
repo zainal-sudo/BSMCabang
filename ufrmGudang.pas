@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, AdvPanel, ComCtrls, StdCtrls, AdvEdit,SqlExpr, Menus,
   cxLookAndFeelPainters, cxButtons,StrUtils, cxGraphics, cxLookAndFeels,
-  dxSkinsCore, dxSkinsDefaultPainters;
+  dxSkinsCore, dxSkinsDefaultPainters, MyAccess;
 
 type
   TfrmGudang = class(TForm)
@@ -98,10 +98,8 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
      Exit;
    end;
-    xCommit(frmMenu.conn);
   end;
 end;
 
@@ -114,7 +112,7 @@ end;
 procedure TfrmGudang.loaddata(akode:string) ;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   s:= 'select gdg_kode,gdg_nama,gdg_keterangan,gdg_penanggungjawab from tgudang where gdg_kode = ' + Quot(akode) ;
 tsql := xOpenQuery(s,frmMenu.conn);
@@ -144,28 +142,28 @@ procedure TfrmGudang.simpandata;
 var
   s:string;
 begin
-if FLAGEDIT then
-  s:='update tgudang set '
-    + ' gdg_nama = ' + Quot(edtNama.Text) + ','
-    + ' gdg_keterangan = ' + Quot(edtKeterangan.Text) + ','
-    + ' gdg_penanggungjawab = ' + Quot(edtPenanggungjawab.Text)
-    + ' where gdg_kode = ' + quot(FID) + ';'
-else
-begin
-  edtKode.Text := getmaxkode;
-  s :=  ' insert into tgudang '
-             + ' (gdg_kode,gdg_nama,gdg_penanggungjawab,gdg_keterangan) '
-             + ' values ( '
-             + Quot(edtKode.Text) + ','
-             + Quot(edtNama.Text) + ','
-             + Quot(edtPenanggungjawab.Text)+','
-             + Quot(edtKeterangan.Text)
-             + ');';
-end;
-  xExecQuery(s,frmmenu.conn);
+  if FLAGEDIT then
+    s:='update tgudang set '
+      + ' gdg_nama = ' + Quot(edtNama.Text) + ','
+      + ' gdg_keterangan = ' + Quot(edtKeterangan.Text) + ','
+      + ' gdg_penanggungjawab = ' + Quot(edtPenanggungjawab.Text)
+      + ' where gdg_kode = ' + quot(FID) + ';'
+  else
+  begin
+    edtKode.Text := getmaxkode;
+    s :=  ' insert into tgudang '
+               + ' (gdg_kode,gdg_nama,gdg_penanggungjawab,gdg_keterangan) '
+               + ' values ( '
+               + Quot(edtKode.Text) + ','
+               + Quot(edtNama.Text) + ','
+               + Quot(edtPenanggungjawab.Text)+','
+               + Quot(edtKeterangan.Text)
+               + ');';
+  end;
 
+  EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 end;
-
 
 procedure TfrmGudang.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
@@ -214,10 +212,8 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
      Exit;
    end;
-    xCommit(frmMenu.conn);
 end;
 
 procedure TfrmGudang.cxButton8Click(Sender: TObject);
@@ -247,11 +243,9 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
      Exit;
    end;
-    xCommit(frmMenu.conn);
-    Release;
+   Release;
 end;
 
 end.

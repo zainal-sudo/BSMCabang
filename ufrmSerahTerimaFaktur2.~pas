@@ -178,10 +178,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmSerahTerimaFaktur2.cxButton8Click(Sender: TObject);
@@ -216,10 +216,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -323,7 +323,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
      tt := TStringList.Create;
@@ -350,7 +351,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -378,7 +380,7 @@ end;
 procedure TfrmSerahTerimaFaktur2.loaddataInvoice(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
 
@@ -442,7 +444,7 @@ end;
 procedure TfrmSerahTerimaFaktur2.loaddataall(akode : string);
 var
   s: string ;
-  tsql,tsql2 : TSQLQuery;
+  tsql,tsql2 : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtyterima : Integer;
@@ -470,8 +472,8 @@ begin
             dttanggal.DateTime := fieldbyname('sth2_tanggal').AsDateTime;
 
             edtmemo.Text := fieldbyname('sth2_memo').AsString;
-            edtpenyerah.text := fieldbyname('sth2_serah').AsString;
-            cxLookupuser.EditValue  := fieldbyname('sth2_terima').AsString;
+
+            cxLookupSales.EditValue  := fieldbyname('sth2_sls_kode').AsString;
 
             i:=1;
              s := ' select sls_nama Salesman,fp_nomor,fp_tanggal,fp_jthtempo,fp_taxamount,fp_amount,FP_DP, '
@@ -572,7 +574,7 @@ end;
 procedure TfrmSerahTerimaFaktur2.doslip2(anomor : string );
 var
   aserah,aterima,s: string ;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
   i:integer;
 //  ftsreport : TTSReport;
 begin
@@ -656,7 +658,7 @@ procedure TfrmSerahTerimaFaktur2.edtSalesmanExit(Sender: TObject);
 var
   s:string;
   i:integer;
-  tsql2:TSQLQuery;
+  tsql2:TmyQuery;
 begin
 
 

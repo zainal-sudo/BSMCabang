@@ -27,7 +27,7 @@ uses
   dxSkinOffice2007Green, dxSkinOffice2007Pink, dxSkinOffice2007Silver,
   dxSkinPumpkin, dxSkinSeven, dxSkinSharp, dxSkinSilver, dxSkinSpringTime,
   dxSkinStardust, dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue,
-  DBAccess, MyAccess;
+  DBAccess, MyAccess, MemDS;
 
 type
   TfrmLapBulanan4 = class(TForm)
@@ -41,7 +41,7 @@ type
     SaveDialog1: TSaveDialog;
     TePanel3: TTePanel;
     dtstprvdr1: TDataSetProvider;
-    sqlqry1: TSQLQuery;
+    sqlqry2: TSQLQuery;
     ds2: TDataSource;
     ds3: TClientDataSet;
     cxStyleRepository1: TcxStyleRepository;
@@ -92,6 +92,7 @@ type
     clAllratio: TcxGridDBBandedColumn;
     newcustomer: TcxGridDBBandedColumn;
     cxRSKLINIK: TcxGridDBBandedColumn;
+    sqlqry1: TMyQuery;
 
     procedure FormDblClick(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
@@ -250,7 +251,7 @@ var
   s,ssql:string;
   capaibulanini : double;
   totaltarget : double;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 akhir,akhir2 : TDateTime;
 begin
       if  cbbBulan.itemindex <> 0 then
@@ -275,7 +276,7 @@ begin
         + ' ON sls_kode=st_sls_kode '
         + ' WHERE st_tahun='+ edttahun.text;
         ds3.Close;
-        sqlqry1.SQLConnection := frmMenu.conn;
+        sqlqry1.Connection := frmMenu.conn;
         sqlqry1.SQL.Text := ssql;
         ds3.open;
 // target

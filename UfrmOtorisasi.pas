@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Menus,uModuleConnection,Ulib,SqlExpr,AdvPanel,
   AdvEdBtn, AdvEdit, jpeg, cxLookAndFeelPainters, cxButtons, cxGraphics,
-  cxLookAndFeels, dxSkinsCore, dxSkinsDefaultPainters;
+  cxLookAndFeels, dxSkinsCore, dxSkinsDefaultPainters, MyAccess;
 
 type
   TfrmOtorisasi = class(TForm)
@@ -98,7 +98,7 @@ end;
 procedure TfrmOtorisasi.cxButton2Click(Sender: TObject);
 var
   sql, username, password: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
 //  username := Trim(edtUser.Text);
 //  password := Trim(edtpassword.Text);

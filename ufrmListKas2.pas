@@ -271,7 +271,8 @@ procedure TfrmListKas2.cxButton3Click(Sender: TObject);
    i:integer;
 begin
 s:='delete from tampungkasharian';
-xExecQuery(s,frmMenu.conn);
+  EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
   CDSMaster.First;
   tt := TStringList.Create;
   i:=1;
@@ -292,12 +293,13 @@ xExecQuery(s,frmMenu.conn);
     try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
       end;
-    xCommit(frmMenu.conn);
+    
 
   ftsreport := TTSReport.Create(nil);
   try

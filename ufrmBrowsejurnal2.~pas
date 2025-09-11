@@ -376,7 +376,7 @@ var
   ss,s:String ;
   tt:tstrings;
   i:integer;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
   conn2 :TSQLConnection;
 begin
   inherited;
@@ -403,7 +403,7 @@ begin
     begin
       if cekintransit(FieldByName('jur_no').AsString) then
       begin
-        ShowMessage('nomor ini kandungan akun kas intransit tidak dapat di proses');
+        ShowMessage('Nomor ini ADA Kandungan Akun Kas Intransit ,tidak dapat di proses');
         Exit;
       end;
 
@@ -488,7 +488,7 @@ end;
 function TfrmBrowseJurnal2.cekintransit(anomorjurnal:string):Boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := False;
   s:='select * from tjurnalitem where jurd_jur_no ='+ Quot(anomorjurnal)

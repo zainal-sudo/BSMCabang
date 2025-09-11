@@ -17,7 +17,7 @@ uses
   cxDataStorage, cxEdit, DB, cxDBData, FMTBcd, Provider, SqlExpr, ImgList,
   ComCtrls, StdCtrls, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
-  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, AdvEdit;
+  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, AdvEdit, MyAccess;
 
 type
   TfrmBrowseBarang = class(TfrmCxBrowse)
@@ -42,7 +42,7 @@ type
     procedure bacafile2;
 
   private
-    connpusat : TSQLConnection;
+    connpusat : TMyConnection;
     ahost2,auser2,apassword2,adatabase2 : string;
     { Private declarations }
   public
@@ -59,18 +59,19 @@ implementation
 procedure TfrmBrowseBarang.btnRefreshClick(Sender: TObject);
 begin
 
-  Self.SQLMaster := 'select brg_kode Kode ,brg_nama Nama,brg_satuan Satuan,ktg_nama Kategori,'
+  Self.SQLMaster := 'select *,stok_baik/Avgs_Sales_per_Bulan TOR from (select brg_kode Kode ,brg_nama Nama,brg_satuan Satuan,ktg_nama Kategori,'
   + ' gr_nama Tipe,brg_hrgjual HargaJual,'
   + ' (select sum(mst_stok_in-mst_stok_out) from tmasterstok where mst_brg_kode=brg_kode) Stok,'
   + ' brg_min_stok Min,brg_disc_sales Disc_Salesman,brg_merk Merk,brg_isproductfocus Product_Focus, '
   + ' (select mst_tanggal from tmasterstok where mst_brg_kode=brg_kode and mst_noreferensi like "%DO%" ORDER BY mst_tanggal desc limit 1 ) Last_Sale ,'
   + ' (select sum(mst_stok_in-mst_stok_out) from tmasterstok where mst_brg_kode=brg_kode and mst_gdg_kode="WH-01") Stok_Baik,'
   + ' (SELECT ifnull(SUM(fpd_qty),0)/3 FROM tfp_dtl inner join tfp_hdr on fp_nomor=fpd_fp_nomor   '
-  + ' WHERE fpd_brg_kode=brg_kode AND fp_tanggal >= DATE_ADD(now() , INTERVAL -90 DAY)) Avgs_Sales '
+  + ' WHERE fpd_brg_kode=brg_kode AND fp_tanggal >= DATE_ADD(now() , INTERVAL -90 DAY)) Avgs_Sales_per_Bulan '
 + ' from tbarang '
 + ' inner join tkategori on ktg_kode=brg_ktg_kode'
 + ' inner join tgroup on gr_kode=brg_gr_kode'
-+ ' where brg_nama like '+Quot('%'+edtNama.Text+'%');
++ ' where brg_nama like '+Quot('%'+edtNama.Text+'%')
++ ' ) final ';
 
 
 Self.SQLDetail := 'select mst_brg_kode Kode,mst_gdg_kode KD_Gudang,gdg_nama Gudang,mst_expired_date Expired ,sum(mst_stok_in-mst_stok_out) stok from tmasterstok inner join tgudang on gdg_kode=mst_gdg_kode'
@@ -150,16 +151,17 @@ begin
       then Exit ;
        s:='delete from tbarang '
         + ' where brg_kode = ' + quot(CDSMaster.FieldByname('KODE').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
       CDSMaster.Delete;
    except
      MessageDlg('Gagal Hapus',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 
 end;
 
@@ -194,12 +196,12 @@ procedure TfrmBrowseBarang.cxButton9Click(Sender: TObject);
 var
   ss,s:String;
   i:integer;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
   tt:TStrings;
 begin
   inherited;
 
-  connpusat := xCreateConnection(ctMySQL,aHost2,aDatabase2,auser2,apassword2);
+  connpusat := xCreateConnection(ctMySQL,aHost2,aDatabase2,auser2,apassword2, 3306);
   s:='SELECT brg_kode,brg_nama,brg_satuan,brg_ktg_kode,brg_gr_kode,brg_gdg_default,brg_isstok,brg_isexpired,brg_isaktif,brg_isproductfocus,date_create'
       + ' FROM bsm.tbarang WHERE date_create > '+quotd(startdate.Date);
   tsql :=  xOpenQuery(s,connpusat);
@@ -235,19 +237,20 @@ begin
   try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
       end;
-      xCommit(frmmenu.conn);
+      
 end;
 
 
 procedure TfrmBrowseBarang.bacafile2;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default1') +';';

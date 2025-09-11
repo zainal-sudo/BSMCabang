@@ -264,7 +264,7 @@ object frmHitungStok: TfrmHitungStok
   end
   object AdvPanel3: TAdvPanel
     Left = 0
-    Top = 502
+    Top = 501
     Width = 1129
     Height = 35
     Align = alBottom
@@ -556,7 +556,7 @@ object frmHitungStok: TfrmHitungStok
     Left = 0
     Top = 105
     Width = 1129
-    Height = 397
+    Height = 396
     Align = alClient
     BevelInner = bvRaised
     Color = clWhite
@@ -623,7 +623,7 @@ object frmHitungStok: TfrmHitungStok
       Left = 2
       Top = 2
       Width = 1125
-      Height = 393
+      Height = 392
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -637,6 +637,7 @@ object frmHitungStok: TfrmHitungStok
       LookAndFeel.NativeStyle = False
       object cxGrdMain: TcxGridDBTableView
         OnKeyDown = cxGrdMainKeyDown
+        NavigatorButtons.ConfirmDelete = False
         DataController.Filter.Options = [fcoCaseInsensitive]
         DataController.Summary.DefaultGroupSummaryItems = <>
         DataController.Summary.FooterSummaryItems = <>
@@ -708,6 +709,7 @@ object frmHitungStok: TfrmHitungStok
         end
       end
       object cxGrdDetail: TcxGridDBTableView
+        NavigatorButtons.ConfirmDelete = False
         DataController.Summary.DefaultGroupSummaryItems = <>
         DataController.Summary.FooterSummaryItems = <>
         DataController.Summary.SummaryGroups = <>

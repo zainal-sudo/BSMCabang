@@ -24,7 +24,7 @@ object frmPerusahaan: TfrmPerusahaan
     Left = 0
     Top = 0
     Width = 642
-    Height = 340
+    Height = 339
     Align = alClient
     Color = clWhite
     TabOrder = 0
@@ -903,7 +903,7 @@ object frmPerusahaan: TfrmPerusahaan
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 387
+    Top = 386
     Width = 642
     Height = 19
     Panels = <
@@ -919,7 +919,7 @@ object frmPerusahaan: TfrmPerusahaan
   end
   object AdvPanel3: TAdvPanel
     Left = 0
-    Top = 340
+    Top = 339
     Width = 642
     Height = 47
     Align = alBottom

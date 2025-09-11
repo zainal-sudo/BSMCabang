@@ -197,7 +197,7 @@ object frmTutupPeriode: TfrmTutupPeriode
       Top = 8
       Width = 108
       Height = 25
-      Caption = 'Tutup'
+      Caption = 'Proses'
       TabOrder = 0
       OnClick = Button1Click
     end
@@ -254,7 +254,9 @@ object frmTutupPeriode: TfrmTutupPeriode
         '2017'
         '2018'
         '2019'
-        '2020')
+        '2020'
+        '2021'
+        '2022')
     end
     object Button2: TButton
       Left = 434

@@ -1,6 +1,6 @@
 object frmKoreksiStok: TfrmKoreksiStok
-  Left = 0
-  Top = 168
+  Left = 368
+  Top = 164
   Width = 1281
   Height = 560
   Caption = 'Koreksi Stok'

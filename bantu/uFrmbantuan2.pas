@@ -151,7 +151,7 @@ end;
 procedure TfrmBantuan2.bacafile2;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default2') +';';

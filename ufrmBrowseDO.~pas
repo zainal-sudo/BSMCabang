@@ -27,6 +27,7 @@ type
     cxStyleRepository1: TcxStyleRepository;
     cxStyle1: TcxStyle;
     cxStyle2: TcxStyle;
+    cxButton9: TcxButton;
   procedure btnRefreshClick(Sender: TObject);
   procedure FormShow(Sender: TObject);
     procedure cxButton2Click(Sender: TObject);
@@ -40,6 +41,7 @@ type
     procedure cxGrdMasterStylesGetContentStyle(
       Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
       AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
+    procedure cxButton9Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -146,7 +148,7 @@ end;
 function TfrmBrowseDO.cekinvoice(anomor:string) : integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := 0;
   s:='select do_isinvoice from tdo_hdr where do_nomor =' + Quot(anomor) ;
@@ -190,27 +192,29 @@ begin
       then Exit ;
        s:='delete from tdo_dtl '
         + ' where dod_do_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
        s:='delete from tdo_hdr '
         + ' where do_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
       CDSMaster.Delete;
    except
      MessageDlg('Gagal Hapus',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 
 end;
 
 procedure TfrmBrowseDO.UpdateStatusKembali1Click(Sender: TObject);
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
    If CDSMaster.FieldByname('Nomor').IsNull then exit;
    If CDSMaster.FieldByname('kembali').AsString='0' then
@@ -228,8 +232,9 @@ begin
      CDSMaster.Post;
    end;
 
-   xExecQuery(s,frmMenu.conn);
-   xCommit(frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+   
    ShowMessage('Update Status Berhasil');
 
 
@@ -248,6 +253,12 @@ begin
   if (AColumn <> nil)  and (ARecord <> nil) and (AItem <> nil) and
      (cVarToFloat(ARecord.Values[AColumn.Index]) > 0) then
     AStyle := cxStyle1;
+end;
+
+procedure TfrmBrowseDO.cxButton9Click(Sender: TObject);
+begin
+  inherited;
+   frmDO.doslipbatch(CDSMaster.FieldByname('Nomor').AsString);
 end;
 
 end.

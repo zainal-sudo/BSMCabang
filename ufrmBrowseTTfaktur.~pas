@@ -69,7 +69,7 @@ end;
 procedure TfrmBrowseTTFaktur.FormShow(Sender: TObject);
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 
 begin
     ShowWindowAsync(Handle, SW_MAXIMIZE);
@@ -84,7 +84,7 @@ end;
 procedure TfrmBrowseTTFaktur.cxButton3Click(Sender: TObject);
 var
   s: string ;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   anamabarang: String;
   anilai : double;
@@ -265,32 +265,34 @@ begin
       then Exit ;
        s:='delete from '+adatabase+'.ttt_hdr '
         + ' where tt_nomor = ' + quot(CDSMaster.FieldByname('nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
        s:='delete from '+adatabase+'.ttt_dtl '
         + ' where ttd_tt_nomor = ' + quot(CDSMaster.FieldByname('nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
 
       CDSMaster.Delete;
    except
      MessageDlg('Gagal Hapus',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmBrowseTTFaktur.cxButton1Click(Sender: TObject);
 var
-  frmttfakur: Tfrmttfakur;
+  frmttfakur: TfrmTTFaktur;
 begin
   inherited;
   If CDSMaster.FieldByname('Nomor').IsNull then exit;
   if ActiveMDIChild.Caption <> 'TT Faktur' then
    begin
 //      ShowForm(TfrmBrowseBarang).Show;
-      frmttfakur  := frmmenu.ShowForm(Tfrmttfakur) as Tfrmttfakur;
+      frmttfakur  := frmmenu.ShowForm(TfrmTTFaktur) as TfrmTTFaktur;
       frmttfakur.ID := CDSMaster.FieldByname('Nomor').AsString;
       frmttfakur.FLAGEDIT := True;
       frmttfakur.edtnOMOR.Text := CDSMaster.FieldByname('Nomor').AsString;
@@ -298,6 +300,6 @@ begin
       
 
    end;
-   frmttfakur.Show;
+   frmTTFaktur.Show;
 end;
 end.

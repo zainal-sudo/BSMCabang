@@ -19,7 +19,8 @@ uses
   dxPSPrVwStd, dxPSPrVwAdv, dxPScxPageControlProducer,
   dxPScxEditorProducers, dxPScxExtEditorProducers, dxPScxCommon, dxPSCore,
   dxSkinsCore, dxSkinsDefaultPainters, dxSkinsdxBarPainter, AdvCombo,
-  cxCurrencyEdit, cxGridDBBandedTableView, cxTextEdit, dxPScxGrid6Lnk;
+  cxCurrencyEdit, cxGridDBBandedTableView, cxTextEdit, dxPScxGrid6Lnk,
+  MemDS, DBAccess, MyAccess;
 
 type
   TfrmLapYTD = class(TForm)
@@ -33,7 +34,7 @@ type
     SaveDialog1: TSaveDialog;
     TePanel3: TTePanel;
     dtstprvdr1: TDataSetProvider;
-    sqlqry1: TSQLQuery;
+    sqlqry2: TSQLQuery;
     ds2: TDataSource;
     ds3: TClientDataSet;
     cxStyleRepository1: TcxStyleRepository;
@@ -59,6 +60,7 @@ type
     cbbBulan: TAdvComboBox;
     cxGrid1DBBandedTableView1Column6: TcxGridDBBandedColumn;
     cxGrid1DBBandedTableView1Column7: TcxGridDBBandedColumn;
+    sqlqry1: TMyQuery;
     procedure FormDblClick(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
     procedure sbNewClick(Sender: TObject);
@@ -189,7 +191,7 @@ ssql:= ' seLECT st_tahun Tahun,case st_periode when 1 then "Januari" when 2 then
 + '  group by st_periode ) final';
 
         ds3.Close;
-        sqlqry1.SQLConnection := frmMenu.conn;
+        sqlqry1.Connection := frmMenu.conn;
         sqlqry1.SQL.Text := ssql;
         ds3.open;
 //        capaibulanini := cVarToFloat(TcxDBGridHelper(cxGrid1).GetFooterSummary('riilbulanini'))/ cVarToFloat(TcxDBGridHelper(cxGrid1).GetFooterSummary('targetbulanini'));

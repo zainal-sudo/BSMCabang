@@ -162,7 +162,7 @@ end;
 procedure TfrmBrowseEstimasiSales.loaddata ;
 var
   ssql,s: string;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   i:Integer;
   akhir,awal : TDateTime;
 begin
@@ -447,7 +447,7 @@ end;
 function TfrmBrowseEstimasiSales.gettarget(akode:string): double;
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   Result := 0;
   s := 'select st_targetsales from tsalesmantarget where st_sls_kode = ' + Quot(akode)
@@ -466,7 +466,7 @@ function TfrmBrowseEstimasiSales.cekdata(atahun:string;abulan:string;akode:strin
 var
   i:integer;
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result:=true;
         s:= ' select * from testimasisales_hdr where esh_sls_kode='+ Quot(akode)
@@ -586,7 +586,7 @@ end;
 procedure TfrmBrowseEstimasiSales.bacafile;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default4') +';';

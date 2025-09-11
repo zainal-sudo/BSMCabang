@@ -76,6 +76,7 @@ object frmLapBulananInkaso: TfrmLapBulananInkaso
           Align = alClient
           TabOrder = 0
           object cxGrid1DBBandedTableView1: TcxGridDBBandedTableView
+            NavigatorButtons.ConfirmDelete = False
             DataController.DataSource = ds2
             DataController.Summary.DefaultGroupSummaryItems = <>
             DataController.Summary.FooterSummaryItems = <
@@ -3606,30 +3607,10 @@ object frmLapBulananInkaso: TfrmLapBulananInkaso
     end
   end
   object cxVCLPrinter: TdxComponentPrinter
-    CurrentLink = cxVCLPrinterPivot
+    CurrentLink = cxVCLPrinterChart
     Version = 0
     Left = 200
     Top = 432
-    object cxVCLPrinterPivot: TcxPivotGridReportLink
-      PrinterPage.DMPaper = 1
-      PrinterPage.Footer = 200
-      PrinterPage.GrayShading = True
-      PrinterPage.Header = 200
-      PrinterPage.Margins.Bottom = 500
-      PrinterPage.Margins.Left = 500
-      PrinterPage.Margins.Right = 500
-      PrinterPage.Margins.Top = 500
-      PrinterPage.PageSize.X = 8500
-      PrinterPage.PageSize.Y = 11000
-      PrinterPage.ScaleMode = smFit
-      PrinterPage._dxMeasurementUnits_ = 0
-      PrinterPage._dxLastMU_ = 1
-      ReportDocument.CreationDate = 42850.396192129630000000
-      ReportFootnotes.Text = 'Manager'#13#10#13#10#13#10'Kusnan'
-      ReportTitle.Text = 'Laporan Penjualan BBM'#13#10
-      ShrinkToPageWidth = True
-      BuiltInReportLink = True
-    end
     object cxVCLPrinterChart: TdxGridReportLink
       PrinterPage.DMPaper = 1
       PrinterPage.Footer = 200

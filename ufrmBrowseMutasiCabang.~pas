@@ -48,7 +48,8 @@ implementation
 
 procedure TfrmBrowseMutasiCabang.btnRefreshClick(Sender: TObject);
 begin
-  Self.SQLMaster := 'select mutc_nomor Nomor,mutc_Tanggal Tanggal ,c.cbg_nama Asal,b.cbg_nama Tujuan,gdg_nama Gudang, mutc_keterangan Keterangan'
+  Self.SQLMaster := 'select mutc_nomor Nomor,mutc_Tanggal Tanggal ,c.cbg_nama Asal,b.cbg_nama Tujuan,gdg_nama Gudang, mutc_keterangan Keterangan,'
+                  + ' if(mutc_status=1,"Sudah Kirim Data","Belum") Realisasi'
                   + ' from tmutcab_hdr  a '
                   + ' inner join  tcabang b on b.cbg_kode=a.mutc_cbg_tujuan '
                   + ' inner join tcabang c on c.cbg_kode =a.mutc_cbg_asal '
@@ -115,12 +116,12 @@ begin
       frmMutasiCabang.FLAGEDIT := True;
       frmMutasiCabang.edtnOMOR.Text := CDSMaster.FieldByname('Nomor').AsString;
       frmMutasiCabang.loaddataALL(CDSMaster.FieldByname('Nomor').AsString);
-//      if CDSMaster.FieldByname('realisasi').AsString = 'Sudah' then
-//      begin
-//        ShowMessage('Transaksi ini sudah Realisasi,Tidak dapat di edit');
-//        frmMutasiCabang.cxButton2.Enabled :=False;
-//        frmMutasiCabang.cxButton1.Enabled :=False;
-//      end;
+      if CDSMaster.FieldByname('realisasi').AsString = 'Sudah Kirim Data' then
+      begin
+        ShowMessage('Transaksi ini sudah Kirim data,Tidak dapat di edit');
+        frmMutasiCabang.cxButton2.Enabled :=False;
+        frmMutasiCabang.cxButton1.Enabled :=False;
+      end;
    end;
    frmMutasiCabang.Show;
 end;
@@ -141,7 +142,7 @@ procedure TfrmBrowseMutasiCabang.cxButton4Click(Sender: TObject);
 var
   s:string;
   tt :TStrings;
-  tsql :TSQLQuery;
+  tsql :TmyQuery;
 begin
   inherited;
   if SaveDialog1.Execute then
@@ -222,8 +223,9 @@ begin
      tt.SaveToFile(SaveDialog1.FileName);
   end;
   s:='update tmutcab_hdr set mutc_status=1 where mutc_nomor ='+ Quot(CDSMaster.FieldByname('Nomor').AsString) + ';';
-   xExecQuery(s,frmMenu.conn);
-   xCommit(frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+   
   end;
 end;
 procedure TfrmBrowseMutasiCabang.cxButton5Click(Sender: TObject);

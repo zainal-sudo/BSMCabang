@@ -36,31 +36,30 @@ var
   frmBrowseSetingPacking: TfrmBrowseSetingPacking;
 
 implementation
-   uses ufrmSetingPacking,Ulib, MAIN, uModuleConnection;
+   uses ufrmSetingPacking, Ulib, MAIN, uModuleConnection;
 {$R *.dfm}
 
 procedure TfrmBrowseSetingPacking.btnRefreshClick(Sender: TObject);
 begin
-  Self.SQLMaster := 'select pck_nomor Nomor,pck_brg_kode Kode,pck_nama Nama'
+  Self.SQLMaster := ' select pck_nomor Nomor,pck_brg_kode Kode,pck_nama Nama'
                   + ' from tpacking_hdr ';
 
-  Self.SQLDetail := 'select pckd_pck_nomor Nomor,pckd_brg_kode Kode,brg_nama Nama,pckd_qty Qty'
-                    + ' from tpacking_dtl'
-                    + ' inner join tbarang on brg_kode=pckd_brg_kode '
-                    + ' order by pckd_pck_nomor ';
- Self.MasterKeyField := 'Nomor';
-   inherited;
-    cxGrdMaster.ApplyBestFit();
-    cxGrdMaster.Columns[0].Width :=80;
-    cxGrdMaster.Columns[1].Width :=80;
-    cxGrdMaster.Columns[2].Width :=200;
+  Self.SQLDetail := ' select pckd_pck_nomor Nomor,pckd_brg_kode Kode,brg_nama Nama,pckd_qty Qty'
+                  + ' from tpacking_dtl'
+                  + ' inner join tbarang on brg_kode=pckd_brg_kode '
+                  + ' order by pckd_pck_nomor ';
+  Self.MasterKeyField := 'Nomor';
 
-
+  inherited;
+  cxGrdMaster.ApplyBestFit();
+  cxGrdMaster.Columns[0].Width := 80;
+  cxGrdMaster.Columns[1].Width := 80;
+  cxGrdMaster.Columns[2].Width := 200;
 end;
 
 procedure TfrmBrowseSetingPacking.FormShow(Sender: TObject);
 begin
-    ShowWindowAsync(Handle, SW_MAXIMIZE);
+  ShowWindowAsync(Handle, SW_MAXIMIZE);
   inherited;
   btnRefreshClick(Self);
 end;
@@ -70,13 +69,14 @@ var
   frmsetingpacking: Tfrmsetingpacking;
 begin
   inherited;
-    if ActiveMDIChild.Caption <> 'Pemsetingan Biaya Promosi' then
-   begin
-      frmsetingpacking  := frmmenu.ShowForm(Tfrmsetingpacking) as Tfrmsetingpacking;
-      if frmsetingpacking.FLAGEDIT = False then
+  if ActiveMDIChild.Caption <> 'Pemsetingan Biaya Promosi' then
+  begin
+    frmsetingpacking := frmmenu.ShowForm(Tfrmsetingpacking) as Tfrmsetingpacking;
+    if frmsetingpacking.FLAGEDIT = False then
       frmsetingpacking.edtNomor.Text := frmsetingpacking.getmaxkode;
-   end;
-   frmsetingpacking.Show;
+  end;
+
+  frmsetingpacking.Show;
 end;
 
 procedure TfrmBrowseSetingPacking.cxButton1Click(Sender: TObject);
@@ -85,17 +85,18 @@ var
 begin
   inherited;
   If CDSMaster.FieldByname('Nomor').IsNull then exit;
+  
   if ActiveMDIChild.Caption <> 'Pemsetingan Biaya Promosi' then
-   begin
-//      ShowForm(TfrmBrowseBarang).Show;
-      frmsetingpacking  := frmmenu.ShowForm(Tfrmsetingpacking) as Tfrmsetingpacking;
-      frmsetingpacking.ID := CDSMaster.FieldByname('Nomor').AsString;
-      frmsetingpacking.FLAGEDIT := True;
-      frmsetingpacking.edtnOMOR.Text := CDSMaster.FieldByname('Nomor').AsString;
-      frmsetingpacking.loaddataall(CDSMaster.FieldByname('Nomor').AsString);
-
-   end;
-   frmsetingpacking.Show;
+  begin
+    //      ShowForm(TfrmBrowseBarang).Show;
+    frmsetingpacking := frmmenu.ShowForm(Tfrmsetingpacking) as Tfrmsetingpacking;
+    frmsetingpacking.ID := CDSMaster.FieldByname('Nomor').AsString;
+    frmsetingpacking.FLAGEDIT := True;
+    frmsetingpacking.edtnOMOR.Text := CDSMaster.FieldByname('Nomor').AsString;
+    frmsetingpacking.loaddataall(CDSMaster.FieldByname('Nomor').AsString);
+  end;
+  
+  frmsetingpacking.Show;
 end;
 
 procedure TfrmBrowseSetingPacking.cxButton6Click(Sender: TObject);

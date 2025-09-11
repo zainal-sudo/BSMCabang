@@ -24,7 +24,7 @@ object frmRekening: TfrmRekening
     Left = 0
     Top = 41
     Width = 492
-    Height = 284
+    Height = 283
     Align = alClient
     BevelInner = bvRaised
     Color = clWhite
@@ -265,7 +265,7 @@ object frmRekening: TfrmRekening
   end
   object AdvPanel3: TAdvPanel
     Left = 0
-    Top = 325
+    Top = 324
     Width = 492
     Height = 35
     Align = alBottom

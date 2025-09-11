@@ -17,7 +17,7 @@ uses
   cxDataStorage, cxEdit, DB, cxDBData, FMTBcd, Provider, SqlExpr, ImgList,
   ComCtrls, StdCtrls, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
-  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, AdvEdit;
+  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, AdvEdit, MyAccess;
 
 type
   TfrmBrowseTagihanEkspedisi = class(TfrmCxBrowse)
@@ -134,7 +134,7 @@ end;
 procedure TfrmBrowseTagihanEkspedisi.bacafile2;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default1') +';';

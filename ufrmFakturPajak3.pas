@@ -12,7 +12,8 @@ uses
   cxCustomData, cxFilter, cxData, cxDataStorage, DB, cxDBData, cxGridLevel,
   cxClasses, cxGridCustomView, cxGridCustomTableView, cxGridTableView,
   cxGridDBTableView, cxGrid, cxSpinEdit, cxCurrencyEdit, AdvEdBtn,DateUtils,
-  cxCalendar, cxCheckBox, cxButtonEdit, frxClass, frxExportPDF,comobj,ExcelXP;
+  cxCalendar, cxCheckBox, cxButtonEdit, frxClass, frxExportPDF,comobj,ExcelXP,
+  MyAccess;
 
 type
   TfrmFakturPajak3 = class(TForm)
@@ -227,7 +228,7 @@ end;
 procedure TfrmFakturPajak3.FormShow(Sender: TObject);
 var
   s:String;
-  tsqlheader:TSQLQuery;
+  tsqlheader:TmyQuery;
 begin
 refreshdata;
 
@@ -260,7 +261,7 @@ end;
 procedure TfrmFakturPajak3.btnRefreshClick(Sender: TObject);
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
   i:Integer;
 begin
   if chkManual.Checked then
@@ -331,7 +332,7 @@ var
   iCol2,jRow2 :integer;
   v   : Variant;
   ss,S:string;
-  tsql:tsqlquery;
+  tsql:TmyQuery;
 begin
 
   cds.first;

@@ -834,11 +834,4 @@ object frmMutasiGudang: TfrmMutasiGudang
       OnClick = HapusRecord1Click
     end
   end
-  object frxDotMatrixExport1: TfrxDotMatrixExport
-    GraphicFrames = False
-    SaveToFile = False
-    UseIniSettings = True
-    Left = 640
-    Top = 249
-  end
 end

@@ -23,7 +23,7 @@ object frmCostCenter: TfrmCostCenter
     Left = 0
     Top = 41
     Width = 492
-    Height = 284
+    Height = 283
     Align = alClient
     BevelInner = bvRaised
     Color = clWhite
@@ -226,7 +226,7 @@ object frmCostCenter: TfrmCostCenter
   end
   object AdvPanel3: TAdvPanel
     Left = 0
-    Top = 325
+    Top = 324
     Width = 492
     Height = 35
     Align = alBottom

@@ -319,10 +319,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmFP.cxButton8Click(Sender: TObject);
@@ -357,10 +357,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -558,7 +558,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
      tt := TStringList.Create;
    s:= ' delete from tfp_dtl '
@@ -593,7 +594,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -605,7 +607,7 @@ function TfrmFP.cekdata:Boolean;
 var
   i:integer;
   s,ss:string;
-  tsql,tsql2:TSQLQuery;
+  tsql,tsql2:TmyQuery;
   anetharga : Double;
   alastcost : Double;
   abiayapromosi,abiayapromosi2 : Double;
@@ -740,7 +742,7 @@ end;
 procedure TfrmFP.loaddataDO(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
   ahna,lval : double;
 begin
@@ -862,7 +864,7 @@ end;
 procedure TfrmFP.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtyterima : Integer;
@@ -1119,7 +1121,7 @@ end;
 procedure TfrmFP.chkDPClick(Sender: TObject);
 var
   s:string;
-  tsql :TSQLQuery ;
+  tsql :TmyQuery ;
   adp,ainvdp :double;
   anomorso :string;
 begin
@@ -1167,7 +1169,7 @@ end;
 procedure TfrmFP.chkCNClick(Sender: TObject);
 var
   s:string;
-  tsql :TSQLQuery ;
+  tsql :TmyQuery ;
   acn : Double;
   apotong : double;
 
@@ -1246,8 +1248,9 @@ begin
  if not cekcetak(anomor) then
  begin
    s:='update tfp_hdr set fp_iscetak=1 where fp_nomor = '+ Quot(anomor);
-   xExecQuery(s,frmMenu.conn);
-   xCommit(frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+   
  end
  else
  begin
@@ -1288,14 +1291,15 @@ end;
 procedure TfrmFP.insertketampungan(anomor:string);
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   a:=8;
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   s := 'select fpd_brg_kode,fpd_expired from tfp_dtl where fpd_fp_nomor =' + Quot(anomor) ;
   tsql := xOpenQuery(s,frmMenu.conn) ;
   x:=0;
@@ -1339,12 +1343,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 
@@ -1352,7 +1357,7 @@ end;
 procedure TfrmFP.doslip2(anomor : string );
 var
   s: string ;
-  tsqlheader,tsql2,tsql : TSQLQuery;
+  tsqlheader,tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   arekening,anamabarang,TERBILANG : String;
   anilaipiutang:double;
@@ -1363,8 +1368,9 @@ begin
  if not cekcetak(anomor) then
  begin
    s:='update tfp_hdr set fp_iscetak=1 where fp_nomor = '+ Quot(anomor);
-   xExecQuery(s,frmMenu.conn);
-   xCommit(frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+   
  end
  else
  begin
@@ -1605,7 +1611,7 @@ END;
 procedure TfrmFP.doslip4(anomor : string );
 var
   s: string ;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   arekening,anamabarang,TERBILANG : String;
   anilaipiutang:double;
@@ -1616,8 +1622,9 @@ begin
  if not cekcetak(anomor) then
  begin
    s:='update tfp_hdr set fp_iscetak=1 where fp_nomor = '+ Quot(anomor);
-   xExecQuery(s,frmMenu.conn);
-   xCommit(frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+   
  end
  else
  begin
@@ -1911,7 +1918,7 @@ END;
 procedure TfrmFP.doslip5(anomor : string );
 var
   s: string ;
-  tsqlheader,tsql2,tsql : TSQLQuery;
+  tsqlheader,tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   arekening,anamabarang,TERBILANG : String;
   anilaipiutang:double;
@@ -1922,8 +1929,9 @@ begin
    if not cekcetak(anomor) then
  begin
    s:='update tfp_hdr set fp_iscetak=1 where fp_nomor = '+ Quot(anomor);
-   xExecQuery(s,frmMenu.conn);
-   xCommit(frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+   
  end
  else
  begin
@@ -2220,7 +2228,7 @@ end;
 
 //var
 //  s: string ;
-//  tsql2,tsql : TSQLQuery;
+//  tsql2,tsql : TmyQuery;
 //  abaris,i,a:Integer;
 //  anamabarang,TERBILANG : String;
 //  anilaipiutang:double;
@@ -2231,8 +2239,9 @@ end;
 // if not cekcetak(anomor) then
 // begin
 //   s:='update tfp_hdr set fp_iscetak=1 where fp_nomor = '+ Quot(anomor);
-//   xExecQuery(s,frmMenu.conn);
-//   xCommit(frmMenu.conn);
+//     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+//   
 // end
 // else
 // begin
@@ -2480,16 +2489,16 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 function TfrmFP.gettop(akode:String):integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select cus_top from tcustomer where cus_kode='+ Quot(akode) ;
@@ -2519,7 +2528,7 @@ end;
 function TfrmFP.getnilairetur(anomor:String):double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select sum(retj_amount) from tretj_hdr  where retj_fp_nomor = '+ Quot(anomor) ;
@@ -2538,7 +2547,7 @@ end;
 function TfrmFP.getdisccn(akodebarang : Integer ; akode:String):double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select fpd_cn from tfp_hdr inner join tfp_dtl on fpd_fp_nomor=fp_nomor '
@@ -2565,7 +2574,7 @@ end;
 function TfrmFP.gethargamin(akodebarang : Integer ):double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select brg_harga_min from tbarang where '
@@ -2586,7 +2595,7 @@ end;
 function TfrmFP.getlastcost(akodebarang : Integer ; atanggal:TDateTime ; anomordo :string ):double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select mst_hargabeli from tmasterstok where '
@@ -2609,7 +2618,7 @@ end;
 function TfrmFP.getnilairetur2(anomor:String):double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select sum(retj_amount) from tretj_hdr  where retj_fp_nomor = '+ Quot(anomor) ;
@@ -2717,7 +2726,7 @@ procedure TfrmFP.clHargaPropertiesValidate(Sender: TObject;
   i:integer;
   aharga:Double;
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   aharga:=0;
   s:='select ifnull(MST_HARGABELI,0) from tmasterstok where mst_brg_kode= ' + Quot(CDS.Fieldbyname('sku').AsString)
@@ -2752,7 +2761,7 @@ end;
 procedure TfrmFP.doslip3(anomor : string );
 var
   s: string ;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   anamabarang,TERBILANG : String;
   anilaipiutang:double;
@@ -2924,7 +2933,7 @@ END;
 function TfrmFP.getminimalmargin(akodebarang : Integer ):double;
 var
   s,s2:string;
-  tsql,tsql2:TSQLQuery;
+  tsql,tsql2:TmyQuery;
 begin
   result := 0;
 
@@ -2959,7 +2968,7 @@ end;
 procedure TfrmFP.doslipbatch(anomor : string );
 var
   s: string ;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   arekening,anamabarang,TERBILANG : String;
   anilaipiutang:double;
@@ -2971,8 +2980,9 @@ begin
    if not cekcetak(anomor) then
  begin
    s:='update tfp_hdr set fp_iscetak=1 where fp_nomor = '+ Quot(anomor);
-   xExecQuery(s,frmMenu.conn);
-   xCommit(frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+   
  end
  else
  begin

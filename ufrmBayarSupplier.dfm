@@ -456,7 +456,7 @@ object frmBayarSupplier: TfrmBayarSupplier
   end
   object AdvPanel3: TAdvPanel
     Left = 0
-    Top = 502
+    Top = 501
     Width = 1129
     Height = 35
     Align = alBottom
@@ -748,7 +748,7 @@ object frmBayarSupplier: TfrmBayarSupplier
     Left = 0
     Top = 177
     Width = 1129
-    Height = 325
+    Height = 324
     Align = alClient
     BevelInner = bvRaised
     Color = clWhite
@@ -815,7 +815,7 @@ object frmBayarSupplier: TfrmBayarSupplier
       Left = 2
       Top = 2
       Width = 1125
-      Height = 321
+      Height = 320
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -828,6 +828,7 @@ object frmBayarSupplier: TfrmBayarSupplier
       LookAndFeel.Kind = lfUltraFlat
       LookAndFeel.NativeStyle = False
       object cxGrdMain: TcxGridDBTableView
+        NavigatorButtons.ConfirmDelete = False
         DataController.Filter.Options = [fcoCaseInsensitive]
         DataController.Summary.DefaultGroupSummaryItems = <>
         DataController.Summary.FooterSummaryItems = <
@@ -931,6 +932,7 @@ object frmBayarSupplier: TfrmBayarSupplier
         end
       end
       object cxGrdDetail: TcxGridDBTableView
+        NavigatorButtons.ConfirmDelete = False
         DataController.Summary.DefaultGroupSummaryItems = <>
         DataController.Summary.FooterSummaryItems = <>
         DataController.Summary.SummaryGroups = <>

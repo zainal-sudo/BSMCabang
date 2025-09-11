@@ -215,7 +215,7 @@ s:= 'SELECT Marketing,Kode,Nama,Customer,Grup,GroupPF,Golongan,Bulan,Tahun,HET,H
 + ' IF(NET>=HRG_MIN,NET*(QTY-IFNULL(RETUR,0)),0) NILAIDIATASHET FROM ('
 + ' SELECT sls_nama Marketing ,brg_kode Kode,brg_nama Nama,cus_nama Customer,gc_nama Golongan,MONTH(fp_tanggal) Bulan,Year(fp_tanggal) Tahun,'
 + ' bpf_grup GroupPF,bpf_dept Grup,fpd_qty Qty,bpf_het HET,fpd_hrg_min hrg_min,bpf_hna HNA,'
-+ ' (SELECT ifnull(retjd_qty,0) FROM tretj_dtl'
++ ' (SELECT ifnull(sum(retjd_qty),0) FROM tretj_dtl'
 + ' INNER JOIN tretj_hdr ON retjd_retj_nomor=retj_nomor '
 + ' INNER JOIN tbarangpf ON bpf_brg_kode=retjd_brg_kode and bpf_periode = '+ formatdatetime('mm',startdate.DateTime) + ' and bpf_tahun='+formatdatetime('yyyy',startdate.DateTime)
 + ' where retj_tanggal between  '+quotd(startdate.DateTime)+'  AND  ' + QuotD(enddate.DateTime)

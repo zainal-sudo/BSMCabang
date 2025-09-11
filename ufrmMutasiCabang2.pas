@@ -13,7 +13,7 @@ uses
   dxSkinscxPCPainter, cxCustomData, cxFilter, cxData, cxDataStorage,
   cxDBData, cxSpinEdit, cxCalendar, Menus, cxButtons, cxGridLevel,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxClasses,
-  cxGridCustomView, cxGrid, cxButtonEdit, AdvEdBtn;
+  cxGridCustomView, cxGrid, cxButtonEdit, AdvEdBtn, MyAccess;
 
 type
   TfrmMutasiCabang2 = class(TForm)
@@ -200,7 +200,8 @@ begin
          + QuotD(cGetServerTime,True) + ','
          + Quot(frmMenu.KDUSER)+')';
    end;
-   xExecQuery(s,frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
    tt := TStringList.Create;
    s:= ' delete from tmutcabin_dtl '
       + ' where  mutcid_mutci_nomor =' + quot(FID) ;
@@ -230,7 +231,8 @@ while not CDS.Eof do
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -239,7 +241,7 @@ end;
 procedure TfrmMutasiCabang2.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
   if akode = '' then
@@ -334,14 +336,15 @@ end;
 procedure TfrmMutasiCabang2.insertketampungan;
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   a:=14;
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   s := 'select mutcid_BRG_kode from tmutcabin_dtl where mutcid_mutci_nomor =' + Quot(edtNomor.Text) ;
   tsql := xOpenQuery(s,frmMenu.conn) ;
   x:=0;
@@ -384,12 +387,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 
@@ -529,10 +533,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -563,10 +567,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 
@@ -679,7 +683,7 @@ end;
 procedure TfrmMutasiCabang2.bantuansku;
   var
     s:string;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     i:Integer;
 begin
     sqlbantuan := 'select brg_kode Sku, mst_expired_date Expired,brg_nama NamaBarang, brg_satuan Satuan,sum(mst_stok_in-mst_stok_out) stok from Tbarang '
@@ -746,7 +750,7 @@ procedure TfrmMutasiCabang2.clQTYPropertiesValidate(Sender: TObject;
   i:integer;
   aqtystok:integer;
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
 //  aqtystok:=0;
 //  s:='select sum(mst_stok_in-mst_stok_out) stok from Tbarang '
@@ -797,7 +801,7 @@ end;
 procedure TfrmMutasiCabang2.loaddataMutasi(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
 

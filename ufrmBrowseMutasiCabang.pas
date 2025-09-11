@@ -18,7 +18,7 @@ uses
   ComCtrls, StdCtrls, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
   cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, frxClass,
-  frxDMPExport;
+  frxDMPExport, MyAccess;
 
 type
   TfrmBrowseMutasiCabang = class(TfrmCxBrowse)
@@ -142,7 +142,7 @@ procedure TfrmBrowseMutasiCabang.cxButton4Click(Sender: TObject);
 var
   s:string;
   tt :TStrings;
-  tsql :TSQLQuery;
+  tsql :TmyQuery;
 begin
   inherited;
   if SaveDialog1.Execute then
@@ -223,8 +223,9 @@ begin
      tt.SaveToFile(SaveDialog1.FileName);
   end;
   s:='update tmutcab_hdr set mutc_status=1 where mutc_nomor ='+ Quot(CDSMaster.FieldByname('Nomor').AsString) + ';';
-   xExecQuery(s,frmMenu.conn);
-   xCommit(frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+   
   end;
 end;
 procedure TfrmBrowseMutasiCabang.cxButton5Click(Sender: TObject);

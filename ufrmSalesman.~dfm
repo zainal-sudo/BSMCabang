@@ -446,7 +446,7 @@ object frmSalesman: TfrmSalesman
   end
   object AdvPanel3: TAdvPanel
     Left = 0
-    Top = 571
+    Top = 570
     Width = 732
     Height = 35
     Align = alBottom
@@ -738,7 +738,7 @@ object frmSalesman: TfrmSalesman
     Left = 0
     Top = 201
     Width = 732
-    Height = 370
+    Height = 369
     Align = alClient
     BevelInner = bvRaised
     Color = clWhite
@@ -834,7 +834,10 @@ object frmSalesman: TfrmSalesman
         '2016'
         '2017'
         '2018'
-        '2019')
+        '2019'
+        '2020'
+        '2021'
+        '2022')
     end
     object AdvColumnGrid1: TAdvColumnGrid
       Left = 19

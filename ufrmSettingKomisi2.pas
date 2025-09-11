@@ -10,7 +10,7 @@ uses
   DBClient, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage,
   cxEdit, DB, cxDBData, cxSpinEdit, cxButtonEdit, cxTextEdit, cxGridLevel,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxClasses,
-  cxControls, cxGridCustomView, cxGrid, AdvEdBtn, cxCurrencyEdit;
+  cxControls, cxGridCustomView, cxGrid, AdvEdBtn, cxCurrencyEdit, MyAccess;
 
 type
   TfrmSettingKomisi2 = class(TForm)
@@ -154,10 +154,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -170,7 +170,7 @@ end;
 procedure TfrmSettingKomisi2.loaddata;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
   s:= 'select * from '
@@ -256,7 +256,8 @@ var
   tt:TStrings;
 begin
      s:= ' delete from tkomisisales_hdr ';
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
       s:='insert into tkomisisales_hdr (ksh_batas_inkaso,ksh_komisi_batas_inkaso,ksh_batas_penjualan)'
       + ' values ('
@@ -264,7 +265,8 @@ begin
       + floattostr(cStrToFloat(edtkomisibatasinkaso.Text)) + ','
       + floattostr(cStrToFloat(edtbatasJual.Text)) + ');';
 
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
    tt := TStringList.Create;
    s:= ' delete from tkomisisales_jual ';
@@ -315,7 +317,8 @@ begin
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -351,10 +354,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmSettingKomisi2.cxButton8Click(Sender: TObject);
@@ -384,10 +387,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 procedure TfrmSettingKomisi2.FormShow(Sender: TObject);

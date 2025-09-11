@@ -172,20 +172,22 @@ begin
       then Exit ;
      s:='delete from tjurnalitem '
         + ' where jurd_jur_no = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
      s:='delete from tjurnal '
         + ' where jur_no = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
       CDSMaster.Delete;
    except
      MessageDlg('Gagal Hapus',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 
 end;
 

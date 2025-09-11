@@ -79,16 +79,4 @@ inherited frmBrowseSerahTerimaFaktur: TfrmBrowseSerahTerimaFaktur
       end
     end
   end
-  object frxDotMatrixExport1: TfrxDotMatrixExport
-    UseFileCache = True
-    ShowProgress = True
-    OverwritePrompt = False
-    DataOnly = False
-    EscModel = 0
-    GraphicFrames = False
-    SaveToFile = False
-    UseIniSettings = True
-    Left = 704
-    Top = 265
-  end
 end

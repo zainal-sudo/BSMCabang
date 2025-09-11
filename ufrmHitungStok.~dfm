@@ -697,7 +697,6 @@ object frmHitungStok: TfrmHitungStok
           GroupSummaryAlignment = taCenter
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
-          Options.Focusing = False
         end
         object clExpired: TcxGridDBColumn
           Caption = 'Expired'

@@ -3656,7 +3656,7 @@ object frmListSaldoPiutang: TfrmListSaldoPiutang
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -3723,5 +3723,9 @@ object frmListSaldoPiutang: TfrmListSaldoPiutang
       Caption = 'Lihat Detail'
       OnClick = LihatFakturPenjualan1Click
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 480
+    Top = 288
   end
 end

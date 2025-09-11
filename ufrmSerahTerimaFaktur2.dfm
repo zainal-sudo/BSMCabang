@@ -712,11 +712,4 @@ object frmSerahTerimaFaktur2: TfrmSerahTerimaFaktur2
       Color = clYellow
     end
   end
-  object frxDotMatrixExport1: TfrxDotMatrixExport
-    GraphicFrames = False
-    SaveToFile = False
-    UseIniSettings = True
-    Left = 464
-    Top = 297
-  end
 end

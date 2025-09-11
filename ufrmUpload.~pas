@@ -70,7 +70,7 @@ var
   ttt,tt : TStrings;
 
   i:integer;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
 
  s:='update '
@@ -79,8 +79,9 @@ begin
   + ' inner join tfp_dtl on fpd_fp_nomor=fp_nomor and fpd_brg_kode=bpd_brg_kode '
   + ' set fpd_bp_rp=bpd_rupiah,fpd_bp_pr=bpd_persen '
   + ' where month(fp_tanggal)='+FormatDateTime('mm',dtTanggal.DateTime)+' and year(fp_tanggal)='+ FormatDateTime('yyyy',dtTanggal.DateTime);
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmMenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
 
   s:= 'update tfp_hdr b inner join ( '
 + ' select fp_nomor,sum((((100-fpd_discpr)*fpd_harga*(fpd_qty-ifnull(retjd_qty,0))/100)*fpd_bp_pr/100)+fpd_bp_rp*(fpd_qty-ifnull(retjd_qty,0))) nilai from tfp_hdr'
@@ -92,12 +93,14 @@ begin
 + ' group by fp_nomor) a on a.fp_nomor=b.FP_nomor '
 + ' set fp_biayarp=nilai ' ;
 
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmMenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
 
  // unlocked customer
   s:='update tcustomer set cus_locked=0;';
-  xExecQuery(s,frmMenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
  // locked customer
 
@@ -118,7 +121,8 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
 + ' GROUP BY fp_nomor,fp_tanggal,fp_memo,cus_nama) a'
 + ' WHERE (sisa_piutang- IFNULL(Retur,0)) > 1 AND tanggal <= curdate()'
 + ' and overdue > 60 and salesman not in  ("INTERNAL","SEWA","KONTRAK"));';
-  xExecQuery(s,frmMenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
   ttt := TStringList.Create;
   ttt.Append('use '+ frmMenu.aDatabase+';');
@@ -1042,7 +1046,7 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
     end;
       tsql.Free;
    end;
-    s:='SELECT jurd_jur_no,jurd_rek_kode,jurd_debet,jurd_kredit,jurd_nourut, jurd_cc_kode,jurd_keterangan'
+    s:='SELECT jurd_jur_no,jurd_rek_kode,jurd_debet,jurd_kredit,jurd_nourut, jurd_cc_kode,jurd_keterangan,jurd_nopol,jurd_cus_kode,jurd_ekspedisi'
       + ' FROM tjurnalitem inner join tjurnal on jurd_jur_no =jur_no'
       + ' WHERE (date_create between '+Quotd(dtTanggal.DateTime) +' and '+Quotd(dtTanggal2.DateTime+1)+')'
       + ' OR (date_modified between '+quotd(dttanggal.datetime)+' and '+Quotd(dtTanggal2.DateTime+1)+')'
@@ -1056,7 +1060,7 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
     begin
 
       ss:='insert ignore into tjurnalitem ('
-      + ' jurd_jur_no,jurd_rek_kode,jurd_debet,jurd_kredit,jurd_nourut,jurd_keterangan,jurd_cc_kode'
+      + ' jurd_jur_no,jurd_rek_kode,jurd_debet,jurd_kredit,jurd_nourut,jurd_keterangan,jurd_cc_kode,jurd_nopol,jurd_cus_kode,jurd_ekspedisi'
       + ' ) values ('
       + Quot(Fields[0].AsString) +','
       + Quot(Fields[1].Asstring) +','
@@ -1064,7 +1068,11 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
       + FloatToStr(Fields[3].AsFloat) +','
       + FloatToStr(Fields[4].AsFloat) +','
       + Quot(Fields[6].Asstring) +','
-      + Quot(Fields[5].Asstring) +');';
+      + Quot(Fields[5].Asstring) +','
+      + Quot(Fields[7].Asstring) +','
+      + Quot(Fields[8].Asstring) +','
+      + Quot(Fields[9].Asstring)
+      +');';
 
      tt.append(ss);
      ttt.Append(ss);
@@ -1167,8 +1175,9 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
       finally
         ttt.Free;
       end;
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmMenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   showmessage('file terbentuk di '+cGetReportPath+'KirimData_'+frmmenu.NMCABANG+FormatDateTime('yyymmdd',date)+'.sql');
 end;
 
@@ -1180,7 +1189,7 @@ end;
 procedure TfrmUpload.FormShow(Sender: TObject);
 var
   s:String;
-  tsql:tsqlquery;
+  tsql:TmyQuery;
 begin
 dtTanggal.datetime :=gettanggallog ;
 dtTanggal2.datetime :=gettanggallog ;
@@ -1219,7 +1228,7 @@ end;
 procedure TfrmUpload.bacafile;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default5') +';';
@@ -1242,7 +1251,7 @@ tsql:tsqlquery;
 procedure TfrmUpload.bacafile2;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default6') +';';

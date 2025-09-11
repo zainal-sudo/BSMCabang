@@ -12,7 +12,7 @@ uses
   cxCustomData, cxFilter, cxData, cxDataStorage, DB, cxDBData, cxGridLevel,
   cxClasses, cxGridCustomView, cxGridCustomTableView, cxGridTableView,
   cxGridDBTableView, cxGrid, cxSpinEdit, cxCurrencyEdit, AdvEdBtn,DateUtils,
-  cxCalendar, cxCheckBox;
+  cxCalendar, cxCheckBox, MyAccess;
 
 type
   TfrmBPB = class(TForm)
@@ -232,10 +232,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmBPB.cxButton8Click(Sender: TObject);
@@ -267,10 +267,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -453,7 +453,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
      tt := TStringList.Create;
@@ -485,7 +486,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -539,7 +541,7 @@ end;
 procedure TfrmBPB.loaddataPO(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
 
@@ -626,7 +628,7 @@ end;
 procedure TfrmBPB.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtyterima : Integer;
@@ -711,7 +713,7 @@ end;
 function TfrmBPB.getqtyPO(anomor:string;asku:integer): integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result :=0;
   s:='select pod_qty from tpo_dtl where pod_po_nomor ='+Quot(anomor)
@@ -732,7 +734,7 @@ end;
 function TfrmBPB.getstatusexpired(asku:integer): integer;
 var
   s:string  ;
-  tsql:TSQLQuery  ;
+  tsql:TmyQuery  ;
 begin
     Result :=0;
   s:='select brg_isexpired from tbarang where brg_kode ='+inttostr(asku);
@@ -752,7 +754,7 @@ end;
 function TfrmBPB.getqtyterima(anomor:string;asku:integer): integer;
 var
   s:string  ;
-  tsql:TSQLQuery  ;
+  tsql:TmyQuery  ;
 begin
   Result :=0;
   s:='select pod_qty_terima from tpo_dtl where pod_po_nomor ='+Quot(anomor)
@@ -831,14 +833,15 @@ end;
 procedure Tfrmbpb.insertketampungan(anomor:string);
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   a:=14;
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   s := 'select bpbd_brg_kode from tbpb_dtl where bpbd_bpb_nomor =' + Quot(anomor) ;
   tsql := xOpenQuery(s,frmMenu.conn) ;
   x:=0;
@@ -881,12 +884,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 

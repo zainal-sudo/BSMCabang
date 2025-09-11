@@ -113,16 +113,17 @@ begin
       then Exit ;
        s:='delete from tekspedisi '
         + ' where ekspedisi_id = ' + quot(CDSMaster.FieldByname('ekspedisi_id').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
       CDSMaster.Delete;
    except
      MessageDlg('Gagal Hapus',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 
 end;
 

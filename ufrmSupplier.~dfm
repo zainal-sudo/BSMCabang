@@ -200,14 +200,14 @@ object frmSupplier: TfrmSupplier
       Color = clSilver
       Enabled = True
       HintShowLargeText = False
-      MaxLength = 2
+      MaxLength = 10
       OleDropTarget = False
       OleDropSource = False
-      ReadOnly = True
       Signed = False
       TabOrder = 0
       Transparent = False
       Visible = True
+      OnExit = edtKodeExit
       OnKeyDown = FormKeyDown
       OnKeyPress = FormKeyPress
     end
@@ -700,29 +700,15 @@ object frmSupplier: TfrmSupplier
       OnKeyPress = FormKeyPress
     end
   end
-  object StatusBar1: TStatusBar
-    Left = 0
-    Top = 487
-    Width = 732
-    Height = 19
-    Panels = <
-      item
-        Width = 50
-      end
-      item
-        Text = 'F8 : Keluar  ; F10 : Simpan  ; '
-        Width = 50
-      end>
-  end
   object AdvPanel3: TAdvPanel
     Left = 0
-    Top = 452
+    Top = 471
     Width = 732
     Height = 35
     Align = alBottom
     BevelInner = bvRaised
     Color = clWhite
-    TabOrder = 2
+    TabOrder = 1
     UseDockManager = True
     AnchorHint = False
     AutoSize.Enabled = False
@@ -931,7 +917,7 @@ object frmSupplier: TfrmSupplier
     Align = alTop
     BevelInner = bvRaised
     Color = clWhite
-    TabOrder = 3
+    TabOrder = 2
     UseDockManager = True
     AnchorHint = False
     AutoSize.Enabled = False
@@ -1008,11 +994,11 @@ object frmSupplier: TfrmSupplier
     Left = 0
     Top = 265
     Width = 732
-    Height = 187
+    Height = 206
     Align = alClient
     BevelInner = bvRaised
     Color = clWhite
-    TabOrder = 4
+    TabOrder = 3
     UseDockManager = True
     AnchorHint = False
     AutoSize.Enabled = False

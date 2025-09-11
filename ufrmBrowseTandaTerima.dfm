@@ -105,12 +105,4 @@ inherited frmBrowseTandaTerima: TfrmBrowseTandaTerima
     object cxStyle2: TcxStyle
     end
   end
-  object frxDotMatrixExport1: TfrxDotMatrixExport
-    GraphicFrames = False
-    PageBreaks = False
-    SaveToFile = False
-    UseIniSettings = True
-    Left = 320
-    Top = 185
-  end
 end

@@ -84,7 +84,7 @@ end;
 procedure TfrmDownloadkunjungan.cxButton1Click(Sender: TObject);
 var
   ssql,s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   tt :TStrings;
   i:Integer;
 
@@ -190,12 +190,13 @@ s:='select a.* from tkunjungan_dtl a inner join tkunjungan b on a.id_hdr=b.id'
          try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
          end;
         finally
           tt.Free;
         end;
-          xCommit(frmMenu.conn);
+          
 
      end;
 
@@ -206,7 +207,7 @@ end;
 procedure TfrmDownloadkunjungan.bacafile2;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default4') +';';

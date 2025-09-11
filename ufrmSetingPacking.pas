@@ -12,7 +12,7 @@ uses
   cxCustomData, cxFilter, cxData, cxDataStorage, DB, cxDBData, cxGridLevel,
   cxClasses, cxGridCustomView, cxGridCustomTableView, cxGridTableView,
   cxGridDBTableView, cxGrid, cxSpinEdit, cxCurrencyEdit, AdvEdBtn,DateUtils,
-  cxCalendar, cxCheckBox, Buttons, cxButtonEdit;
+  cxCalendar, cxCheckBox, Buttons, cxButtonEdit, MyAccess;
 
 type
   TfrmSetingPacking = class(TForm)
@@ -70,11 +70,6 @@ type
     FCDSRekeningCash: TClientDataset;
     FFLAGEDIT: Boolean;
     FID: string;
-
-
-
-
-
     { Private declarations }
   protected
     FCDS: TClientDataSet;
@@ -82,14 +77,15 @@ type
     property CDS: TClientDataSet read GetCDS write FCDS;
     property FLAGEDIT: Boolean read FFLAGEDIT write FFLAGEDIT;
     property ID: string read FID write FID;
-
     { Public declarations }
   end;
 
 var
   frmSetingPacking: TfrmSetingPacking;
+  
 const
    NOMERATOR = 'CB';
+   
 implementation
 uses MAIN,uModuleConnection,uFrmbantuan,Ulib,uReport,ufrmfp;
 
@@ -97,52 +93,44 @@ uses MAIN,uModuleConnection,uFrmbantuan,Ulib,uReport,ufrmfp;
 
 procedure TfrmSetingPacking.refreshdata;
 begin
-  FID:='';
-
+  FID := '';
   FLAGEDIT := False;
-
   edtnomor.Text := getmaxkode;
-
   edtnama.Clear;
-
-
   initgrid;
-
 end;
+
 procedure TfrmSetingPacking.initgrid;
 begin
   CDS.EmptyDataSet;
   CDS.Append;
   CDS.Post;
-
 end;
+
 procedure TfrmSetingPacking.FormKeyPress(Sender: TObject; var Key: Char);
 begin
-   if Key = #13 then
-      SelectNext(ActiveControl,True,True);
+  if Key = #13 then
+  SelectNext(ActiveControl, True, True);
 end;
-
-
 
 procedure TfrmSetingPacking.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-   Action := caFree;
-   Release;
+  Action := caFree;
+  Release;
 end;
 
 function TfrmSetingPacking.getmaxkode:string;
 var
-  s:string;
+  s: String;
 begin
- s:='select max(right(pck_nomor,2)) from tpacking_hdr ' ;
-  with xOpenQuery(s,frmMenu.conn) do
+  s := 'select max(right(pck_nomor,2)) from tpacking_hdr';
+  with xOpenQuery(s, frmMenu.conn) do
   begin
     try
       if Fields[0].AsString = '' then
-         result:= RightStr(IntToStr(10+1),2)
+        result:= RightStr(IntToStr(10+1),2)
       else
-         result:= RightStr(IntToStr(10+fields[0].AsInteger+1),2);
-
+        result:= RightStr(IntToStr(10+fields[0].AsInteger+1),2);
     finally
       free;
     end;
@@ -151,77 +139,72 @@ end;
 
 procedure TfrmSetingPacking.cxButton1Click(Sender: TObject);
 begin
-    try
+  try
+    If not cekdata then exit;
 
-      If not cekdata then exit;
+    if (FLAGEDIT) and ( not cekedit(frmMenu.KDUSER, self.name)) then
+    begin
+      MessageDlg('Anda tidak berhak Edit di Modul ini', mtWarning, [mbOK],0);
+      Exit;
+    End;
 
-      if (FLAGEDIT) and ( not cekedit(frmMenu.KDUSER,self.name)) then
-        begin
-           MessageDlg('Anda tidak berhak Edit di Modul ini',mtWarning, [mbOK],0);
-           Exit;
-        End;
-         if (not FLAGEDIT) and ( not cekinsert(frmMenu.KDUSER,self.name)) then
-        begin
-           MessageDlg('Anda tidak berhak Insert di Modul ini',mtWarning, [mbOK],0);;
-           Exit;
-        End;
+    if (not FLAGEDIT) and ( not cekinsert(frmMenu.KDUSER, self.name)) then
+    begin
+      MessageDlg('Anda tidak berhak Insert di Modul ini', mtWarning, [mbOK],0);
+      Exit;
+    End;
 
-      if MessageDlg('Yakin ingin simpan ?',mtCustom,
-                                  [mbYes,mbNo], 0)= mrNo
-      then Exit ;
+    if MessageDlg('Yakin ingin simpan ?',mtCustom,
+                            [mbYes,mbNo], 0)= mrNo
+    then Exit;
 
-      simpandata;
-      refreshdata;
-   except
-     ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
-     Exit;
-   end;
-    xCommit(frmMenu.conn);
+    simpandata;
+    refreshdata;
+  except
+    ShowMessage('Gagal Simpan');
+    Exit;
+  end;
 end;
 
 procedure TfrmSetingPacking.cxButton8Click(Sender: TObject);
 begin
-Release;
+  Release;
 end;
 
 procedure TfrmSetingPacking.cxButton2Click(Sender: TObject);
 begin
-   try
+  try
+    If not cekdata then exit;
 
-     If not cekdata then exit;
+    if (FLAGEDIT) and ( not cekedit(frmMenu.KDUSER, self.name)) then
+    begin
+      MessageDlg('Anda tidak berhak Edit di Modul ini', mtWarning, [mbOK],0);
+      Exit;
+    End;
+    
+    if (not FLAGEDIT) and ( not cekinsert(frmMenu.KDUSER, self.name)) then
+    begin
+      MessageDlg('Anda tidak berhak Insert di Modul ini', mtWarning, [mbOK],0);
+      Exit;
+    End;
 
-      if (FLAGEDIT) and ( not cekedit(frmMenu.KDUSER,self.name)) then
-        begin
-           MessageDlg('Anda tidak berhak Edit di Modul ini',mtWarning, [mbOK],0);
-           Exit;
-        End;
-         if (not FLAGEDIT) and ( not cekinsert(frmMenu.KDUSER,self.name)) then
-        begin
-           MessageDlg('Anda tidak berhak Insert di Modul ini',mtWarning, [mbOK],0);;
-           Exit;
-        End;
+    if MessageDlg('Yakin ingin simpan ?',mtCustom,
+                            [mbYes,mbNo], 0)= mrNo
+    then Exit ;
 
-      if MessageDlg('Yakin ingin simpan ?',mtCustom,
-                                  [mbYes,mbNo], 0)= mrNo
-      then Exit ;
+    simpandata;
+    refreshdata;
+  except
+    ShowMessage('Gagal Simpan');
+    Exit;
+  end;
 
-      simpandata;
-      refreshdata;
-   except
-     ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
-     Exit;
-   end;
-    xCommit(frmMenu.conn);
-    Release;
+  Release;
 end;
 
 procedure TfrmSetingPacking.FormCreate(Sender: TObject);
 begin
-
-     TcxDBGridHelper(cxGrdMain).LoadFromCDS(CDS, False, False);
-
+  TcxDBGridHelper(cxGrdMain).LoadFromCDS(CDS, False, False);
 end;
 
 function TfrmSetingPacking.GetCDS: TClientDataSet;
@@ -230,18 +213,18 @@ begin
   begin
     FCDS := TClientDataSet.Create(Self);
     zAddField(FCDS, 'No', ftInteger, False);
-    zAddField(FCDS, 'Kode', ftString, False,20);
-    zAddField(FCDS, 'Nama', ftString, False,100);
+    zAddField(FCDS, 'Kode', ftString, False, 20);
+    zAddField(FCDS, 'Nama', ftString, False, 100);
     zAddField(FCDS, 'Qty', ftFloat, False);
     FCDS.CreateDataSet;
   end;
+  
   Result := FCDS;
 end;
 
-
 procedure TfrmSetingPacking.FormShow(Sender: TObject);
 begin
-refreshdata;
+  refreshdata;
 end;
 
 procedure TfrmSetingPacking.clNoGetDisplayText(Sender: TcxCustomGridTableItem;
@@ -256,196 +239,183 @@ end;
 
 procedure TfrmSetingPacking.HapusRecord1Click(Sender: TObject);
 begin
- If CDS.Eof then exit;
+  If CDS.Eof then exit;
   CDS.Delete;
   If CDS.Eof then initgrid;
 end;
 
-
 procedure TfrmSetingPacking.simpandata;
 var
-  s:string;
-  tt:TStrings;
-  I:Integer;
+  s: String;
+  tt: TStrings;
+  I: Integer;
 begin
-if FLAGEDIT then
-  s:='update tpacking_hdr set '
-    + ' pck_nama = ' + Quot(edtNama.Text)+','
-    + ' pck_brg_kode = ' + Quot(edtKode.Text)
-    + ' where pck_nomor = ' + quot(FID) + ';'
-else
-begin
-  edtNomor.Text := getmaxkode;
-  s :=  ' insert into tpacking_HDR '
-             + ' (pck_nomor,pck_brg_kode,pck_nama'
-             + ' ) '
-             + ' values ( '
-             + Quot(edtNomor.Text) + ','
-             + Quot(edtKode.Text) + ','
-             + Quot(edtNama.Text)
-             +');';
+  if FLAGEDIT then
+    s := ' update tpacking_hdr set '
+       + ' pck_nama = ' + Quot(edtNama.Text)+','
+       + ' pck_brg_kode = ' + Quot(edtKode.Text)
+       + ' where pck_nomor = ' + quot(FID) + ';'
+  else
+  begin
+    edtNomor.Text := getmaxkode;
+    s := ' insert into tpacking_HDR '
+       + ' (pck_nomor,pck_brg_kode,pck_nama'
+       + ' ) '
+       + ' values ( '
+       + Quot(edtNomor.Text) + ','
+       + Quot(edtKode.Text) + ','
+       + Quot(edtNama.Text)
+       +');';
+  end;
+  
+  EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
-end;
-  xExecQuery(s,frmmenu.conn);
-
-
-     tt := TStringList.Create;
-   s:= ' delete from tpacking_DTL '
-      + ' where  pckd_pck_nomor =' + quot(FID);
-
-   tt.Append(s);
-   CDS.First;
-    i:=1;
+  tt := TStringList.Create;
+  s := ' delete from tpacking_DTL '
+     + ' where  pckd_pck_nomor =' + quot(FID);
+  tt.Append(s);
+  CDS.First;
+  i:=1;
+  
   while not CDS.Eof do
   begin
-    S:='insert into tpacking_DTL (pckd_pck_nomor,pckd_brg_kode,pckd_qty) values ('
-      + Quot(edtNomor.Text) +','
-      + quot(CDS.FieldByName('kode').AsString) +','
-      + FloatToStr(CDS.FieldByName('qty').AsFloat)
-      + ');';
+    S := 'insert into tpacking_DTL (pckd_pck_nomor,pckd_brg_kode,pckd_qty) values ('
+       + Quot(edtNomor.Text) +','
+       + quot(CDS.FieldByName('kode').AsString) +','
+       + FloatToStr(CDS.FieldByName('qty').AsFloat)
+       + ');';
     tt.Append(s);
     CDS.Next;
     Inc(i);
   end;
 
-     try
-        for i:=0 to tt.Count -1 do
-        begin
-            xExecQuery(tt[i],frmMenu.conn);
-        end;
-      finally
-        tt.Free;
-      end;
-
-
+  try
+    for i:=0 to tt.Count -1 do
+    begin
+      EnsureConnected(frmMenu.conn);
+      ExecSQLDirect(frmMenu.conn, tt[i]);
+    end;
+  finally
+    tt.Free;
+  end;
 end;
 
 
 function TfrmSetingPacking.cekdata:Boolean;
 var
-  i:integer;
-  abayar,atotal : double;
+  i: integer;
+  abayar, atotal: double;
 begin
   result:=true;
-   i := 1;
-
-
+  i := 1;
 end;
-
-
 
 procedure TfrmSetingPacking.loaddataall(akode : string);
 var
-  s: string ;
-  tsql : TSQLQuery;
-  a,i:Integer;
-  aketemu:Boolean;
-  aqtypo,qtyterima : Integer;
+  s: String;
+  tsql: TmyQuery;
+  a,i: Integer;
+  aketemu: Boolean;
+  aqtypo, qtyterima: Integer;
 begin
   if akode = '' then
   begin
     flagedit := false;
     Exit ;
   end;
-  s := ' SELECT pck_nomor,pck_nama,pck_brg_kode,'
-+ ' pckd_brg_kode,brg_nama,pckd_qty'
-+ ' FROM tpacking_hdr '
-+ ' INNER JOIN tpacking_dtl a ON pck_nomor=pckd_pck_nomor '
-+ ' inner join tbarang on brg_kode=pckd_brg_kode '
-+ ' WHERE pck_nomor = '+ Quot(akode);
+  
+  s := ' SELECT pck_nomor, pck_nama, pck_brg_kode, '
+     + ' pckd_brg_kode, brg_nama, pckd_qty '
+     + ' FROM tpacking_hdr '
+     + ' INNER JOIN tpacking_dtl a ON pck_nomor = pckd_pck_nomor '
+     + ' inner join tbarang on brg_kode = pckd_brg_kode '
+     + ' WHERE pck_nomor = '+ Quot(akode);
 
-
-    tsql := xOpenQuery(s,frmMenu.conn) ;
-   try
-
-       with  tsql do
-       begin
-         if not eof then
-         begin
-            flagedit := True;
-            FID :=fieldbyname('pck_nomor').AsString;
-            edtnomor.Text := fieldbyname('pck_nomor').AsString;
-            edtkode.text := fieldbyname('pck_brg_kode').AsString;
-            edtNama.Text := fieldbyname('pck_nama').AsString;
-            i:=1;
-            CDS.EmptyDataSet;
-            while  not Eof do
-            begin
-                   CDS.Append;
-                    If CDS.State <> dsEdit then CDS.Edit;
-                    CDS.FieldByName('kode').AsString :=fieldbyname('pckd_brg_kode').Asstring;
-                    CDS.FieldByName('nama').AsString :=fieldbyname('brg_nama').Asstring;
-                    CDS.FieldByName('qty').AsFloat :=fieldbyname('pckd_qty').AsFloat;
-
-                    CDS.Post;
-                    Inc(i);
-                    next;
-            end ;
-        end
-        else
+  tsql := xOpenQuery(s,frmMenu.conn) ;
+  try
+    with  tsql do
+    begin
+      if not eof then
+      begin
+        flagedit := True;
+        FID := fieldbyname('pck_nomor').AsString;
+        edtnomor.Text := fieldbyname('pck_nomor').AsString;
+        edtkode.text := fieldbyname('pck_brg_kode').AsString;
+        edtNama.Text := fieldbyname('pck_nama').AsString;
+        i:=1;
+        CDS.EmptyDataSet;
+        while not Eof do
         begin
-          ShowMessage('Nomor  tidak di temukan');
+          CDS.Append;
+          If CDS.State <> dsEdit then CDS.Edit;
+          CDS.FieldByName('kode').AsString := fieldbyname('pckd_brg_kode').Asstring;
+          CDS.FieldByName('nama').AsString := fieldbyname('brg_nama').Asstring;
+          CDS.FieldByName('qty').AsFloat := fieldbyname('pckd_qty').AsFloat;
+          CDS.Post;
+          Inc(i);
+          next;
         end;
+      end
+      else
+      begin
+        ShowMessage('Nomor  tidak di temukan');
       end;
-   finally
-     tsql.Free;
-
-
-   end;
-
+    end;
+  finally
+    tsql.Free;
+  end;
 end;
 
 
 procedure TfrmSetingPacking.BitBtn1Click(Sender: TObject);
 var
-  awal,akhir :string;
-  i:Integer;
+  awal,akhir: String;
+  i: Integer;
 begin
   CDS.First;
-  i:=0 ;
-
+  i := 0;
 end;
 
 procedure TfrmSetingPacking.clKodePropertiesButtonClick(
   Sender: TObject; AButtonIndex: Integer);
 begin
- bantuansku;
+  bantuansku;
 end;
 
 procedure TfrmSetingPacking.bantuansku;
-  var
-    s:string;
-    tsql2,tsql:TSQLQuery;
-    i:Integer;
+var
+  s: String;
+  tsql2, tsql: TmyQuery;
+  i: Integer;
 begin
-    sqlbantuan := 'select brg_kode Kode, brg_nama NamaBarang, brg_satuan Satuan from Tbarang ';
+  sqlbantuan := 'select brg_kode Kode, brg_nama NamaBarang, brg_satuan Satuan from Tbarang ';
 
   Application.CreateForm(Tfrmbantuan,frmbantuan);
   frmBantuan.SQLMaster := SQLbantuan;
   frmBantuan.ShowModal;
+  
   if varglobal <> '' then
   begin
     If CDS.State <> dsEdit then
-       CDS.Edit;
+    CDS.Edit;
     CDS.FieldByName('kode').AsString := varglobal;
     CDS.FieldByName('Nama').AsString := varglobal1;
-
   end;
 end;
 
-
-
 procedure TfrmSetingPacking.edtKodeClickBtn(Sender: TObject);
 begin
-      sqlbantuan := 'select brg_kode Sku, brg_nama NamaBarang, brg_satuan Satuan  from Tbarang ';
+  sqlbantuan := 'select brg_kode Sku, brg_nama NamaBarang, brg_satuan Satuan  from Tbarang ';
   Application.CreateForm(Tfrmbantuan,frmbantuan);
   frmBantuan.SQLMaster := SQLbantuan;
   frmBantuan.ShowModal;
-   if varglobal <> '' then
-   begin
-     edtKode.Text := varglobal;
-     edtNama.Text := varglobal1;  
-   end;
+  
+  if varglobal <> '' then
+  begin
+    edtKode.Text := varglobal;
+    edtNama.Text := varglobal1;
+  end;
 end;
 
 end.

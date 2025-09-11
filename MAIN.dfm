@@ -1,6 +1,6 @@
 object frmMenu: TfrmMenu
-  Left = 472
-  Top = 223
+  Left = 442
+  Top = 218
   Width = 800
   Height = 560
   Caption = 'Inventory'

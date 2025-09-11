@@ -20,7 +20,8 @@ uses
   dxSkinMoneyTwins, dxSkinOffice2007Black, dxSkinOffice2007Blue,
   dxSkinOffice2007Green, dxSkinOffice2007Pink, dxSkinOffice2007Silver,
   dxSkinPumpkin, dxSkinSeven, dxSkinSharp, dxSkinSilver, dxSkinSpringTime,
-  dxSkinStardust, dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue;
+  dxSkinStardust, dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue,
+  MyAccess;
 
 type
   TfrmKoreksiStok = class(TForm)
@@ -195,7 +196,8 @@ begin
          + QuotD(cGetServerTime,True) + ','
          + Quot(frmMenu.KDUSER)+')';
    end;
-   xExecQuery(s,frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
    tt := TStringList.Create;
    s:= ' delete from tkor_dtl '
       + ' where  kord_korh_nomor =' + quot(FID) ;
@@ -228,7 +230,8 @@ while not CDS.Eof do
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
          end;
       finally
         tt.Free;
@@ -264,14 +267,15 @@ end;
 procedure TfrmKoreksiStok.insertketampungan(anomor:String);
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   a:=14;
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   s := 'select kord_BRG_kode,kord_expired from tkor_dtl where kord_korh_nomor =' + Quot(anomor) ;
   tsql := xOpenQuery(s,frmMenu.conn) ;
   x:=0;
@@ -315,12 +319,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 
@@ -447,10 +452,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -478,10 +483,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 
@@ -587,7 +592,7 @@ end;
 procedure TfrmKoreksiStok.bantuansku;
   var
     s:string;
-    tsql2,tsql:TSQLQuery;
+    tsql2,tsql:TmyQuery;
     i:Integer;
 begin
     sqlbantuan := 'select brg_kode Sku, mst_expired_date  Expired,brg_nama NamaBarang, mst_idbatch IdBatch,sum(mst_stok_in-mst_stok_out) stok from Tbarang '
@@ -672,7 +677,7 @@ end;
 procedure TfrmKoreksiStok.Button1Click(Sender: TObject);
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   s:='select brg_kode Kode,brg_nama Nama,brg_satuan Satuan,mst_expired_date Expired,'
       + ' gdg_nama Gudang,sum(mst_stok_in - mst_stok_out) Stok, '
@@ -802,7 +807,7 @@ end;
 procedure TfrmKoreksiStok.clExpiredPropertiesEditValueChanged(
   Sender: TObject);
   var
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     s:string;
     i:integer;
 begin
@@ -849,7 +854,7 @@ end;
 procedure TfrmKoreksiStok.Button3Click(Sender: TObject);
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   s:='SELECT *,harga*jml Nilai FROM ( '
   + ' SELECT hitd_brg_kode,brg_nama,hitd_satuan,sum(hitd_qty) jml,hitd_expired, '

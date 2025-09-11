@@ -128,7 +128,7 @@ procedure TfrmLapAbsensi.loaddataall ;
 var
   s: string;
   i:integer;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   aterjadwal,atidakterjadwal : Integer;
 begin
   s:= 'call absensifix('+quotd(startdate.date)+','+quotd(enddate.date)+','+quot(frmmenu.KDCABANG)+') ;';
@@ -264,7 +264,7 @@ end;
 procedure TfrmLapAbsensi.bacafile2;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default4') +';';

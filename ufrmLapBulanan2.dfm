@@ -3711,7 +3711,7 @@ object frmLapBulanan2: TfrmLapBulanan2
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -3774,5 +3774,9 @@ object frmLapBulanan2: TfrmLapBulanan2
     PixelsPerInch = 96
     object cxStyle2: TcxStyle
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 488
+    Top = 288
   end
 end

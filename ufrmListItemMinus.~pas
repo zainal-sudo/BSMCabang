@@ -182,10 +182,10 @@ begin
       s:= 'select mst_brg_kode Kode,brg_nama Nama,mst_noreferensi Nomor_DO,fp_nomor Nomor,fp_tanggal Tanggal,cus_nama Customer,mst_hargabeli hpp,net,brg_lastcost Lastcost from ('
         + ' select mst_brg_kode,brg_nama,mst_noreferensi,fp_nomor,fp_tanggal,fp_cus_kode,mst_hargabeli,'
         + ' fpd_harga - (fpd_harga*fpd_discpr/100) Net,brg_lastcost from tmasterstok'
-        + ' INNER join BSM.tbarang on brg_kode=mst_brg_kode'
+        + ' INNER join BSM.tbarang on brg_kode=mst_brg_kode and mst_tanggal between '+ QuotD(startdate.DateTime) + ' and ' + QuotD(enddate.DateTime)
         + ' inner join tfp_hdr on fp_do_nomor = mst_noreferensi'
         + ' inner join tfp_dtl on fpd_fp_nomor=fp_nomor and fpd_brg_kode=mst_brg_kode'
-        + ' where mst_noreferensi like "%DO%" and mst_tanggal between '+ QuotD(startdate.DateTime) + ' and ' + QuotD(enddate.DateTime)
+        + ' where mst_noreferensi like "%DO%" '
         + ' ) a inner join tcustomer on fp_cus_kode=cus_kode'
         + ' where net < mst_hargabeli and brg_lastcost is not null ' ;
 //

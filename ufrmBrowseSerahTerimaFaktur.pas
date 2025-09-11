@@ -18,7 +18,7 @@ uses
   ComCtrls, StdCtrls, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
   cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, frxClass,
-  frxDMPExport;
+  frxDMPExport, MyAccess;
 
 type
   TfrmBrowseSerahTerimaFaktur = class(TfrmCxBrowse)
@@ -178,8 +178,9 @@ begin
       then Exit ;
        s:='UPDATE tserahterimafaktur_hdr set sth_realisasi=1 '
         + ' where sth_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
-      xCommit(frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+      
       btnRefreshClick(self);
 
 end;
@@ -187,7 +188,7 @@ end;
 function TfrmBrowseSerahTerimaFaktur.cekrealisasi(akode:string):boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := False;
    S := 'select sth_realisasi from '

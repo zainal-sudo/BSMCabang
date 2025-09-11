@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, AdvPanel, ComCtrls, StdCtrls, AdvEdit,SqlExpr, Menus,
   cxLookAndFeelPainters, cxButtons,StrUtils, cxGraphics, cxLookAndFeels,
-  dxSkinsCore, dxSkinsDefaultPainters;
+  dxSkinsCore, dxSkinsDefaultPainters, MyAccess;
 
 type
   TfrmJenisKendaraan = class(TForm)
@@ -105,10 +105,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -121,7 +121,7 @@ end;
 procedure TfrmJenisKendaraan.loaddata(akode:string) ;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   s:= 'SELECT kend_nopol, kend_merk, kend_tipe, kend_bagian, kend_pic, kend_cabang FROM tkendaraan where kend_nopol = ' + Quot(akode) ;
 tsql := xOpenQuery(s,frmMenu.conn);
@@ -178,7 +178,8 @@ begin
              + Quot(edtCabang.Text)
              + ');';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 end;
 
@@ -230,10 +231,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmJenisKendaraan.cxButton8Click(Sender: TObject);
@@ -263,10 +264,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 

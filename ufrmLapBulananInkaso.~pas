@@ -15,12 +15,11 @@ uses
   cxGridChartView, cxCustomPivotGrid, cxDBPivotGrid, cxPC,
   cxPivotGridChartConnection, dxPSGlbl, dxPSUtl, dxPSEngn, dxPrnPg,
   dxBkgnd, dxWrap, dxPrnDev, dxPSCompsProvider, dxPSFillPatterns,
-  dxPSEdgePatterns, dxPSPDFExportCore, dxPSPDFExport, cxDrawTextUtils,
-  dxPSPrVwStd, dxPSPrVwAdv, dxPSPrVwRibbon, dxPScxPageControlProducer,
-  dxPScxPivotGridLnk, dxPScxGridLnk, dxPScxGridLayoutViewLnk,
+  dxPSEdgePatterns, cxDrawTextUtils,
+  dxPSPrVwStd, dxPSPrVwAdv, dxPScxPageControlProducer,
   dxPScxEditorProducers, dxPScxExtEditorProducers, dxPScxCommon, dxPSCore,
   dxSkinsCore, dxSkinsDefaultPainters, dxSkinsdxBarPainter, AdvCombo,
-  cxCurrencyEdit, cxGridDBBandedTableView;
+  cxCurrencyEdit, cxGridDBBandedTableView, dxPScxGrid6Lnk;
 
 type
   TfrmLapBulananInkaso = class(TForm)
@@ -41,7 +40,6 @@ type
     cxStyle1: TcxStyle;
     cxstyl1: TcxStyle;
     cxVCLPrinter: TdxComponentPrinter;
-    cxVCLPrinterPivot: TcxPivotGridReportLink;
     cxVCLPrinterChart: TdxGridReportLink;
     btnRefresh: TcxButton;
     Label1: TLabel;

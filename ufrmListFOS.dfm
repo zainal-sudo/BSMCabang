@@ -3814,7 +3814,7 @@ object frmListFOS: TfrmListFOS
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -3890,5 +3890,9 @@ object frmListFOS: TfrmListFOS
       Caption = 'Lihat Faktur Penjualan'
       OnClick = LihatFakturPenjualan1Click
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 496
+    Top = 296
   end
 end

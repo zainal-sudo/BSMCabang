@@ -185,10 +185,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmSetingBiayaPromosi.cxButton8Click(Sender: TObject);
@@ -221,10 +221,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -313,7 +313,8 @@ begin
              + Quot(cxLookupcustomer.EditValue)+');';
 
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
      tt := TStringList.Create;
@@ -339,7 +340,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -370,7 +372,7 @@ end;
 procedure TfrmSetingBiayaPromosi.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtyterima : Integer;
@@ -500,7 +502,7 @@ end;
 procedure TfrmSetingBiayaPromosi.bantuansku;
   var
     s:string;
-    tsql2,tsql:TSQLQuery;
+    tsql2,tsql:TmyQuery;
     i:Integer;
 begin
     sqlbantuan := 'select brg_kode Kode, brg_nama NamaBarang, brg_satuan Satuan from Tbarang ';
@@ -523,14 +525,14 @@ end;
 procedure TfrmSetingBiayaPromosi.BitBtn2Click(Sender: TObject);
 var
   s:string;
-  tsql: TSQLQuery;
+  tsql: TmyQuery;
 begin
   s:=' SELECT distinct brg_kode kode,brg_nama nama,BRG_SATUAN '
     + ' FROM tbarang INNER JOIN tfp_dtl  ON '
     + ' fpd_Brg_kode =brg_kode  '
     + ' inner join tfp_hdr on fp_nomor=fpd_fp_nomor '
     + ' WHERE brg_satuan NOT IN ("UNT","UNIT","UNI","SET")'
-    + ' fp_cus_kode = ' + Quot(cxLookupCustomer.EditValue);
+    + ' and fp_cus_kode = ' + Quot(cxLookupCustomer.EditValue);
 tsql := xOpenQuery(s,frmMenu.conn);
 
     with tsql do

@@ -213,10 +213,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmFakturPajak2.cxButton8Click(Sender: TObject);
@@ -251,10 +251,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -333,7 +333,8 @@ begin
 
        s:='delete from Tfakturpajak_HDR  '
           + ' where fp_nomor = ' + quot(CDS.FieldByName('Invoice').asstring) + ';';
-        xExecQuery(s,frmmenu.conn);
+          EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
         s :=  ' insert into Tfakturpajak_HDR '
                    + ' (fp_nomor,fp_do_nomor,fp_tanggal,fp_fakturpajak,fp_tanggalpajak,fp_cus_kode,fp_disc_faktur,'
                    + ' fp_disc_fakturpr,fp_amount,fp_taxamount,fp_istax,ismanual,date_create,user_create) '
@@ -353,7 +354,8 @@ begin
                    + QuotD(cGetServerTime,True) + ','
                    + Quot(frmMenu.KDUSER)+')';
 
-        xExecQuery(s,frmmenu.conn);
+          EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
            tt := TStringList.Create;
          s:= ' delete from tfakturpajak_dtl '
@@ -384,7 +386,8 @@ begin
            try
               for i:=0 to tt.Count -1 do
               begin
-                  xExecQuery(tt[i],frmMenu.conn);
+                  EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
               end;
             finally
               tt.Free;
@@ -423,16 +426,16 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmFakturPajak2.btnRefreshClick(Sender: TObject);
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
   i:Integer;
 begin
   if chkManual.Checked then
@@ -466,6 +469,7 @@ begin
       + ' left join tfakturpajak_hdr x on a.fp_nomor=x.fp_nomor '
       + ' left join tcustomer on cus_kode=a.fp_cus_kode '
       + ' where  a.fp_istax = 1 '
+      + ' and a.fp_isecer = 0 '
       + ' and a.fp_tanggal between '+ quotd(dttanggal.datetime) + ' and ' + quotd(dttanggal2.datetime)
       + ' and fp_fakturpajak is null'
       + ' order by fp_nomor ';

@@ -214,11 +214,11 @@ begin
 
         end;
 
-        cxGrid1DBTableView1.Columns[4].Summary.groupFooterKind:=skSum;
-        cxGrid1DBTableView1.Columns[4].Summary.groupFooterFormat:='###,###,###,###';
+        cxGrid1DBTableView1.Columns[7].Summary.groupFooterKind:=skSum;
+        cxGrid1DBTableView1.Columns[7].Summary.groupFooterFormat:='###,###,###,###';
 
-        cxGrid1DBTableView1.Columns[4].Summary.FooterKind:=skSum;
-        cxGrid1DBTableView1.Columns[4].Summary.FooterFormat:='###,###,###,###';
+        cxGrid1DBTableView1.Columns[7].Summary.FooterKind:=skSum;
+        cxGrid1DBTableView1.Columns[7].Summary.FooterFormat:='###,###,###,###';
         cxGrid1DBTableView1.Columns[5].Summary.FooterKind:=skSum;
         cxGrid1DBTableView1.Columns[5].Summary.FooterFormat:='###,###,###,###';
         cxGrid1DBTableView1.Columns[6].Summary.FooterKind:=skSum;

@@ -19,7 +19,7 @@ uses
   dxSkinOffice2007Blue, dxSkinOffice2007Green, dxSkinOffice2007Pink,
   dxSkinOffice2007Silver, dxSkinPumpkin, dxSkinSilver, dxSkinSpringTime,
   dxSkinStardust, dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue,
-  dxSkinDarkRoom, dxSkinFoggy, dxSkinSeven, dxSkinSharp;
+  dxSkinDarkRoom, dxSkinFoggy, dxSkinSeven, dxSkinSharp, MyAccess;
 
 type
   TfrmDO = class(TForm)
@@ -260,10 +260,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmDO.cxButton8Click(Sender: TObject);
@@ -298,10 +298,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -498,7 +498,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
      tt := TStringList.Create;
@@ -532,7 +533,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -636,7 +638,7 @@ end;
 procedure TfrmDO.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtykirim : Integer;
@@ -731,7 +733,7 @@ end;
 function TfrmDO.getqtyPO(anomor:string;asku:integer): integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result :=0;
   s:='select sod_qty from tso_dtl where sod_so_nomor ='+Quot(anomor)
@@ -752,7 +754,7 @@ end;
 function TfrmDO.getstatusexpired(asku:integer): integer;
 var
   s:string  ;
-  tsql:TSQLQuery  ;
+  tsql:TmyQuery  ;
 begin
     Result :=0;
   s:='select brg_isexpired from tbarang where brg_kode ='+inttostr(asku);
@@ -772,7 +774,7 @@ end;
 function TfrmDO.getqtykirim(anomor:string;asku:integer): integer;
 var
   s:string  ;
-  tsql:TSQLQuery  ;
+  tsql:TmyQuery  ;
 begin
   Result :=0;
   s:='select sod_qty_kirim from tso_dtl where sod_so_nomor ='+Quot(anomor)
@@ -792,7 +794,7 @@ end;
 function TfrmDO.getqtydo(asku:integer;anomor:string): integer;
 var
   s:string  ;
-  tsql:TSQLQuery  ;
+  tsql:TmyQuery  ;
 begin
   Result :=0;
   s:='select sum(dod_qty) from tdo_dtl where dod_do_nomor ='+Quot(anomor)
@@ -813,7 +815,7 @@ end;
 function TfrmDO.getqtydo2(asku:integer;anomor:string;atgl:tdatetime): integer;
 var
   s:string  ;
-  tsql:TSQLQuery  ;
+  tsql:TmyQuery  ;
 begin
   Result :=0;
   s:='select sum(dod_qty) from tdo_dtl where dod_do_nomor ='+Quot(anomor)
@@ -877,7 +879,7 @@ end;
 procedure TfrmDO.bantuansku;
   var
     s:string;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     i:Integer;
       a:Integer;
   aketemu:Boolean;
@@ -988,7 +990,7 @@ end;
 procedure TfrmDO.loaddataSO(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   aisecer,i:Integer;
 begin
 
@@ -1066,14 +1068,15 @@ end;
 procedure TfrmDO.insertketampungan(anomor:string);
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   a:=getbarisslip('DO');;
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   s := 'select dod_brg_kode,dod_tgl_expired from tdo_dtl where dod_do_nomor =' + Quot(anomor) ;
   tsql := xOpenQuery(s,frmMenu.conn) ;
   x:=0;
@@ -1117,12 +1120,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 
@@ -1130,7 +1134,7 @@ end;
 function TfrmDO.getstok(aid:Integer;atgl:TDateTime):integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result:=0;
   s:='select sum(mst_stok_in-mst_stok_out) from tmasterstok where mst_expired_date ='+QuotD(atgl)
@@ -1153,7 +1157,7 @@ end;
 procedure TfrmDO.doslip2(anomor : string );
 var
   s: string ;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   anamabarang: String;
 
@@ -1348,10 +1352,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 
@@ -1378,7 +1382,7 @@ end;
 procedure TfrmDO.doslipbatch(anomor : string );
 var
   s: string ;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   anamabarang: String;
 

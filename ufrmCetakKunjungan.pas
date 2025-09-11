@@ -140,7 +140,7 @@ end;
 procedure TfrmCetakKunjungan.loaddata;
 var
   ssql,s: string;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   i:Integer;
   abulan,atahun : Integer;
 begin
@@ -311,7 +311,7 @@ end;
 procedure TfrmCetakKunjungan.bacafile2;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default4') +';';
@@ -362,7 +362,7 @@ end;
 procedure tfrmCetakKunjungan.doslip;
 var
   s: string ;
-  tsqlheader,tsql2,tsql : TSQLQuery;
+  tsqlheader,tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   arekening,anamabarang,TERBILANG : String;
   anilaipiutang:double;
@@ -506,13 +506,14 @@ END;
 procedure TfrmCetakKunjungan.insertketampungan;
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   s:='delete from tampung2 ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   tt:=TStringList.Create;
     cds.First;
     with CDS do
@@ -545,12 +546,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 

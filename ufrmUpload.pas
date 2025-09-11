@@ -48,7 +48,7 @@ type
     procedure bacafile2;
     procedure RadioButton1Click(Sender: TObject);
   private
-    conn2 : TSQLConnection;
+    conn2 : TMyConnection;
     aHost2,aDatabase2,auser2,apassword2 : string;
     { Private declarations }
   public
@@ -70,7 +70,7 @@ var
   ttt,tt : TStrings;
 
   i:integer;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
 
  s:='update '
@@ -79,8 +79,9 @@ begin
   + ' inner join tfp_dtl on fpd_fp_nomor=fp_nomor and fpd_brg_kode=bpd_brg_kode '
   + ' set fpd_bp_rp=bpd_rupiah,fpd_bp_pr=bpd_persen '
   + ' where month(fp_tanggal)='+FormatDateTime('mm',dtTanggal.DateTime)+' and year(fp_tanggal)='+ FormatDateTime('yyyy',dtTanggal.DateTime);
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmMenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
 
   s:= 'update tfp_hdr b inner join ( '
 + ' select fp_nomor,sum((((100-fpd_discpr)*fpd_harga*(fpd_qty-ifnull(retjd_qty,0))/100)*fpd_bp_pr/100)+fpd_bp_rp*(fpd_qty-ifnull(retjd_qty,0))) nilai from tfp_hdr'
@@ -92,12 +93,14 @@ begin
 + ' group by fp_nomor) a on a.fp_nomor=b.FP_nomor '
 + ' set fp_biayarp=nilai ' ;
 
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmMenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
 
  // unlocked customer
   s:='update tcustomer set cus_locked=0;';
-  xExecQuery(s,frmMenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
  // locked customer
 
@@ -118,7 +121,8 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
 + ' GROUP BY fp_nomor,fp_tanggal,fp_memo,cus_nama) a'
 + ' WHERE (sisa_piutang- IFNULL(Retur,0)) > 1 AND tanggal <= curdate()'
 + ' and overdue > 60 and salesman not in  ("INTERNAL","SEWA","KONTRAK"));';
-  xExecQuery(s,frmMenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
   ttt := TStringList.Create;
   ttt.Append('use '+ frmMenu.aDatabase+';');
@@ -174,7 +178,7 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
       end;
 
  end;
-    xCommit(conn2);
+
 
     IF chkCustomer.Checked THen
   begin
@@ -225,7 +229,7 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
         tt.Free;
       end;
   end;
-    xCommit(conn2);
+
 
   IF chkJenisCustomer.Checked THen
   begin
@@ -267,7 +271,7 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
         tt.Free;
       end;
   end;
-    xCommit(conn2);
+;
 
 
 
@@ -352,7 +356,7 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
         tt.Free;
       end;
   end;
-    xCommit(conn2);
+
 
   IF chkMutasiOut.Checked THen
   begin
@@ -434,7 +438,7 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
         tt.Free;
       end;
   end;
-    xCommit(conn2);
+
 
 
   IF chkMutasiin.Checked THen
@@ -516,7 +520,7 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
         tt.Free;
       end;
   end;
-    xCommit(conn2);
+
 
 
     IF chkKoreksi.Checked THen
@@ -599,7 +603,7 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
         tt.Free;
       end;
   end;
-    xCommit(conn2);
+    //xCommit(conn2);
 
 
   IF chkjual.Checked THen
@@ -857,7 +861,7 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
         tt.Free;
       end;
   end;
-    xCommit(conn2);
+   // xCommit(conn2);
 
   IF chkRetur.Checked THen
   begin
@@ -873,9 +877,12 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
     while not eof do
     begin
       ss:='delete from tretj_hdr  where retj_nomor ='+ Quot(FieldByname('retj_nomor').AsString)+';';
-      xExecQuery(ss,conn2);
+      EnsureConnected(conn2);
+      ExecSQLDirect(conn2, ss);
+
       ss:='delete from tretj_dtl  where retjd_retj_nomor ='+ Quot(FieldByname('retj_nomor').AsString)+';';
-      xExecQuery(ss,conn2);
+      EnsureConnected(conn2);
+      ExecSQLDirect(conn2, ss);
 
 //      xExecQuery(ss,frmMenu.conn);
       ss:='insert ignore into tretj_hdr (retj_nomor,retj_tanggal,retj_memo,retj_cus_kode,retj_gdg_kode,retj_fp_nomor,'
@@ -892,7 +899,8 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
       + QuotD(fieldbyname('date_create').AsDateTime)+','+QuotD(fieldbyname('date_modified').AsDateTime)
       +');';
 //      xExecQuery(ss,frmMenu.conn2);
-      xExecQuery(ss,conn2);
+      EnsureConnected(conn2);
+      ExecSQLDirect(conn2, ss);
       Next;
     end;
       tsql.Free;
@@ -940,7 +948,7 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
         tt.Free;
       end;
   end;
-    xCommit(conn2);
+    //xCommit(conn2);
 
 
   IF chkstok.Checked THen
@@ -997,7 +1005,7 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
         tt.Free;
       end;
   end;
-    xCommit(conn2);
+    //xCommit(conn2);
 
     IF chkjurnal.Checked THen
   begin
@@ -1090,7 +1098,7 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
       end;
   end;
 
-  xCommit(conn2);
+  //xCommit(conn2);
 
   IF chkbayarcus.Checked THen
   begin
@@ -1171,8 +1179,9 @@ s:=' UPDATE tcustomer set cus_locked=1 where cus_kode in ( '
       finally
         ttt.Free;
       end;
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmMenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   showmessage('file terbentuk di '+cGetReportPath+'KirimData_'+frmmenu.NMCABANG+FormatDateTime('yyymmdd',date)+'.sql');
 end;
 
@@ -1184,7 +1193,7 @@ end;
 procedure TfrmUpload.FormShow(Sender: TObject);
 var
   s:String;
-  tsql:tsqlquery;
+  tsql:TmyQuery;
 begin
 dtTanggal.datetime :=gettanggallog ;
 dtTanggal2.datetime :=gettanggallog ;
@@ -1223,7 +1232,7 @@ end;
 procedure TfrmUpload.bacafile;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default5') +';';
@@ -1246,7 +1255,7 @@ tsql:tsqlquery;
 procedure TfrmUpload.bacafile2;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default6') +';';

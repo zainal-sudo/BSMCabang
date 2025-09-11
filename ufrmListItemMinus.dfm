@@ -1,6 +1,6 @@
 object frmListItemMinus: TfrmListItemMinus
-  Left = 79
-  Top = 44
+  Left = 252
+  Top = 121
   AutoScroll = False
   Caption = 'List Item Margin Minus'
   ClientHeight = 582
@@ -3574,7 +3574,7 @@ object frmListItemMinus: TfrmListItemMinus
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -3650,5 +3650,9 @@ object frmListItemMinus: TfrmListItemMinus
       Caption = 'Lihat Faktur Penjualan'
       OnClick = LihatFakturPenjualan1Click
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 496
+    Top = 296
   end
 end

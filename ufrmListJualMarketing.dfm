@@ -3700,7 +3700,7 @@ object frmListJualMarketing: TfrmListJualMarketing
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -3759,5 +3759,9 @@ object frmListJualMarketing: TfrmListJualMarketing
       PrinterPage._dxLastMU_ = 1
       BuiltInReportLink = True
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 504
+    Top = 272
   end
 end

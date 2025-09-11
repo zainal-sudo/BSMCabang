@@ -18,7 +18,7 @@ uses
   ComCtrls, StdCtrls, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
   cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, frxClass,
-  frxExportPDF;
+  frxExportPDF, MyAccess;
 
 type
   TfrmBrowseFakturPajak = class(TfrmCxBrowse)
@@ -152,20 +152,22 @@ begin
       then Exit ;
        s:='delete from tfakturpajak_dtl '
         + ' where fpd_fp_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
        s:='delete from tfakturpajak_hdr '
         + ' where fp_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
       CDSMaster.Delete;
    except
      MessageDlg('Gagal Hapus',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 
 end;
 
@@ -173,8 +175,8 @@ end;
 procedure TfrmBrowseFakturPajak.cxButton3Click(Sender: TObject);
 var
 newFile : TextFile;
-tsql : TSQLQuery;
-tsql2 : tsqlquery;
+tsql : TmyQuery;
+tsql2 : TmyQuery;
 s : string ;
 anamanpwp,aalamatnpwp : string;
 sheader,sheader2,sdetail :String;

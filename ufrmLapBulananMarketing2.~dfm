@@ -2,7 +2,7 @@ object frmLapBulananMarketing2: TfrmLapBulananMarketing2
   Left = 323
   Top = 13
   AutoScroll = False
-  Caption = 'Laporan BreakDown By Customer'
+  Caption = 'Laporan Sales Bulanan Marketing'
   ClientHeight = 582
   ClientWidth = 1008
   Color = clBtnFace

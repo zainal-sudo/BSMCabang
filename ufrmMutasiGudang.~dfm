@@ -407,7 +407,7 @@ object frmMutasiGudang: TfrmMutasiGudang
     Left = 0
     Top = 129
     Width = 1008
-    Height = 358
+    Height = 357
     Align = alClient
     TabOrder = 2
     UseDockManager = True
@@ -472,7 +472,7 @@ object frmMutasiGudang: TfrmMutasiGudang
       Left = 1
       Top = 1
       Width = 1006
-      Height = 356
+      Height = 355
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -604,7 +604,7 @@ object frmMutasiGudang: TfrmMutasiGudang
   end
   object AdvPanel4: TAdvPanel
     Left = 0
-    Top = 487
+    Top = 486
     Width = 1008
     Height = 35
     Align = alBottom

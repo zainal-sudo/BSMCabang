@@ -19,7 +19,7 @@ uses
   dxSkinOffice2007Blue, dxSkinOffice2007Green, dxSkinOffice2007Pink,
   dxSkinOffice2007Silver, dxSkinPumpkin, dxSkinSilver, dxSkinSpringTime,
   dxSkinStardust, dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue,
-  frxClass, frxDMPExport;
+  frxClass, frxDMPExport, MyAccess;
 
 type
   TfrmSuratJalan = class(TForm)
@@ -214,10 +214,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmSuratJalan.cxButton8Click(Sender: TObject);
@@ -252,10 +252,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -397,7 +397,8 @@ begin
              + Quotd(dtTanggal.Date) + ','
              + Quot(edtketerangan.Text)+')';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
      tt := TStringList.Create;
@@ -427,7 +428,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -481,7 +483,7 @@ end;
 procedure TfrmSuratJalan.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtykirim : Integer;
@@ -546,7 +548,7 @@ end;
 function TfrmSuratJalan.getqtyPO(anomor:string;asku:integer): integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result :=0;
   s:='select sod_qty from tso_dtl where sod_so_nomor ='+Quot(anomor)
@@ -567,7 +569,7 @@ end;
 function TfrmSuratJalan.cari(anomor:string): Boolean;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result :=False;
   s:='select so_nomor from tso_hdr where so_nomor ='+Quot(anomor);
@@ -587,7 +589,7 @@ end;
 function TfrmSuratJalan.getstatusexpired(asku:integer): integer;
 var
   s:string  ;
-  tsql:TSQLQuery  ;
+  tsql:TmyQuery  ;
 begin
     Result :=0;
   s:='select brg_isexpired from tbarang where brg_kode ='+inttostr(asku);
@@ -620,7 +622,7 @@ end;
 procedure TfrmSuratJalan.bantuansku;
   var
     s:string;
-    tsql2,tsql:TSQLQuery;
+    tsql2,tsql:TmyQuery;
     i:Integer;
 begin
     sqlbantuan := 'select brg_kode Sku,brg_nama NamaBarang, brg_satuan Satuan from Tbarang ';
@@ -748,10 +750,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 end.

@@ -1,6 +1,6 @@
 object frmListInkaso: TfrmListInkaso
-  Left = 0
-  Top = 98
+  Left = 246
+  Top = 110
   AutoScroll = False
   Caption = 'List Inkaso'
   ClientHeight = 582
@@ -3526,7 +3526,7 @@ object frmListInkaso: TfrmListInkaso
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -3585,5 +3585,9 @@ object frmListInkaso: TfrmListInkaso
       PrinterPage._dxLastMU_ = 1
       BuiltInReportLink = True
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 496
+    Top = 296
   end
 end

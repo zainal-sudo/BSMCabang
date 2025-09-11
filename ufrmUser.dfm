@@ -345,7 +345,7 @@ object frmUser: TfrmUser
     Left = 0
     Top = 129
     Width = 647
-    Height = 290
+    Height = 289
     Align = alClient
     TabOrder = 2
     UseDockManager = True
@@ -410,7 +410,7 @@ object frmUser: TfrmUser
       Left = 1
       Top = 1
       Width = 645
-      Height = 288
+      Height = 287
       Cursor = crDefault
       Align = alClient
       ColCount = 8
@@ -945,7 +945,7 @@ object frmUser: TfrmUser
   end
   object AdvPanel4: TAdvPanel
     Left = 0
-    Top = 419
+    Top = 418
     Width = 647
     Height = 36
     Align = alBottom

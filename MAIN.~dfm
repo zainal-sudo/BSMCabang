@@ -1,6 +1,6 @@
 object frmMenu: TfrmMenu
-  Left = 472
-  Top = 223
+  Left = 442
+  Top = 218
   Width = 800
   Height = 560
   Caption = 'Inventory'
@@ -1804,6 +1804,9 @@ object frmMenu: TfrmMenu
               Item = dxFakturPajak
             end
             item
+              Item = dxserahterima2
+            end
+            item
               Item = dxttfaktur
             end>
         end
@@ -2079,6 +2082,10 @@ object frmMenu: TfrmMenu
         object dxekspedisi: TdxNavBarItem
           Caption = 'Ekspedisi'
           OnClick = dxekspedisiClick
+        end
+        object dxserahterima2: TdxNavBarItem
+          Caption = 'Serah Faktur ke Salesman'
+          OnClick = dxserahterima2Click
         end
       end
     end

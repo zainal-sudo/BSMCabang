@@ -17,7 +17,7 @@ uses
   cxDataStorage, cxEdit, DB, cxDBData, FMTBcd, Provider, SqlExpr, ImgList,
   ComCtrls, StdCtrls, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
-  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, AdvEdit;
+  cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, AdvEdit, MyAccess;
 
 type
   TfrmBrowseBarang = class(TfrmCxBrowse)
@@ -42,7 +42,7 @@ type
     procedure bacafile2;
 
   private
-    connpusat : TSQLConnection;
+    connpusat : TMyConnection;
     ahost2,auser2,apassword2,adatabase2 : string;
     { Private declarations }
   public
@@ -151,16 +151,17 @@ begin
       then Exit ;
        s:='delete from tbarang '
         + ' where brg_kode = ' + quot(CDSMaster.FieldByname('KODE').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
       CDSMaster.Delete;
    except
      MessageDlg('Gagal Hapus',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 
 end;
 
@@ -195,7 +196,7 @@ procedure TfrmBrowseBarang.cxButton9Click(Sender: TObject);
 var
   ss,s:String;
   i:integer;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
   tt:TStrings;
 begin
   inherited;
@@ -236,19 +237,20 @@ begin
   try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
       end;
-      xCommit(frmmenu.conn);
+      
 end;
 
 
 procedure TfrmBrowseBarang.bacafile2;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default1') +';';

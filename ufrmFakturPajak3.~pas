@@ -227,7 +227,7 @@ end;
 procedure TfrmFakturPajak3.FormShow(Sender: TObject);
 var
   s:String;
-  tsqlheader:TSQLQuery;
+  tsqlheader:TmyQuery;
 begin
 refreshdata;
 
@@ -260,7 +260,7 @@ end;
 procedure TfrmFakturPajak3.btnRefreshClick(Sender: TObject);
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
   i:Integer;
 begin
   if chkManual.Checked then
@@ -331,7 +331,7 @@ var
   iCol2,jRow2 :integer;
   v   : Variant;
   ss,S:string;
-  tsql:tsqlquery;
+  tsql:TmyQuery;
 begin
 
   cds.first;

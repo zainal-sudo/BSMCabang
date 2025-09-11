@@ -89,9 +89,9 @@ object frmEkspedisi: TfrmEkspedisi
     object Label3: TLabel
       Left = 18
       Top = 61
-      Width = 23
+      Width = 27
       Height = 13
-      Caption = 'Merk'
+      Caption = 'Nama'
     end
     object Label1: TLabel
       Left = 18

@@ -463,10 +463,10 @@ begin
 //--- pf
 
     ssql :='select sls_nama salesman , '
-        + '  sum((100-fpd_discpr)*(fpd_harga*fpd_qty)/100*if(fp_istax=1,if(fp_tanggal<'2021/04/01',1.1,1.11),1)) -'
+        + '  sum((100-fpd_discpr)*(fpd_harga*fpd_qty)/100*if(fp_istax=1,if(fp_tanggal<"2022/04/01",1.1,1.11),1)) -'
         + '  sum(fpd_cn*((100-fpd_discpr)*fpd_harga/100)*fpd_qty/100) - '
         + '  sum(fpd_bp_pr*((100-fpd_discpr)*fpd_harga/100)*fpd_qty/100)+sum(fpd_bp_rp*fpd_qty)-'
-        + ' (SELECT ifnull(sum((retjd_harga*retjd_qty)*(100-ifnull(retjd_discpr,0))/100),0)*if(fp_istax=1,if(fp_tanggal<'2021/04/01',1.1,1.11),1)'
+        + ' (SELECT ifnull(sum((retjd_harga*retjd_qty)*(100-ifnull(retjd_discpr,0))/100),0)*if(fp_istax=1,if(fp_tanggal<"2022/04/01",1.1,1.11),1)'
         + '  FROM tretj_dtl inner join tretj_hdr ON retjd_retj_nomor=retj_nomor INNER JOIN tfp_hdr ON retj_fp_nomor=fp_nomor INNER JOIN tdo_hdr ON do_nomor=fp_do_nomor '
         + '  INNER JOIN tso_hdr ON so_nomor=do_so_nomor WHERE  so_sls_kode=sls_kode '
         + '  and month(retj_tanggal)='+inttostr(cbbBulan.ItemIndex+1)+' and year(retj_tanggal)=' + edttahun.text

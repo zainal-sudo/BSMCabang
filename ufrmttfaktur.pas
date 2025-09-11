@@ -204,7 +204,7 @@ procedure TfrmTTFaktur.clCustomerPropertiesButtonClick(
   Sender: TObject; AButtonIndex: Integer);
   var
     i:integer;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     ss:string;
 begin
      sqlbantuan := 'select Nomor,Tanggal,Nilai from (SELECT Nomor,Tanggal,nil-ifnull(retur,0) Nilai FROM ( '
@@ -280,7 +280,7 @@ end;
 procedure TfrmTTFaktur.bacafile2;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default2') +';';
@@ -339,7 +339,7 @@ end;
 function TfrmTTFaktur.getmaxid(asalesman: string; aperiode: string): string;
 var
   s: String;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   s := 'select max(substr(tt_nomor,length(tt_nomor)-2,length(tt_nomor))) from '+adatabase2+'.ttt_hdr where concat(month(tt_tanggal),year(tt_tanggal))='
     + aperiode + ' and tt_sls_kode=' + QuotedStr(asalesman);
@@ -388,7 +388,8 @@ begin
     + ' values (' + QuotedStr(anomor) +','+ QuotedStr(edtKodeCustomer.Text)+
     ',' + QuotedStr(edtkode.Text) + ',' +
     QuotedStr(FormatDateTime('yyyy/mm/dd', date)) + ');' ;
-    xExecQuery(s,frmMenu.conn);
+      EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
     CDS.First;
   while not cds.eof do
   begin
@@ -398,12 +399,13 @@ begin
     + quotedstr(anomor) + ','
     + quotedstr(cds.Fieldbyname('nomorfaktur').AsString)
     +');';
-     xExecQuery(s,frmMenu.conn);
+       EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
    end;
     CDS.next;
 
   end;
-   xCommit(frmMenu.conn);
+   
    ShowMessage('Simpan berhasil dengan nomor '+ anomor );
   refreshdata;
 end;
@@ -419,7 +421,7 @@ end;
 procedure TfrmTTFaktur.Button1Click(Sender: TObject);
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
   i:integer;
 begin
   i:=1;

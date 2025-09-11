@@ -210,7 +210,7 @@ begin
          + ' and ' //byc_tanggal between ' + QuotD(startdate.DateTime) + ' and ' + QuotD(enddate.DateTime)
          + ' month(byc_tanggal)=month(zzz.fp_tanggal) '
          + '  ) Inkaso '
-          + ' FROM TFP_hdr zzz inner join tdo_hdr '
+          + ' FROM tfp_hdr zzz inner join tdo_hdr '
           + ' on fp_do_nomor=do_nomor '
           + ' inner join tso_hdr zz on so_nomor=do_so_nomor '
           + ' right join tsalesman z on sls_kode=so_sls_kode '

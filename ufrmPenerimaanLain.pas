@@ -13,7 +13,7 @@ uses
   dxSkinscxPCPainter, cxCustomData, cxFilter, cxData, cxDataStorage,
   cxDBData, cxSpinEdit, cxCalendar, Menus, cxButtons, cxGridLevel,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxClasses,
-  cxGridCustomView, cxGrid, cxButtonEdit, cxRadioGroup, AdvEdBtn;
+  cxGridCustomView, cxGrid, cxButtonEdit, cxRadioGroup, AdvEdBtn, MyAccess;
 
 type
   TfrmPenerimaanLain = class(TForm)
@@ -194,7 +194,8 @@ begin
          + QuotD(cGetServerTime,True) + ','
          + Quot(frmMenu.KDUSER)+')';
    end;
-   xExecQuery(s,frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
    tt := TStringList.Create;
    s:= ' delete from tjurnalitem '
       + ' where  jurd_jur_no =' + quot(FID) ;
@@ -235,7 +236,8 @@ begin
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -244,7 +246,7 @@ end;
 procedure TfrmPenerimaanLain.loaddataall(akode : string);
 var
   s: string ;
-  tsql,tsql2 : TSQLQuery;
+  tsql,tsql2 : TmyQuery;
   i:Integer;
 begin
   if akode = '' then
@@ -361,14 +363,15 @@ end;
 procedure TfrmPenerimaanLain.insertketampungan(anomor:string);
 var
   s,ss:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   a:=8;
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
    ss := 'select jurd_rek_kode from tjurnalitem where jurd_jur_no =' + Quot(anomor) ;
   tsql := xOpenQuery(ss,frmMenu.conn) ;
   x:=0;
@@ -411,12 +414,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 
@@ -531,10 +535,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -565,10 +569,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 
@@ -670,7 +674,7 @@ end;
 procedure TfrmPenerimaanLain.bantuanaccount;
   var
     s:string;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     i:Integer;
 begin
     sqlbantuan := 'select rek_kode Account, rek_nama AccountName from Trekening where rek_isaktif=1';
@@ -696,7 +700,7 @@ procedure TfrmPenerimaanLain.clAccountPropertiesEditValueChanged(
   Sender: TObject);
   var
     s:string;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     i:integer;
 begin
    cxGrdMain.DataController.Post;
@@ -730,7 +734,7 @@ end;
 procedure TfrmPenerimaanLain.edtAccountClickBtn(Sender: TObject);
   var
     s:string;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     i:Integer;
     sfilter : string;
 begin
@@ -781,7 +785,7 @@ procedure TfrmPenerimaanLain.clCustomerPropertiesButtonClick(
   Sender: TObject; AButtonIndex: Integer);
   var
     s:string;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     i:Integer;
     sfilter : string;
 begin
@@ -801,7 +805,7 @@ end;
 function TfrmPenerimaanLain.cekbiaya2(akode:string):Boolean;
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 
 begin
     result:=False;

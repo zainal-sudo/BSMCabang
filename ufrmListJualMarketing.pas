@@ -26,7 +26,7 @@ Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   dxSkinOffice2007Green, dxSkinOffice2007Pink, dxSkinOffice2007Silver,
   dxSkinPumpkin, dxSkinSeven, dxSkinSharp, dxSkinSilver, dxSkinSpringTime,
   dxSkinStardust, dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue,
-  AdvCombo;
+  AdvCombo, MemDS, DBAccess, MyAccess;
 
 
 type
@@ -41,7 +41,7 @@ type
     SaveDialog1: TSaveDialog;
     TePanel3: TTePanel;
     dtstprvdr1: TDataSetProvider;
-    sqlqry1: TSQLQuery;
+    sqlqry2: TSQLQuery;
     ds2: TDataSource;
     ds3: TClientDataSet;
     cxStyleRepository1: TcxStyleRepository;
@@ -76,6 +76,7 @@ type
     edtTahun: TComboBox;
     Label4: TLabel;
     edtFilter: TEdit;
+    sqlqry1: TMyQuery;
     procedure FormDblClick(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
     procedure sbNewClick(Sender: TObject);
@@ -235,7 +236,7 @@ s:= 'SELECT Marketing,Kode,Nama,Customer,Grup,GroupPF,Golongan,Bulan,Tahun,HET,H
 + ' ) FINAL ';
 
         ds3.Close;
-        sqlqry1.SQLConnection := frmmenu.conn;
+        sqlqry1.Connection := frmmenu.conn;
         sqlqry1.SQL.Text := s;
         ds3.open;
 

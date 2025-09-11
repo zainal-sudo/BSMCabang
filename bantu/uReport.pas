@@ -6,7 +6,7 @@ uses
   Classes, DB, frxDesgn, frxClass,frxDBSet , frxDCtrl, frxChart,
   frxRich, frxBarcode, ImgList, ComCtrls, ExtCtrls,
   FMTBcd, DateUtils, DBClient, Provider, Forms,SqlExpr,
-  Controls, ComObj,Ulib,AdvCGrid,Dialogs;
+  Controls, ComObj,Ulib,AdvCGrid,Dialogs,MyAccess;
 
 type
   TDBDatasets = array of TfrxDBDataset;
@@ -16,14 +16,14 @@ type
   private
     FDataSetProvider: TDataSetProvider;
     FQ: TClientDataSet;
-    FSQLQuery: TSQLQuery;
+    FSQLQuery: TMyQuery;
   public
     constructor Create(aCollection : TCollection); override;
     destructor Destroy; override;
     property DataSetProvider: TDataSetProvider read FDataSetProvider write
         FDataSetProvider;
     property Q: TClientDataSet read FQ write FQ;
-    property SQLQuery: TSQLQuery read FSQLQuery write FSQLQuery;
+    property SQLQuery: TMyQuery read FSQLQuery write FSQLQuery;
   end;
 
   TSQLQueriyItems = class(TCollection)
@@ -92,9 +92,9 @@ begin
   inherited;
   Q                       := TClientDataSet.Create(Application);
   DataSetProvider         := TDataSetProvider.Create(Application);
-  FSQLQuery               := TSQLQuery.Create(Application);
+  FSQLQuery               := TMyQuery.Create(Application);
 
-  SQLQuery.SQLConnection  := frmmenu.conn;
+  SQLQuery.Connection  := frmmenu.conn;
   DataSetProvider.DataSet := SQLQuery;
 
   Q.SetProvider(DataSetProvider);

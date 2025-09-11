@@ -11,7 +11,7 @@ uses
   cxEdit, DB, cxDBData, cxSpinEdit, cxButtonEdit, cxTextEdit, cxGridLevel,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxClasses,
   cxControls, cxGridCustomView, cxGrid, AdvEdBtn, AdvCombo, cxCurrencyEdit,DateUtils,
-  cxCheckBox;
+  cxCheckBox, MyAccess;
 
 type
   TfrmProsesGunggung = class(TForm)
@@ -136,10 +136,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -153,7 +153,7 @@ end;
 procedure TfrmProsesGunggung.loaddata() ;
 var
   s,ssql: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
   akhir,awal : TDateTime;
 begin
@@ -242,7 +242,8 @@ begin
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -280,10 +281,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmProsesGunggung.cxButton8Click(Sender: TObject);
@@ -314,10 +315,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 procedure TfrmProsesGunggung.FormShow(Sender: TObject);

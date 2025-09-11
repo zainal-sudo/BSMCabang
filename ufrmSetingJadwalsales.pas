@@ -10,7 +10,8 @@ uses
   DBClient, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage,
   cxEdit, DB, cxDBData, cxSpinEdit, cxButtonEdit, cxTextEdit, cxGridLevel,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxClasses,
-  cxControls, cxGridCustomView, cxGrid, AdvEdBtn, AdvCombo, cxCurrencyEdit,DateUtils;
+  cxControls, cxGridCustomView, cxGrid, AdvEdBtn, AdvCombo, cxCurrencyEdit,DateUtils,
+  MyAccess;
 
 type
   TfrmSetingjadwalsales = class(TForm)
@@ -132,10 +133,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -171,7 +172,8 @@ begin
         try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -209,10 +211,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmSetingjadwalsales.cxButton8Click(Sender: TObject);
@@ -243,10 +245,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 procedure TfrmSetingjadwalsales.edtKodeClickBtn(Sender: TObject);
@@ -342,7 +344,7 @@ function TfrmSetingjadwalsales.cekada(atahun:string;abulan:string;akode:string):
 var
   i:integer;
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result:=false;
         s:= ' select * from testimasisales_hdr where esh_sls_kode='+ Quot(akode)

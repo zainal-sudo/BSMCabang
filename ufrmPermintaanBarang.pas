@@ -195,10 +195,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmPermintaanBarang.cxButton8Click(Sender: TObject);
@@ -229,10 +229,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -384,7 +384,8 @@ begin
        + Quot(frmMenu.KDUSER)+')';
   end;
 
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
   tt := TStringList.Create;
   s := ' DELETE FROM tpermintaanbarang_dtl '
@@ -416,7 +417,8 @@ begin
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
      finally
         tt.Free;
@@ -454,7 +456,7 @@ end;
 procedure TfrmPermintaanBarang.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtykirim : Integer;
@@ -536,7 +538,7 @@ end;
 procedure TfrmPermintaanBarang.bantuansku;
   var
     s:string;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     i:Integer;
       a:Integer;
   aketemu:Boolean;
@@ -607,7 +609,7 @@ end;
 procedure TfrmPermintaanBarang.Button1Click(Sender: TObject);
 var
     s:string;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     i:Integer;
 begin
 
@@ -668,7 +670,7 @@ end;
 function TfrmPermintaanBarang.getavgsales3bulan(akode:string):Double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   s := 'SELECT SUM(fpd_qty)/3 FROM tfp_dtl '
     + ' INNER JOIN tfp_hdr ON fp_nomor = fpd_fp_nomor'
@@ -689,7 +691,7 @@ end;
 function TfrmPermintaanBarang.getRealisasiIn(akode:string):Integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   s := 'SELECT SUM(mutcid_qty) RealisasiIn '
     + ' FROM tmutcabin_dtl a '
@@ -715,7 +717,7 @@ end;
 function TfrmPermintaanBarang.getSisa(akode:string):Integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   s := 'SELECT (pbd_qty - (SUM(mutcid_qty))) AS Sisa '
     + ' FROM tmutcabin_dtl a '
@@ -741,7 +743,7 @@ end;
 function TfrmPermintaanBarang.getMingguLalu(akode:string):Integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   s := 'SELECT pbd_qty '
     + ' FROM tpermintaanbarang_dtl a '
@@ -765,7 +767,7 @@ end;
 function TfrmPermintaanBarang.getavgsale3bulan(akode:string):Double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   s := 'SELECT SUM(fpd_qty)/3 FROM tfp_dtl '
     + ' INNER JOIN tfp_hdr ON fp_nomor = fpd_fp_nomor'

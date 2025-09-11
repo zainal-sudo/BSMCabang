@@ -358,7 +358,7 @@ object frmBPB: TfrmBPB
   end
   object AdvPanel3: TAdvPanel
     Left = 0
-    Top = 502
+    Top = 501
     Width = 1129
     Height = 35
     Align = alBottom
@@ -650,7 +650,7 @@ object frmBPB: TfrmBPB
     Left = 0
     Top = 129
     Width = 1129
-    Height = 282
+    Height = 281
     Align = alClient
     BevelInner = bvRaised
     Color = clWhite
@@ -717,7 +717,7 @@ object frmBPB: TfrmBPB
       Left = 2
       Top = 2
       Width = 1125
-      Height = 278
+      Height = 277
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -730,6 +730,7 @@ object frmBPB: TfrmBPB
       LookAndFeel.Kind = lfUltraFlat
       LookAndFeel.NativeStyle = False
       object cxGrdMain: TcxGridDBTableView
+        NavigatorButtons.ConfirmDelete = False
         DataController.Filter.Options = [fcoCaseInsensitive]
         DataController.Summary.DefaultGroupSummaryItems = <>
         DataController.Summary.FooterSummaryItems = <
@@ -841,6 +842,7 @@ object frmBPB: TfrmBPB
         end
       end
       object cxGrdDetail: TcxGridDBTableView
+        NavigatorButtons.ConfirmDelete = False
         DataController.Summary.DefaultGroupSummaryItems = <>
         DataController.Summary.FooterSummaryItems = <>
         DataController.Summary.SummaryGroups = <>
@@ -859,7 +861,7 @@ object frmBPB: TfrmBPB
   end
   object AdvPanel5: TAdvPanel
     Left = 0
-    Top = 411
+    Top = 410
     Width = 1129
     Height = 91
     Align = alBottom

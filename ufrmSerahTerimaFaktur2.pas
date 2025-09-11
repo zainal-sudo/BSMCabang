@@ -12,7 +12,7 @@ uses
   cxCustomData, cxFilter, cxData, cxDataStorage, DB, cxDBData, cxGridLevel,
   cxClasses, cxGridCustomView, cxGridCustomTableView, cxGridTableView,
   cxGridDBTableView, cxGrid, cxSpinEdit, cxCurrencyEdit, AdvEdBtn,DateUtils,
-  cxCalendar, cxCheckBox, frxClass, frxDMPExport;
+  cxCalendar, cxCheckBox, frxClass, frxDMPExport, MyAccess;
 
 type
   TfrmSerahTerimaFaktur2 = class(TForm)
@@ -178,10 +178,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmSerahTerimaFaktur2.cxButton8Click(Sender: TObject);
@@ -216,10 +216,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -323,7 +323,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
      tt := TStringList.Create;
@@ -350,7 +351,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -378,7 +380,7 @@ end;
 procedure TfrmSerahTerimaFaktur2.loaddataInvoice(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
 
@@ -442,7 +444,7 @@ end;
 procedure TfrmSerahTerimaFaktur2.loaddataall(akode : string);
 var
   s: string ;
-  tsql,tsql2 : TSQLQuery;
+  tsql,tsql2 : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtyterima : Integer;
@@ -572,7 +574,7 @@ end;
 procedure TfrmSerahTerimaFaktur2.doslip2(anomor : string );
 var
   aserah,aterima,s: string ;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
   i:integer;
 //  ftsreport : TTSReport;
 begin
@@ -656,7 +658,7 @@ procedure TfrmSerahTerimaFaktur2.edtSalesmanExit(Sender: TObject);
 var
   s:string;
   i:integer;
-  tsql2:TSQLQuery;
+  tsql2:TmyQuery;
 begin
 
 

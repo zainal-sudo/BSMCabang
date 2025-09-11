@@ -2148,25 +2148,4 @@ object frmFP: TfrmFP
       Color = clYellow
     end
   end
-  object frxDotMatrixExport1: TfrxDotMatrixExport
-    GraphicFrames = False
-    SaveToFile = False
-    UseIniSettings = True
-    Left = 600
-    Top = 201
-  end
-  object frxDotMatrixExport2: TfrxDotMatrixExport
-    GraphicFrames = False
-    SaveToFile = False
-    UseIniSettings = True
-    Left = 88
-    Top = 217
-  end
-  object frxDotMatrixExport3: TfrxDotMatrixExport
-    GraphicFrames = False
-    SaveToFile = False
-    UseIniSettings = True
-    Left = 464
-    Top = 129
-  end
 end

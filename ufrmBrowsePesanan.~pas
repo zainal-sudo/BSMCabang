@@ -65,7 +65,7 @@ implementation
 procedure TfrmBrowsePesanan.btnRefreshClick(Sender: TObject);
 begin
   Self.SQLMaster := 'select so_nomor Nomor,so_tanggal Tanggal ,so_Memo Memo ,cus_nama  Customer,if(so_isclosed=0,"Belum","Sudah") Closed, '
-                  + ' so_amount Total,so_taxamount Ppn,sls_nama Salesman,if(so_iskirim=0,"Belum","Sudah") Kirim,'
+                  + ' so_amount Total,so_taxamount Ppn,sls_nama Salesman,if(so_iskirim=0,"Belum","Sudah") Kirim,if(so_isecer=0,"Tidak","Ya") Eceran,'
                   + ' tso_hdr.User_create,tso_hdr.date_create '
                   + ' from tso_hdr'
                   + ' inner join tcustomer on trim(cus_kode)=trim(so_cus_kode)'
@@ -161,7 +161,7 @@ end;
 function TfrmBrowsePesanan.cekkirim(anomor:string) : integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := 0;
   s:='select so_iskirim from tso_hdr where so_nomor =' + Quot(anomor) ;
@@ -196,7 +196,7 @@ var
   s,ss:string;
   tt,ttt :TStrings;
   a,ii,i:integer;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
   acabang :string;
 begin
   inherited;
@@ -260,13 +260,14 @@ then
    try
         for i :=0 to tt.Count-1 do
         begin
-          xExecQuery(tt[i],frmMenu.conn);
+          EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
 
       finally
         tt.Free;
       end;
-    xCommit(frmMenu.conn);
+    
     ShowMessage('Import data berhasil');
  end
  else
@@ -290,11 +291,11 @@ then
       end;
    except
      ShowMessage('gagal import');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
 
-    xCommit(frmMenu.conn);
+    
     ShowMessage('Import data berhasil');
 
   end;
@@ -319,7 +320,8 @@ begin
       then Exit ;
        s:='UPDATE tSO_hdr set SO_ISCLOSED=1 '
         + ' where SO_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
      end
      else
      begin
@@ -328,23 +330,24 @@ begin
       then Exit ;
        s:='UPDATE tSO_hdr set SO_ISCLOSED=0 '
         + ' where SO_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
      end;
 
 
    except
      MessageDlg('Gagal Closed SO',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
    btnRefreshClick(self);
 end;
 
 procedure TfrmBrowsepesanan.bacafile;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default2') +';';

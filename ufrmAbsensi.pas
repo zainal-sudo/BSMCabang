@@ -150,10 +150,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -168,7 +168,7 @@ procedure TfrmApproveAbsensi.loaddataall() ;
 var
   s: string;
   i:integer;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   s:= 'SELECT nm_unit NamaUnit,ABS_nik NIK,ucase(abs_nama) NAMA,nm_jabat Jabatan,date_format(abs_tanggal,"%Y-%m-%d") Tanggal,'
   + ' date_format(abs_jammasuk,"%H:%i:%s") Jam,abs_keterangan Keterangan,abs_status Status,abs_alasan Alasan,abs_isapprove'
@@ -254,7 +254,8 @@ while not CDSLembur.Eof do
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -298,10 +299,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 

@@ -306,7 +306,7 @@ object frmSettingKomisi2: TfrmSettingKomisi2
   end
   object AdvPanel3: TAdvPanel
     Left = 0
-    Top = 571
+    Top = 570
     Width = 732
     Height = 35
     Align = alBottom
@@ -598,7 +598,7 @@ object frmSettingKomisi2: TfrmSettingKomisi2
     Left = 0
     Top = 137
     Width = 732
-    Height = 434
+    Height = 433
     Align = alClient
     BevelInner = bvRaised
     Color = clWhite
@@ -665,8 +665,8 @@ object frmSettingKomisi2: TfrmSettingKomisi2
       Left = 2
       Top = 2
       Width = 728
-      Height = 430
-      ActivePage = TabSheet2
+      Height = 429
+      ActivePage = TabSheet1
       Align = alClient
       TabOrder = 0
       object TabSheet1: TTabSheet
@@ -675,7 +675,7 @@ object frmSettingKomisi2: TfrmSettingKomisi2
           Left = 0
           Top = 0
           Width = 720
-          Height = 402
+          Height = 401
           Align = alClient
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -767,7 +767,7 @@ object frmSettingKomisi2: TfrmSettingKomisi2
           Left = 0
           Top = 0
           Width = 720
-          Height = 402
+          Height = 401
           Align = alClient
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText

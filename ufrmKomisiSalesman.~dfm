@@ -4277,7 +4277,7 @@ object frmKomisisalesman: TfrmKomisisalesman
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry5: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -4340,7 +4340,7 @@ object frmKomisisalesman: TfrmKomisisalesman
     object cxStyle2: TcxStyle
     end
   end
-  object sqlqry2: TSQLQuery
+  object sqlqry8: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -4366,5 +4366,13 @@ object frmKomisisalesman: TfrmKomisisalesman
     ProviderName = 'dtstprvdr2'
     Left = 515
     Top = 273
+  end
+  object sqlqry1: TMyQuery
+    Left = 584
+    Top = 232
+  end
+  object sqlqry2: TMyQuery
+    Left = 568
+    Top = 288
   end
 end

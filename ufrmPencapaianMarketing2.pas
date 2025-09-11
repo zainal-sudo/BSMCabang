@@ -11,7 +11,7 @@ uses
   cxEdit, DB, cxDBData, cxSpinEdit, cxButtonEdit, cxTextEdit, cxGridLevel,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxClasses,
   cxControls, cxGridCustomView, cxGrid, AdvEdBtn, cxCurrencyEdit,
-  cxRadioGroup, AdvCombo;
+  cxRadioGroup, AdvCombo, MyAccess;
 
 type
   TfrmPencapaianMarketing = class(TForm)
@@ -131,7 +131,7 @@ end;
 procedure TfrmPencapaianMarketing.loaddata;
 var
   sfilter,s,ss: string;
-  tsql,tsql2 : TSQLQuery;
+  tsql,tsql2 : TmyQuery;
   i:Integer;
 
 begin

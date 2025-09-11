@@ -14,7 +14,7 @@ uses
   cxDBData, cxSpinEdit, cxCalendar, Menus, cxButtons, cxGridLevel,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxClasses,
   cxGridCustomView, cxGrid, cxButtonEdit, cxCurrencyEdit,ExcelXP,ComObj,
-  AdvCombo,DateUtils, cxPC;
+  AdvCombo,DateUtils, cxPC, MyAccess;
 
 type
   TfrmProsesAvgcost = class(TForm)
@@ -79,7 +79,7 @@ end;
 procedure TfrmProsesAvgcost.cxButton1Click(Sender: TObject);
 var
   ssql,s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   tt :TStrings;
   i:Integer;
   akhir,awal : TDateTime;
@@ -119,12 +119,13 @@ begin
          try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
          end;
         finally
           tt.Free;
         end;
-          xCommit(frmMenu.conn);
+          
 
      end;
 

@@ -54,31 +54,30 @@ var
   frmBantuan: TfrmBantuan;
 
 implementation
-  uses MAIN,ulib;
+  uses MAIN, ulib;
 {$R *.dfm}
 
 procedure TfrmBantuan.FormShow(Sender: TObject);
 begin
-    loadbantuan;
+  loadbantuan;
 end;
 
 procedure TfrmBantuan.loadbantuan(afilter : string='') ;
 var
-
-  i:integer;
+  i: integer;
 begin
-
-    If SQLMaster <> '' then
+  If SQLMaster <> '' then
     CDSMaster := cOpenCDS(SQLMaster,Self);
 
-   If not Assigned(cxGrdmaster.DataController.DataSource) then
-    begin
-      cxGrdmaster.DataController.DataSource := TDataSource.Create(Self);
-    end;
-    cxGrdmaster.DataController.DataSource.DataSet := CDSMaster;
-    cxGrdmaster.DataController.CreateAllItems(True);
+  If not Assigned(cxGrdmaster.DataController.DataSource) then
+  begin
+    cxGrdmaster.DataController.DataSource := TDataSource.Create(Self);
+  end;
+  
+  cxGrdmaster.DataController.DataSource.DataSet := CDSMaster;
+  cxGrdmaster.DataController.CreateAllItems(True);
 
-     for i:=0 to cxGrdMaster.ColumnCount-1 do
+  for i:=0 to cxGrdMaster.ColumnCount-1 do
   begin
     if (cxGrdMaster.Columns[i].DataBinding.ValueType = 'Float')
     or (cxGrdMaster.Columns[i].DataBinding.ValueType = 'Currency')
@@ -92,37 +91,41 @@ end;
 
 procedure TfrmBantuan.dbgridDblClick(Sender: TObject);
 begin
-    varglobal:=CDSMaster.Fields[0].AsString;
-    varglobal1:=CDSMaster.Fields[1].AsString;
-    if cxGrdMaster.ColumnCount > 2 then
-     varglobal2:=CDSMaster.Fields[2].AsString;
-    close;
+  varglobal := CDSMaster.Fields[0].AsString;
+  varglobal1 := CDSMaster.Fields[1].AsString;
+
+  if cxGrdMaster.ColumnCount > 2 then
+    varglobal2 := CDSMaster.Fields[2].AsString;
+    
+  Close;
 end;
 
 procedure TfrmBantuan.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  action:=caFree;
+  action := caFree;
 end;
 
 procedure TfrmBantuan.btnTutupClick(Sender: TObject);
 begin
-      varglobal := '';
-      varglobal1 := '';
-      varglobal2 := '';
+  varglobal := '';
+  varglobal1 := '';
+  varglobal2 := '';
 
-      Close;
+  Close;
 end;
 
 procedure TfrmBantuan.cxGrdMasterKeyPress(Sender: TObject; var Key: Char);
 begin
-   if Key=Chr(13) then
-   begin
-   varglobal:=CDSMaster.Fields[0].AsString;
-    varglobal1:=CDSMaster.Fields[1].AsString;
+  if Key = Chr(13) then
+  begin
+    varglobal := CDSMaster.Fields[0].AsString;
+    varglobal1 := CDSMaster.Fields[1].AsString;
+    
     if cxGrdMaster.ColumnCount > 2 then
-   varglobal2:=CDSMaster.Fields[2].AsString;
-    close;
-   end;
+      varglobal2 := CDSMaster.Fields[2].AsString;
+
+    Close;
+  end;
 end;
 
 end.

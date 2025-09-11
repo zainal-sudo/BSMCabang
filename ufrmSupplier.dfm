@@ -702,7 +702,7 @@ object frmSupplier: TfrmSupplier
   end
   object AdvPanel3: TAdvPanel
     Left = 0
-    Top = 471
+    Top = 470
     Width = 732
     Height = 35
     Align = alBottom
@@ -994,7 +994,7 @@ object frmSupplier: TfrmSupplier
     Left = 0
     Top = 265
     Width = 732
-    Height = 206
+    Height = 205
     Align = alClient
     BevelInner = bvRaised
     Color = clWhite

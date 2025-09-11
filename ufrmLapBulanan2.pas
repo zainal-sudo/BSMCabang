@@ -19,7 +19,8 @@ uses
   dxPSPrVwStd, dxPSPrVwAdv, dxPScxPageControlProducer,
     dxPScxEditorProducers, dxPScxExtEditorProducers, dxPScxCommon, dxPSCore,
   dxSkinsCore, dxSkinsDefaultPainters, dxSkinsdxBarPainter, AdvCombo,
-  cxCurrencyEdit, cxGridDBBandedTableView,DateUtils, dxPScxGrid6Lnk;
+  cxCurrencyEdit, cxGridDBBandedTableView,DateUtils, dxPScxGrid6Lnk, MemDS,
+  DBAccess, MyAccess;
 
 type
   TfrmLapBulanan2 = class(TForm)
@@ -33,7 +34,7 @@ type
     SaveDialog1: TSaveDialog;
     TePanel3: TTePanel;
     dtstprvdr1: TDataSetProvider;
-    sqlqry1: TSQLQuery;
+    sqlqry2: TSQLQuery;
     ds2: TDataSource;
     ds3: TClientDataSet;
     cxStyleRepository1: TcxStyleRepository;
@@ -63,6 +64,7 @@ type
     clTotalTarget: TcxGridDBBandedColumn;
     cxStyleRepository2: TcxStyleRepository;
     cxStyle2: TcxStyle;
+    sqlqry1: TMyQuery;
     procedure FormDblClick(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
     procedure sbNewClick(Sender: TObject);
@@ -263,7 +265,7 @@ ssql:= 'select Salesman,sls_nama Nama,'
 //        + '  ) final where salesman <> "KANTOR" order by riilsdbulanini desc';
 
         ds3.Close;
-        sqlqry1.SQLConnection := frmMenu.conn;
+        sqlqry1.Connection := frmMenu.conn;
         sqlqry1.SQL.Text := ssql;
         ds3.open;
         capaibulanini :=cVarToFloat(TcxDBGridHelper(cxGrid1DBBandedTableView1).GetFooterSummary('realisasi_jual'))/ cVarToFloat(TcxDBGridHelper(cxGrid1DBBandedTableView1).GetFooterSummary('target_jual'))*100;

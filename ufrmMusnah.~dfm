@@ -504,6 +504,12 @@ object frmMusnah: TfrmMusnah
           Options.Focusing = False
           Width = 210
         end
+        object clidbatch: TcxGridDBColumn
+          Caption = 'IdBatch'
+          DataBinding.FieldName = 'idbatch'
+          PropertiesClassName = 'TcxTextEditProperties'
+          HeaderAlignmentVert = vaCenter
+        end
         object clSatuan: TcxGridDBColumn
           DataBinding.FieldName = 'Satuan'
           PropertiesClassName = 'TcxTextEditProperties'
@@ -545,11 +551,6 @@ object frmMusnah: TfrmMusnah
           Options.Editing = False
           Options.Focusing = False
           Width = 92
-        end
-        object clidbatch: TcxGridDBColumn
-          Caption = 'IdBatch'
-          DataBinding.FieldName = 'idbatch'
-          PropertiesClassName = 'TcxTextEditProperties'
         end
       end
       object cxGrdDetail: TcxGridDBTableView

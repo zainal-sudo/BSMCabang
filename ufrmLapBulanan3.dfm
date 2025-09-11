@@ -1,6 +1,6 @@
 object frmLapBulanan3: TfrmLapBulanan3
-  Left = 42
-  Top = 76
+  Left = 247
+  Top = 128
   AutoScroll = False
   Caption = 'w'
   ClientHeight = 542
@@ -4012,7 +4012,7 @@ object frmLapBulanan3: TfrmLapBulanan3
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -4097,5 +4097,9 @@ object frmLapBulanan3: TfrmLapBulanan3
       Font.Name = 'MS Sans Serif'
       Font.Style = []
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 528
+    Top = 280
   end
 end

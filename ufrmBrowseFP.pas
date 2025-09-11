@@ -19,7 +19,7 @@ uses
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
   cxButtons, ExtCtrls, AdvPanel, DBClient, cxLookAndFeels, frxClass,
   frxExportPDF, dxSkinDarkRoom, dxSkinFoggy, dxSkinSeven, dxSkinSharp,
-  frxDMPExport;
+  frxDMPExport, MyAccess;
 
 type
   TfrmBrowseFP = class(TfrmCxBrowse)
@@ -190,7 +190,7 @@ end;
 function TfrmbrowseFP.cekbayar(anomor:string) : integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   Result := 0;
   s:='select fp_isbayar from tfp_hdr where fp_nomor =' + Quot(anomor) ;
@@ -263,7 +263,7 @@ end;
 procedure TfrmBrowseFP.UpdateStatusKembali1Click(Sender: TObject);
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
     If CDSMaster.FieldByname('Nomor').IsNull then exit;
    if CDSMaster.FieldByname('kembali').AsString='0' then
@@ -281,8 +281,9 @@ begin
      CDSMaster.Post;
    end;
 
-   xExecQuery(s,frmMenu.conn);
-   xCommit(frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+   
 
      ShowMessage('Update Status Berhasil');
 
@@ -328,8 +329,9 @@ begin
        s:= 'Update tfp_hdr set fp_isbayar=0 where fp_nomor='+ Quot(CDSMaster.FieldByname('Nomor').AsString)+';';
      end;
   end;
-       xExecQuery(s,frmMenu.conn);
-       xCommit(frmMenu.conn);
+         EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+       
        ShowMessage('Update Status Berhasil');
 
 end;

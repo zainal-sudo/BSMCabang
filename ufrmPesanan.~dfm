@@ -962,7 +962,6 @@ object frmPesanan: TfrmPesanan
             end>
           Properties.OnButtonClick = clHargaPropertiesButtonClick
           Properties.OnEditValueChanged = clQTYPropertiesEditValueChanged
-          Properties.OnValidate = clHargaPropertiesValidate
           HeaderAlignmentHorz = taCenter
           HeaderAlignmentVert = vaCenter
           Width = 85

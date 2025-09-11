@@ -136,10 +136,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -153,7 +153,7 @@ end;
 procedure TfrmProsesGunggung.loaddata() ;
 var
   s,ssql: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
   akhir,awal : TDateTime;
 begin
@@ -163,7 +163,7 @@ begin
   s:= 'SELECT cus_kode,cus_nama,SUM(fp_amount) tot,'
 + ' (SELECT ifnull(SUM(retj_amount),0) FROM tretj_hdr INNER JOIN tfp_hdr ON fp_nomor=retj_fp_nomor AND'
 + ' MONTH(fp_tanggal)='+inttostr(cbbBulan.itemindex+1)+' AND YEAR(fp_tanggal)='+edttahun.text+' WHERE fp_cus_kode=X.fp_cus_kode )  Ret,'
-+ ' (SELECT if(gg_cus_kode<> "", 1,0) FROM tgunggung WHERE gg_cus_kode=cus_kode AND gg_periode='++inttostr(cbbBulan.itemindex+1)+' AND gg_tahun='+edttahun.text+') sts '
++ ' (SELECT if(gg_cus_kode<> "", 1,0) FROM tgunggung WHERE gg_cus_kode=cus_kode AND gg_periode='+inttostr(cbbBulan.itemindex+1)+' AND gg_tahun='+edttahun.text+') sts '
 + ' FROM tfp_hdr x INNER JOIN tcustomer'
 + ' ON cus_kode=fp_cus_kode'
 + ' WHERE MONTH(fp_tanggal)='+inttostr(cbbBulan.itemindex+1)+' AND YEAR(fp_tanggal)='+ edttahun.text
@@ -242,7 +242,8 @@ begin
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -280,10 +281,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmProsesGunggung.cxButton8Click(Sender: TObject);
@@ -314,10 +315,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 procedure TfrmProsesGunggung.FormShow(Sender: TObject);

@@ -3940,14 +3940,6 @@ object frmListJual: TfrmListJual
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
-    MaxBlobSize = -1
-    Params = <>
-    SQL.Strings = (
-      '')
-    Left = 451
-    Top = 249
-  end
   object ds2: TDataSource
     DataSet = ds3
     Left = 475
@@ -4014,5 +4006,9 @@ object frmListJual: TfrmListJual
     Connection = MyConnection1
     Left = 710
     Top = 366
+  end
+  object sqlqry1: TMyQuery
+    Left = 504
+    Top = 296
   end
 end

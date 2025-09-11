@@ -195,9 +195,9 @@ object frmBarang: TfrmBarang
     object Label16: TLabel
       Left = 226
       Top = 271
-      Width = 19
+      Width = 59
       Height = 13
-      Caption = 'HET'
+      Caption = 'Batas Harga'
     end
     object edtKode: TAdvEdit
       Left = 127

@@ -173,7 +173,8 @@ begin
          + QuotD(cGetServerTime,True) + ','
          + Quot(frmMenu.KDUSER)+')';
    end;
-   xExecQuery(s,frmMenu.conn);
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
    tt := TStringList.Create;
    s:= ' delete from tjurnalitem '
       + ' where  jurd_jur_no =' + quot(FID) ;
@@ -226,7 +227,8 @@ begin
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -235,7 +237,7 @@ end;
 procedure TfrmJurnalUmum.loaddataall(akode : string);
 var
   s: string ;
-  tsql,tsql2 : TSQLQuery;
+  tsql,tsql2 : TmyQuery;
   i:Integer;
 begin
   if akode = '' then
@@ -269,7 +271,7 @@ begin
                  + ' inner join tjurnalitem d on a.jur_no=d.jurd_jur_no '
                  + ' inner join trekening b on d.jurd_rek_kode = b.rek_kode '
                  + ' where a.jur_no = '+ Quot(akode)
-                 + ' and jurd_debet > 0 order by jurd_nourut';
+                 + ' order by jurd_nourut';
                 tsql := xOpenQuery(s,frmMenu.conn) ;
 
            i:=1;
@@ -337,14 +339,15 @@ end;
 procedure TfrmJurnalUmum.insertketampungan(anomor:String);
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   a:=8;
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   s := 'select jurd_rek_kode from tjurnalitem where jurd_jur_no =' + Quot(anomor) ;
   tsql := xOpenQuery(s,frmMenu.conn) ;
   x:=0;
@@ -387,12 +390,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 
@@ -505,10 +509,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -539,10 +543,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 
@@ -632,7 +636,7 @@ end;
 procedure TfrmJurnalUmum.bantuanaccount;
   var
     s:string;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     i:Integer;
 begin
     sqlbantuan := 'select rek_kode Account, rek_nama AccountName from Trekening where rek_isaktif=1';
@@ -658,7 +662,7 @@ procedure TfrmJurnalUmum.clAccountPropertiesEditValueChanged(
   Sender: TObject);
   var
     s:string;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     i:integer;
 begin
    cxGrdMain.DataController.Post;

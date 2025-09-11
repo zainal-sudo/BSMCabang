@@ -19,7 +19,8 @@ uses
   dxPSPrVwStd, dxPSPrVwAdv, dxPScxPageControlProducer,
   dxPScxEditorProducers, dxPScxExtEditorProducers, dxPScxCommon, dxPSCore,
   dxSkinsCore, dxSkinsDefaultPainters, dxSkinsdxBarPainter, AdvCombo,
-  cxCurrencyEdit, cxGridDBBandedTableView, dxPScxGrid6Lnk;
+  cxCurrencyEdit, cxGridDBBandedTableView, dxPScxGrid6Lnk, MemDS, DBAccess,
+  MyAccess;
 
 type
   TfrmLapBulananInkaso = class(TForm)
@@ -33,7 +34,7 @@ type
     SaveDialog1: TSaveDialog;
     TePanel3: TTePanel;
     dtstprvdr1: TDataSetProvider;
-    sqlqry1: TSQLQuery;
+    sqlqry2: TSQLQuery;
     ds2: TDataSource;
     ds3: TClientDataSet;
     cxStyleRepository1: TcxStyleRepository;
@@ -59,6 +60,7 @@ type
     startdate: TDateTimePicker;
     Label2: TLabel;
     enddate: TDateTimePicker;
+    sqlqry1: TMyQuery;
     procedure FormDblClick(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
     procedure sbNewClick(Sender: TObject);
@@ -180,7 +182,7 @@ ssql:= 'select *,ifnull(jatuhtempo,0)+ifnull(inkaso,0) target,(inkaso/(ifnull(ja
 + ' group by sls_nama) final';
 
         ds3.Close;
-        sqlqry1.SQLConnection := frmMenu.conn;
+        sqlqry1.Connection := frmMenu.conn;
         sqlqry1.SQL.Text := ssql;
         ds3.open;
 //        capaibulanini := cVarToFloat(TcxDBGridHelper(cxGrid1).GetFooterSummary('riilbulanini'))/ cVarToFloat(TcxDBGridHelper(cxGrid1).GetFooterSummary('targetbulanini'));

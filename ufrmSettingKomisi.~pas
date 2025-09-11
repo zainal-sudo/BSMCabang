@@ -174,10 +174,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -190,7 +190,7 @@ end;
 procedure TfrmSettingKomisi.loaddata(akode:string) ;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
   s:= 'select * from '
@@ -236,7 +236,7 @@ tsql := xOpenQuery(s,frmMenu.conn);
   s:= 'select * from '
   + ' tprodukmarketing_hdr '
   + ' left join tprodukmarketing_dtl2  on pmh_nomor=pmd2_pmh_nomor '
-  + ' left join tsalesman on salesman=sls_kode '
+  + ' left join tsalesman on pmd2_salesman=sls_kode '
   + ' where pmh_nomor = ' + Quot(akode) ;
   tsql := xOpenQuery(s,frmMenu.conn);
   with tsql do
@@ -293,7 +293,8 @@ begin
       + floattostr(cStrToFloat(edtHETAtas.Text)) + ','
       + floattostr(cStrToFloat(edthna.Text)) + ');';
   end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
      tt := TStringList.Create;
    s:= ' delete from tprodukmarketing_dtl '
@@ -340,7 +341,8 @@ begin
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -376,10 +378,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmSettingKomisi.cxButton8Click(Sender: TObject);
@@ -409,10 +411,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 procedure TfrmSettingKomisi.FormShow(Sender: TObject);

@@ -20,7 +20,7 @@ uses
   dxPScxEditorProducers, dxPScxExtEditorProducers, dxPScxCommon, dxPSCore,
   dxSkinsCore, dxSkinsDefaultPainters, dxSkinsdxBarPainter, dxPScxGrid6Lnk,
   cxContainer, cxTextEdit, cxMaskEdit, cxDropDownEdit, cxLookupEdit,
-  cxDBLookupEdit, cxDBExtLookupComboBox;
+  cxDBLookupEdit, cxDBExtLookupComboBox, MemDS, DBAccess, MyAccess;
 
 type
   TfrmListMutasiStok = class(TForm)
@@ -34,7 +34,7 @@ type
     SaveDialog1: TSaveDialog;
     TePanel3: TTePanel;
     dtstprvdr1: TDataSetProvider;
-    sqlqry1: TSQLQuery;
+    sqlqry2: TSQLQuery;
     ds2: TDataSource;
     ds3: TClientDataSet;
     cxStyleRepository1: TcxStyleRepository;
@@ -66,6 +66,7 @@ type
     Label3: TLabel;
     Label5: TLabel;
     cxLookupGudangAsal: TcxExtLookupComboBox;
+    sqlqry1: TMyQuery;
     procedure FormCreate(Sender: TObject);
     procedure FormDblClick(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
@@ -211,7 +212,7 @@ begin
 
 
   ds3.Close;
-        sqlqry1.SQLConnection := frmmenu.conn;
+        sqlqry1.Connection := frmmenu.conn;
         sqlqry1.SQL.Text := s;
         ds3.open;
 

@@ -141,7 +141,7 @@ end;
   edtDone.Text := FloatToStr(adone);
   edtTidak.Text := FloatToStr(atidak);
   if adone > 0 then
-  edtPresentase.Text := FloatToStr(StrToFloatDef(edtDone.Text,0)/(StrToFloatDef(edtDone.Text,0)+StrToFloatDef(edtTidak.Text,0))*100);
+  edtPresentase.Text := FormatFloat('###.##',adone/(adone+atidak)*100);
 end;
 
 procedure TfrmLapPlanKunjungan.FormShow(Sender: TObject);
@@ -192,7 +192,8 @@ begin
       then Exit ;
        s:='delete from tCostCenter '
         + ' where cc_kode = ' + quot(CDSMaster.FieldByname('KODE').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
       CDSMaster.Delete;
@@ -201,7 +202,7 @@ begin
      xRollback(frmMenu.conn);
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 
 end;
 

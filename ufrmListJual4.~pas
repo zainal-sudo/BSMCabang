@@ -174,7 +174,7 @@ begin
 
       s:= ' SELECT month(fp_tanggal) Bulan,year(fp_tanggal) Tahun,'
           + ' brg_kode Kode,brg_nama Nama,fpd_brg_satuan Satuan,ktg_nama Kategori,'
-          + ' sum(fpd_qty) Qty,sum((100-fpd_discpr)*(fpd_harga*fpd_qty)/100*if(fp_istax=1,if(fp_tanggal<'2022/04/01',1.1,1.11),1)) Nilai'
+          + ' sum(fpd_qty) Qty,sum((100-fpd_discpr)*(fpd_harga*fpd_qty)/100*if(fp_istax=1,if(fp_tanggal<"2022/04/01",1.1,1.11),1)) Nilai'
           + ' FROM Tfp_dtl inner join'
           + ' tfp_hdr on fpd_fp_nomor=fp_nomor'
           + ' inner join tbarang on fpd_brg_kode=brg_kode'

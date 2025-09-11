@@ -261,6 +261,8 @@ begin
         cxGrid1DBTableView1.Columns[18].Summary.FooterFormat:='###,###,###,###';
         cxGrid1DBTableView1.Columns[20].Summary.FooterKind:=skSum;
         cxGrid1DBTableView1.Columns[20].Summary.FooterFormat:='###,###,###,###';
+        cxGrid1DBTableView1.Columns[22].Summary.FooterKind:=skSum;
+        cxGrid1DBTableView1.Columns[22].Summary.FooterFormat:='###,###,###,###';
 
 
 //  hitung;

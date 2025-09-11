@@ -242,7 +242,7 @@ end;
 procedure TfrmTagihanEkspedisi.bacafile2;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default4') +';';
@@ -266,14 +266,15 @@ tsql:tsqlquery;
 procedure TfrmTagihanEkspedisi.insertketampungan(anomor:string);
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   A:=getbarisslip('SO');
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   s := 'select tehd_teh_nomor from ttagihanekspedisi_dtl where tehd_teh_nomor =' + Quot(anomor) ;
   tsql := xOpenQuery(s,frmMenu.conn) ;
   x:=0;
@@ -314,12 +315,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 
@@ -334,7 +336,7 @@ end;
 procedure TfrmTagihanEkspedisi.btnRefreshClick(Sender: TObject);
 var
     s:string;
-    tsql:TSQLQuery;
+    tsql:TmyQuery;
     i:Integer;
 begin
      CDS.emptydataset;
@@ -370,7 +372,7 @@ end;
 function TfrmTagihanEkspedisi.getUoc(akode:string):Integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
     s := ' SELECT fp_nomor, fp_tanggal, fp_cus_kode, cus_nama, fp_amount, fp_taxamount '
         + ' FROM tfp_hdr a '
@@ -429,10 +431,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -465,7 +467,8 @@ begin
        + Quot(edtKeterangan.Text) + ')';
   end;
 
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
   tt := TStringList.Create;
   s := ' DELETE FROM ttagihanekspedisi_dtl '
@@ -507,7 +510,8 @@ begin
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
      finally
         tt.Free;
@@ -581,10 +585,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 function TfrmTagihanEkspedisi.cekdata:Boolean;

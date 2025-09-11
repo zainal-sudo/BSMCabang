@@ -225,6 +225,7 @@ type
     dxkendaraan: TdxNavBarItem;
     LaporanAbsensi1: TMenuItem;
     dxekspedisi: TdxNavBarItem;
+    dxserahterima2: TdxNavBarItem;
     procedure FileExit1Execute(Sender: TObject);
     function ShowForm(AFormClass: TFormClass): TForm;
     procedure Maximized1Click(Sender: TObject);
@@ -354,6 +355,7 @@ type
     procedure dxkendaraanClick(Sender: TObject);
     procedure LaporanAbsensi1Click(Sender: TObject);
     procedure dxekspedisiClick(Sender: TObject);
+    procedure dxserahterima2Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -362,6 +364,7 @@ type
     FaHost: string;
     Fapassword: string;
     Fauser: string;
+    Faport: Integer;
     Fapathimage : string;
     FaDatabase2: string;
     FaHost2: string;
@@ -370,7 +373,8 @@ type
 
   public
     { Public declarations }
-    conn: TSQLConnection;
+    conn: TMyConnection;
+    // conn: TSQLConnection;
     connmy: TMyConnection;
 
         KDUSER,NMUSER,KDCABANG,NMCABANG,RKCABANG : String;
@@ -380,12 +384,12 @@ type
       property apassword: string read Fapassword write Fapassword;
       property apathimage: string read Fapathimage write Fapathimage;
       property auser: string read Fauser write Fauser;
+      property aport: Integer read Faport write Faport;
       property aDatabase2: string read FaDatabase2 write FaDatabase2;
       property aHost2: string read FaHost2 write FaHost2;
       property apassword2: string read Fapassword2 write Fapassword2;
       property auser2: string read Fauser2 write Fauser2;
-
-  end;
+end;
 
 var
 
@@ -401,27 +405,27 @@ var
   apath:string;
 
 implementation
- uses Ulib,uModuleConnection,ufrmUser, UfrmLogin,ufrmBrowseGudang,ufrmBrowseCostCenter,
- ufrmBrowseSalesman,ufrmBrowseCustomer,ufrmBrowseSupplier,ufrmBrowseJC,ufrmBrowseSubBarang,
- ufrmBrowsePesanan,ufrmBrowseBarang,ufrmBrowsePO,ufrmBrowseBPB,ufrmBrowseInvoice,
- ufrmBrowseMutasiGudang,ufrmBrowseBayarSup,ufrmBrowseMutasiCabang,ufrmBrowseReturBeli,ufrmBrowseMutasiCabang2,
- ufrmBrowseDO,ufrmBrowseFP,ufrmBrowseFeeCustomer,ufrmBrowseBayarCustomer,ufrmBrowseReturJual,ufrmBrowsePenerimaanLain,
- ufrmBrowsePembayaranLain,ufrmBrowseHitungStok,ufrmListJual,ufrmBrowseKoreksiStok,
- ufrmLapPersediaan,ufrmListJualvsTarget,ufrmListFOS,ufrmListJual2,ufrmlistjual3,ufrmListJual4,
- ufrmListInkaso,ufrmListMutasiStok,ufrmListJual5,ufrmBrowseFPBayangan,ufrmListKas,ufrmBrowseFakturPajak,
- ufrmBrowseJurnalUmum,ufrmBrowseJurnal,ufrmperusahaan,ufrmLapBulanan,ufrmLapYTD,ufrmBrowseHistoryHargaJual,
- ufrmLapBulananInkaso,ufrmBrowseKartuStok,ufrmBrowseRekening,ufrmListTransaksiHarian,ufrmBrowsePencairanGiro,
- ufrmListTransaksiHarian2,ufrmLapBulanan2,ufrmListSaldoPiutang,ufrmListMutasiStok2,ufrmListItemMinus,
- ufrmBrowseStokExpired,ufrmBrowseBayarBiayaPromosi,ufrmLapStokItemTerlaris,ufrmSalesMarketing,
- ufrmSettingKomisi,ufrmKomisiMarketing,ufrmSettingKomisi2,ufrmKomisiSalesman,ufrmListKas2,ufrmtutupperiode,
- ufrmBrowseMusnah,ufrmBrowseSetingPacking,ufrmBrowseSetingBiayaPromosi,ufrmBrowseSubBarangPF,
- ufrmBrowseBarangPF,ufrmBrowseTTFaktur,ufrmLapAbsensi,ufrmLapDetailCheckIn,ufrmDownloadkunjungan,
- ufrmBrowseSerahTerimaFaktur,ufrmProsesBiayaPromosi,ufrmEstimasiSales,ufrmBrowseSetingJadwalSales,
- ufrmBrowsejurnal2,ufrmBrowseSuratJalan,ufrmCetakKunjungan,ufrmLapBulanan4,
- ufrmBrowseInkasoBawahHet,ufrmLapBulananMarketing,ufrmLapKunjunganMarketing,
- ufrmListJualMarketing,ufrmBrowseEstimasiSales,ufrmPencapaianMarketing2,ufrmLapBulananMarketing2,
- ufrmupload,ufrmBrowsePermintaanBarang,ufrmBrowseTagihanEkspedisi,ufrmprosesgunggung,ufrmfakturpajak3,
- ufrmVerifikasiAbsensi,ufrmBrowseJenisKendaraan,ufrmBrowseEkspedisi;
+uses Ulib,uModuleConnection,ufrmUser, UfrmLogin,ufrmBrowseGudang,ufrmBrowseCostCenter,
+ufrmBrowseSalesman,ufrmBrowseCustomer,ufrmBrowseSupplier,ufrmBrowseJC,ufrmBrowseSubBarang,
+ufrmBrowsePesanan,ufrmBrowseBarang,ufrmBrowsePO,ufrmBrowseBPB,ufrmBrowseInvoice,
+ufrmBrowseMutasiGudang,ufrmBrowseBayarSup,ufrmBrowseMutasiCabang,ufrmBrowseReturBeli,ufrmBrowseMutasiCabang2,
+ufrmBrowseDO,ufrmBrowseFP,ufrmBrowseFeeCustomer,ufrmBrowseBayarCustomer,ufrmBrowseReturJual,ufrmBrowsePenerimaanLain,
+ufrmBrowsePembayaranLain,ufrmBrowseHitungStok,ufrmListJual,ufrmBrowseKoreksiStok,
+ufrmLapPersediaan,ufrmListJualvsTarget,ufrmListFOS,ufrmListJual2,ufrmlistjual3,ufrmListJual4,
+ufrmListInkaso,ufrmListMutasiStok,ufrmListJual5,ufrmBrowseFPBayangan,ufrmListKas,ufrmBrowseFakturPajak,
+ufrmBrowseJurnalUmum,ufrmBrowseJurnal,ufrmperusahaan,ufrmLapBulanan,ufrmLapYTD,ufrmBrowseHistoryHargaJual,
+ufrmLapBulananInkaso,ufrmBrowseKartuStok,ufrmBrowseRekening,ufrmListTransaksiHarian,ufrmBrowsePencairanGiro,
+ufrmListTransaksiHarian2,ufrmLapBulanan2,ufrmListSaldoPiutang,ufrmListMutasiStok2,ufrmListItemMinus,
+ufrmBrowseStokExpired,ufrmBrowseBayarBiayaPromosi,ufrmLapStokItemTerlaris,ufrmSalesMarketing,
+ufrmSettingKomisi,ufrmKomisiMarketing,ufrmSettingKomisi2,ufrmKomisiSalesman,ufrmListKas2,ufrmtutupperiode,
+ufrmBrowseMusnah,ufrmBrowseSetingPacking,ufrmBrowseSetingBiayaPromosi,ufrmBrowseSubBarangPF,
+ufrmBrowseBarangPF,ufrmBrowseTTFaktur,ufrmLapAbsensi,ufrmLapDetailCheckIn,ufrmDownloadkunjungan,
+ufrmBrowseSerahTerimaFaktur,ufrmProsesBiayaPromosi,ufrmEstimasiSales,ufrmBrowseSetingJadwalSales,
+ufrmBrowsejurnal2,ufrmBrowseSuratJalan,ufrmCetakKunjungan,ufrmLapBulanan4,
+ufrmBrowseInkasoBawahHet,ufrmLapBulananMarketing,ufrmLapKunjunganMarketing,
+ufrmListJualMarketing,ufrmBrowseEstimasiSales,ufrmPencapaianMarketing2,ufrmLapBulananMarketing2,
+ufrmupload,ufrmBrowsePermintaanBarang,ufrmBrowseTagihanEkspedisi,ufrmprosesgunggung,ufrmfakturpajak3,
+ufrmVerifikasiAbsensi,ufrmBrowseJenisKendaraan,ufrmBrowseEkspedisi,ufrmBrowseSerahTerimaFaktur2;
 {$R *.dfm}
 
 
@@ -435,12 +439,15 @@ var
   aForm: TForm;
   i: Integer;
 begin
-//  inherited;
-  if ( not ceKVIEW(frmMenu.KDUSER,AFormClass.ClassName)) then
-        begin
-           MessageDlg('Anda tidak berhak Membuka di Modul ini',mtWarning, [mbOK],0);
-           Exit;
-        End;
+  inherited;
+  Result := nil;
+
+  if ( not ceKVIEW(frmMenu.KDUSER, AFormClass.ClassName)) then
+  begin
+    MessageDlg('Anda tidak berhak Membuka di Modul ini',mtWarning, [mbOK],0);
+    Exit;
+  End;
+  
   for i := 0 to MDIChildCount - 1 do
   begin
     if MDIChildren[i].ClassName = AFormClass.ClassName then
@@ -453,89 +460,91 @@ begin
 
   aForm := AFormClass.Create(Application);
   aForm.FormStyle := fsMDIChild;
-  aForm.Position := poDefault;
+  // aForm.Position := poDefault;
 
-
-//  aForm.WindowState := wsMaximized;
+  aForm.WindowState := wsMaximized;
   Result := (aForm as AFormClass);
-
 end;
 
 procedure TfrmMenu.Maximized1Click(Sender: TObject);
 begin
   if MDIChildCount <> 0 then
-   ActiveMDIChild.WindowState := wsMaximized;
+    ActiveMDIChild.WindowState := wsMaximized;
 end;
 
 procedure TfrmMenu.FormShow(Sender: TObject);
 var
   sql:string;
-  tsql:TSQLQuery;
-  AppVersi,DbVersi:Double;
-
+  tsql:TmyQuery;
+  AppVersi, DbVersi:Double;
+  arc: Integer;
 begin
-  apath:='C:\Users\';
-  apath:=apath+vartostr(trim(GetCurrentUserName));
-  apath:= apath+'\Documents\Default\';
- 
-      bacafile;
-//      bacafile2;
-      StatusBar1.Panels[1].Text := 'Connected  to ' + aHost;
-      StatusBar1.Panels[2].Text := 'Database  ' + aDatabase;
-      conn := xCreateConnection(ctMySQL,aHost,aDatabase,auser,apassword);
-      connmy:= xCreateConnection2(ctMySQL,aHost,aDatabase,auser,apassword);
-      ThousandSeparator:=',';
-      ShortDateFormat := 'M/d/yyyy';
-      DateSeparator   := '/';
-      DecimalSeparator:= '.';
-      Application.UpdateFormatSettings:=True;
-      zVersi:='5.0.93';
-      StatusBar1.Panels[4].Text := 'Versi ' + zVersi;
-// cek ver si
-  sql:='select versi from tversi where aplikasi="Inventorycab"';
-  tsql := xOpenQuery(sql,frmmenu.conn);
-  AppVersi:=StrToFloat(StringReplace(zVersi,'.','',[rfReplaceAll]));
-  DbVersi:=StrToFloat(StringReplace(tsql.FieldByName('versi').AsString,'.','',[rfReplaceAll]));
+  apath := 'C:\Users\';
+  apath := apath+vartostr(trim(GetCurrentUserName));
+  apath := apath+'\Documents\Default\';
+
+  bacafile;
+  //      bacafile2;
+  StatusBar1.Panels[1].Text := 'Connected  to ' + aHost;
+  StatusBar1.Panels[2].Text := 'Database  ' + aDatabase;
+
+  conn := xCreateConnection(ctMySQL,aHost,aDatabase,auser,apassword, aport);
+  // connmy:= xCreateConnection2(ctMySQL,aHost,aDatabase,auser,apassword);
+  conn.Connected := True;
+
+  ThousandSeparator := ',';
+  ShortDateFormat := 'M/d/yyyy';
+  DateSeparator   := '/';
+  DecimalSeparator := '.';
+  Application.UpdateFormatSettings := True;
+
+  zVersi := '5.0.93';
+  StatusBar1.Panels[4].Text := 'Versi ' + zVersi;
+
+  // cek ver si
+  sql := 'select versi from tversi where aplikasi = "Inventorycab"';
+  tsql := xOpenQuery(sql, arc, frmmenu.conn);
+  AppVersi := StrToFloat(StringReplace(zVersi,'.','',[rfReplaceAll]));
+  DbVersi := StrToFloat(StringReplace(tsql.FieldByName('versi').AsString,'.','',[rfReplaceAll]));
+
   if AppVersi<dbVersi then
   begin
     ShowMessage('Program belum update silakan hubungi programmer');
     application.terminate;
   end;
 
-
-      frmLogin.Show;
+  frmLogin.Show;
 end;
 
 procedure TfrmMenu.bacafile;
- var
- ltemp : TStringList;
-
- begin
-   if FileExists(apath+'default.cfg') then
-   begin
-     ltemp := TStringList.Create;
+var
+  ltemp : TStringList;
+begin
+  if FileExists(apath+'default.cfg') then
+  begin
+    ltemp := TStringList.Create;
     ltemp.loadfromfile(apath+'default.cfg');
-   aHost     := ltemp[0];
-   aDatabase := ltemp[1];
-   auser     := ltemp[2];
-   apassword := 'BsmCabang321?';
-   apathimage := ltemp [5];
-   ltemp.free;
-   end
-   else
-   begin
-   ltemp := TStringList.Create;
-   ltemp.loadfromfile(ExtractFileDir(application.ExeName) + '\' + 'default.cfg');
-   aHost     := ltemp[0];
-   aDatabase := ltemp[1];
-   auser     := ltemp[2];
-   apassword := 'BsmCabang321?';
-   apathimage := ltemp [5];
-   ltemp.free;
-   end;
-
- end;
-
+    aHost     := ltemp[0];
+    aDatabase := ltemp[1];
+    auser     := ltemp[2];
+    apassword := 'BsmCabang321?';
+    aport := StrToInt(ltemp[6]);
+    apathimage := ltemp[5];
+    ltemp.free;
+  end
+  else
+  begin
+    ltemp := TStringList.Create;
+    ltemp.loadfromfile(ExtractFileDir(application.ExeName) + '\' + 'default.cfg');
+    aHost     := ltemp[0];
+    aDatabase := ltemp[1];
+    auser     := ltemp[2];
+    apassword := ltemp[3];
+    aport := StrToInt(ltemp[6]);
+    apathimage := ltemp [5];
+    ltemp.free;
+  end;
+end;
 
 procedure TfrmMenu.Exit1Click(Sender: TObject);
 begin
@@ -545,11 +554,11 @@ end;
 procedure TfrmMenu.frmUserClick(Sender: TObject);
 begin
   if ActiveMDIChild.Caption <> 'Master User' then
- begin
+  begin
     ShowForm(TfrmUser).Show;
- end;
+  end
+  else
     ActiveMDIChild.WindowState := wsMaximized;
-
 end;
 
 procedure TfrmMenu.frmRELoginClick(Sender: TObject);
@@ -560,239 +569,224 @@ begin
    begin
       MDIChildren[i].Release;
    end;
+   
    Self.Enabled := False;
    frmlogin.edtuser.Clear;
    frmlogin.edtPassword.Clear;
    frmLogin.Show;
 end;
 
-
 procedure TfrmMenu.dxNavBar1Item1Click(Sender: TObject);
 begin
-frmUserClick(self);
+  frmUserClick(self);
 end;
 
 procedure TfrmMenu.dxGudangClick(Sender: TObject);
 begin
-   if ActiveMDIChild.Caption <> 'Browse Gudang' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Gudang' then
+  begin
     ShowForm(TfrmBrowseGudang).Show;
- end;
-//    ActiveMDIChild.WindowState := wsMaximized;
-
+  end;
 end;
 
 procedure TfrmMenu.dxCostcenterClick(Sender: TObject);
 begin
-    if ActiveMDIChild.Caption <> 'Browse Cost Center' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Cost Center' then
+  begin
     ShowForm(TfrmBrowseCostCenter).Show;
- end;
+  end;
 end;
 
 procedure TfrmMenu.dxSalesmanClick(Sender: TObject);
 begin
-    if ActiveMDIChild.Caption <> 'Browse Salesman' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Salesman' then
+  begin
     ShowForm(TfrmBrowseSalesman).Show;
- end;
-
+  end;
 end;
 
 procedure TfrmMenu.dxCustomerClick(Sender: TObject);
 begin
-    if ActiveMDIChild.Caption <> 'Browse Customer' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Customer' then
+  begin
     ShowForm(TfrmBrowseCustomer).Show;
- end;
-
+  end;
 end;
 
 procedure TfrmMenu.dxSupplierClick(Sender: TObject);
 begin
- if ActiveMDIChild.Caption <> 'Browse Supplier' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Supplier' then
+  begin
     ShowForm(TfrmBrowseSupplier).Show;
- end;
-
+  end;
 end;
 
 procedure TfrmMenu.dxJenisCustomerClick(Sender: TObject);
 begin
- if ActiveMDIChild.Caption <> 'Browse Jenis Customer' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Jenis Customer' then
+  begin
     ShowForm(TfrmBrowseJC).Show;
- end;
-
+  end;
 end;
 
 procedure TfrmMenu.dxReloginClick(Sender: TObject);
 var
   i : Integer;
 begin
-   for i := 0 to MDIChildCount - 1 do
+  for i := 0 to MDIChildCount - 1 do
   begin
-      MDIChildren[i].Release;
+    MDIChildren[i].Release;
   end;
-   Self.Enabled := False;
-   frmlogin.edtuser.Clear;
-   frmlogin.edtPassword.Clear;
-   frmLogin.Show;
 
+  Self.Enabled := False;
+  frmlogin.edtuser.Clear;
+  frmlogin.edtPassword.Clear;
+  frmLogin.Show;
 end;
 
 
 procedure TfrmMenu.dxKategoriClick(Sender: TObject);
 begin
-   if ActiveMDIChild.Caption <> 'Browse SubBarang' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse SubBarang' then
+  begin
     ShowForm(TfrmBrowseSubBarang).Show;
- end;
+  end;
 end;
 
 procedure TfrmMenu.dxPesananJualClick(Sender: TObject);
 begin
-    if ActiveMDIChild.Caption <> 'Browse Pesanan' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Pesanan' then
+  begin
     ShowForm(TfrmBrowsePesanan).Show;
- end;
+  end;
 end;
 
 procedure TfrmMenu.dxBarangClick(Sender: TObject);
 begin
-    if ActiveMDIChild.Caption <> 'Browse Barang' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Barang' then
+  begin
     ShowForm(TfrmBrowseBarang).Show;
- end;
+  end;
 end;
 
 procedure TfrmMenu.dxPesananBeliClick(Sender: TObject);
 begin
-      if ActiveMDIChild.Caption <> 'Browse PO' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse PO' then
+  begin
     ShowForm(TfrmBrowsePO).Show;
- end;
+  end;
 end;
 
 procedure TfrmMenu.dxPenerimaanBarangClick(Sender: TObject);
 begin
- if ActiveMDIChild.Caption <> 'Browse BPB' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse BPB' then
+  begin
     ShowForm(TfrmBrowseBPB).Show;
- end;
+  end;
 end;
 
 procedure TfrmMenu.dxFakturBeliClick(Sender: TObject);
 begin
- if ActiveMDIChild.Caption <> 'Browse Invoice' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Invoice' then
+  begin
     ShowForm(TfrmBrowseInvoice).Show;
- end;
-
+  end;
 end;
 
 procedure TfrmMenu.dxFakturJualClick(Sender: TObject);
 begin
-   if ActiveMDIChild.Caption <> 'Browse Faktur Penjualan' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Faktur Penjualan' then
+  begin
     ShowForm(TfrmBrowseFP).Show;
- end;
+  end;
 end;
 
 procedure TfrmMenu.dxMutasiCabang2Click(Sender: TObject);
 begin
- if ActiveMDIChild.Caption <> 'Browse Mutasi Cabang In' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Mutasi Cabang In' then
+  begin
     ShowForm(TfrmBrowseMutasiCabang2).Show;
- end;
+  end;
 end;
 
 procedure TfrmMenu.dxMutasiCabangClick(Sender: TObject);
 begin
-     if ActiveMDIChild.Caption <> 'Browse Mutasi Cabang' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Mutasi Cabang' then
+  begin
     ShowForm(TfrmBrowseMutasiCabang).Show;
- end;
-
+  end;
 end;
 
 procedure TfrmMenu.dxmutasigudangClick(Sender: TObject);
 begin
-   if ActiveMDIChild.Caption <> 'Browse Mutasi Gudang' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Mutasi Gudang' then
+  begin
     ShowForm(TfrmBrowseMutasiGudang).Show;
- end;
-
+  end;
 end;
 
 procedure TfrmMenu.dxPembayaransupClick(Sender: TObject);
 begin
-   if ActiveMDIChild.Caption <> 'Browse Pembayaran Supplier' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Pembayaran Supplier' then
+  begin
     ShowForm(TfrmBrowseBayarSup).Show;
- end;
-
+  end;
 end;
 
 procedure TfrmMenu.dxPengirimanClick(Sender: TObject);
 begin
-       if ActiveMDIChild.Caption <> 'Browse Pengiriman Barang' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Pengiriman Barang' then
+  begin
     ShowForm(TfrmBrowseDO).Show;
- end;
+  end;
 end;
 
 procedure TfrmMenu.dxReturBeliClick(Sender: TObject);
 begin
-    if ActiveMDIChild.Caption <> 'Browse Retur Beli' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Retur Beli' then
+  begin
     ShowForm(TfrmBrowseReturBeli).Show;
- end;
-
+  end;
 end;
 
 procedure TfrmMenu.dxfeeCustomerClick(Sender: TObject);
 begin
-    if ActiveMDIChild.Caption <> 'Browse Fee Customer' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Fee Customer' then
+  begin
     ShowForm(TfrmBrowseFeeCustomer).Show;
- end;
-
+  end;
 end;
 
 procedure TfrmMenu.dxPenerimaanClick(Sender: TObject);
 begin
-    if ActiveMDIChild.Caption <> 'Browse Pembayaran Customer' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Pembayaran Customer' then
+  begin
     ShowForm(TfrmBrowseBayarCustomer).Show;
- end;
-
+  end;
 end;
 
 procedure TfrmMenu.dxReturPenjualanClick(Sender: TObject);
 begin
-    if ActiveMDIChild.Caption <> 'Browse Retur Jual' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Retur Jual' then
+  begin
     ShowForm(TfrmBrowseReturJual).Show;
- end;
+  end;
 end;
 
 procedure TfrmMenu.dxPenerimaanlainClick(Sender: TObject);
 begin
-    if ActiveMDIChild.Caption <> 'Browse Penerimaan Lain Lain' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Penerimaan Lain Lain' then
+  begin
     ShowForm(TfrmBrowsePenerimaanLain).Show;
- end;
-
+  end;
 end;
 
 procedure TfrmMenu.dxPembayaralainClick(Sender: TObject);
 begin
-    if ActiveMDIChild.Caption <> 'Browse Pembayaran Lain Lain' then
- begin
+  if ActiveMDIChild.Caption <> 'Browse Pembayaran Lain Lain' then
+  begin
     ShowForm(TfrmBrowsePembayaranLain).Show;
- end;
-
+  end;
 end;
 
 procedure TfrmMenu.dxhitungstokClick(Sender: TObject);
@@ -961,37 +955,36 @@ end;
 
 procedure TfrmMenu.User1Click(Sender: TObject);
 begin
-frmUserClick(self);
-  end;
+  frmUserClick(self);
+end;
 
 procedure TfrmMenu.IdentitasPerusahaan1Click(Sender: TObject);
 begin
   if ActiveMDIChild.Caption <> 'Identitas Perusahaan' then
- begin
+  begin
     ShowForm(TfrmPerusahaan).Show;
- end;
+  end;
     ActiveMDIChild.WindowState := wsMaximized;
-
 end;
 
 procedure TfrmMenu.Relogin1Click(Sender: TObject);
 var
-  i : Integer;
+  i: Integer;
 begin
-   for i := 0 to MDIChildCount - 1 do
+  for i := 0 to MDIChildCount - 1 do
   begin
-      MDIChildren[i].Release;
+    MDIChildren[i].Release;
   end;
-   Self.Enabled := False;
-   frmlogin.edtuser.Clear;
-   frmlogin.edtPassword.Clear;
-   frmLogin.Show;
 
+  Self.Enabled := False;
+  frmlogin.edtuser.Clear;
+  frmlogin.edtPassword.Clear;
+  frmLogin.Show;
 end;
 
 procedure TfrmMenu.dxIdentitasClick(Sender: TObject);
 begin
- IdentitasPerusahaan1Click(Self);
+  IdentitasPerusahaan1Click(Self);
 end;
 
 procedure TfrmMenu.Costcenter1Click(Sender: TObject);
@@ -1322,11 +1315,10 @@ end;
 
 procedure TfrmMenu.dxSetingPackingClick(Sender: TObject);
 begin
-     if ActiveMDIChild.Caption <> 'Setting Packing' then
-   begin
-      ShowForm(TfrmBrowseSetingPacking).Show;
-   end;
-
+  if ActiveMDIChild.Caption <> 'Setting Packing' then
+  begin
+    ShowForm(TfrmBrowseSetingPacking).Show;
+  end;
 end;
 
 procedure TfrmMenu.dxsettingbiayapromosiClick(Sender: TObject);
@@ -1341,10 +1333,9 @@ end;
 procedure TfrmMenu.dxgrouppfClick(Sender: TObject);
 begin
   if ActiveMDIChild.Caption <> 'Browse Barang pf' then
-   begin
-      ShowForm(TfrmBrowseBarangPF).Show;
-   end;
-
+  begin
+    ShowForm(TfrmBrowseBarangPF).Show;
+  end;
 end;
 
 procedure TfrmMenu.dxttfakturClick(Sender: TObject);
@@ -1492,7 +1483,7 @@ end;
 procedure TfrmMenu.bacafile2;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default2') +';';
@@ -1563,6 +1554,14 @@ begin
     ShowForm(TfrmBrowseEkspedisi).Show;
  end;
 
+end;
+
+procedure TfrmMenu.dxserahterima2Click(Sender: TObject);
+begin
+  if ActiveMDIChild.Caption <> 'Serah Terima Faktur Salesman' then
+ begin
+    ShowForm(TfrmBrowseSerahTerimaFaktur2).Show;
+ end;
 end;
 
 end.

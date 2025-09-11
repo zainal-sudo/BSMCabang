@@ -18,7 +18,7 @@ uses
   dxSkinOffice2007Black, dxSkinOffice2007Blue, dxSkinOffice2007Green,
   dxSkinOffice2007Pink, dxSkinOffice2007Silver, dxSkinPumpkin, dxSkinSeven,
   dxSkinSharp, dxSkinSilver, dxSkinSpringTime, dxSkinStardust,
-  dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue, dxSkinscxPCPainter;
+  dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue, dxSkinscxPCPainter, MyAccess;
 
 type
   TfrmKomisiMarketing = class(TForm)
@@ -180,7 +180,7 @@ end;
 procedure TfrmKomisiMarketing.loaddata;
 var
   sfilter,s,ss: string;
-  tsql,tsql2 : TSQLQuery;
+  tsql,tsql2 : TmyQuery;
   i:Integer;
 
 begin
@@ -460,12 +460,13 @@ begin
        try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
       end;
-      xCommit(frmMenu.conn);
+      
    try
     ftsreport.Nama := 'cetakkomisi2';
 
@@ -500,7 +501,7 @@ end;
 function TfrmKomisiMarketing.getkomisijual(apersen:double) : double;
 var
   sfilter,s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
 
   result := 0;

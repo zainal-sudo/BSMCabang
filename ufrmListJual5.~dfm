@@ -1,10 +1,10 @@
 object frmListJual5: TfrmListJual5
-  Left = 0
-  Top = 81
+  Left = 4
+  Top = 1
   AutoScroll = False
   Caption = 'List Penjualan per Faktur with Margin'
-  ClientHeight = 582
-  ClientWidth = 1008
+  ClientHeight = 520
+  ClientWidth = 782
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -24,8 +24,8 @@ object frmListJual5: TfrmListJual5
   object tscrlbx1: TTeScrollBox
     Left = 0
     Top = 28
-    Width = 1008
-    Height = 516
+    Width = 782
+    Height = 454
     HorzScrollBar.Range = 1020
     VertScrollBar.Range = 600
     Align = alClient
@@ -304,7 +304,7 @@ object frmListJual5: TfrmListJual5
   object TePanel3: TTePanel
     Left = 0
     Top = 0
-    Width = 1008
+    Width = 782
     Height = 28
     Align = alTop
     Alignment = taLeftJustify
@@ -322,15 +322,15 @@ object frmListJual5: TfrmListJual5
   end
   object TePanel5: TTePanel
     Left = 0
-    Top = 544
-    Width = 1008
+    Top = 482
+    Width = 782
     Height = 38
     Align = alBottom
     Color = clMoneyGreen
     TabOrder = 4
     ThemeObject = 'default'
     object cxButton8: TcxButton
-      Left = 920
+      Left = 694
       Top = 1
       Width = 87
       Height = 36

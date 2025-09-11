@@ -8,7 +8,7 @@ uses
   cxLookAndFeelPainters, cxButtons,StrUtils, cxGraphics, cxLookAndFeels,
   dxSkinsCore, dxSkinsDefaultPainters, cxControls, cxContainer, cxEdit,
   cxTextEdit, cxMaskEdit, cxDropDownEdit, cxLookupEdit, cxDBLookupEdit,
-  cxDBExtLookupComboBox,DBClient;
+  cxDBExtLookupComboBox,DBClient, MyAccess;
 
 type
   TfrmSubBarang = class(TForm)
@@ -105,10 +105,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -121,7 +121,7 @@ end;
 procedure TfrmSubBarang.loaddata(akode:string) ;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   s:= 'select ktg_kode,ktg_nama from tkategori where ktg_kode = ' + Quot(akode) ;
 tsql := xOpenQuery(s,frmMenu.conn);
@@ -156,7 +156,8 @@ begin
   s:='update tkategori set '
     + ' ktg_nama = ' + Quot(edtNama.Text)
     + ' where ktg_kode = ' + quot(FID) + ';';
-   xExecQuery(s,frmmenu.conn); 
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s); 
 end
 else
 begin
@@ -168,7 +169,8 @@ begin
              + Quot(edtNama.Text) + ' ,'
              + IntToStr(FTingkat)
              + ');';
-    xExecQuery(s,frmmenu.conn);
+      EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
     edtkode.Text := getmaxkode;
 end;
 
@@ -262,10 +264,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmSubBarang.cxButton8Click(Sender: TObject);
@@ -295,10 +297,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 

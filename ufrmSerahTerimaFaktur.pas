@@ -12,7 +12,7 @@ uses
   cxCustomData, cxFilter, cxData, cxDataStorage, DB, cxDBData, cxGridLevel,
   cxClasses, cxGridCustomView, cxGridCustomTableView, cxGridTableView,
   cxGridDBTableView, cxGrid, cxSpinEdit, cxCurrencyEdit, AdvEdBtn,DateUtils,
-  cxCalendar, cxCheckBox, frxClass, frxDMPExport;
+  cxCalendar, cxCheckBox, frxClass, frxDMPExport, MyAccess;
 
 type
   TfrmSerahTerimaFaktur = class(TForm)
@@ -185,10 +185,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmSerahTerimaFaktur.cxButton8Click(Sender: TObject);
@@ -223,10 +223,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -362,7 +362,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
      tt := TStringList.Create;
@@ -389,7 +390,8 @@ end;
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -417,7 +419,7 @@ end;
 procedure TfrmSerahTerimaFaktur.loaddataInvoice(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
 
@@ -481,7 +483,7 @@ end;
 procedure TfrmSerahTerimaFaktur.loaddataall(akode : string);
 var
   s: string ;
-  tsql,tsql2 : TSQLQuery;
+  tsql,tsql2 : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtyterima : Integer;
@@ -611,7 +613,7 @@ end;
 procedure TfrmSerahTerimaFaktur.doslip2(anomor : string );
 var
   aserah,aterima,s: string ;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
   i:integer;
 //  ftsreport : TTSReport;
 begin
@@ -699,7 +701,7 @@ procedure TfrmSerahTerimaFaktur.edtPenyerahExit(Sender: TObject);
 var
   s:string;
   i:integer;
-  tsql2:TSQLQuery;
+  tsql2:TmyQuery;
 begin
   if (edtPenyerah.Text='GUDANG') or (edtPenyerah.Text='SALESMAN') or (edtPenyerah.Text='DRIVER') THEN
   begin

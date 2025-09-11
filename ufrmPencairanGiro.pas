@@ -8,7 +8,7 @@ uses
   cxLookAndFeelPainters, cxButtons,StrUtils, cxGraphics, cxLookAndFeels,
   dxSkinsCore, dxSkinsDefaultPainters, AdvEdBtn, cxControls, cxContainer,
   cxEdit, cxTextEdit, cxMaskEdit, cxDropDownEdit, cxLookupEdit,
-  cxDBLookupEdit, cxDBExtLookupComboBox, DBClient;
+  cxDBLookupEdit, cxDBExtLookupComboBox, DBClient, MyAccess;
 
 type
   TfrmPencairanGiro = class(TForm)
@@ -115,10 +115,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -131,7 +131,7 @@ end;
 procedure TfrmPencairanGiro.loaddata(akode:string) ;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
 begin
   s:= 'select cg_nomor,cg_gironumber,cg_tanggal,cg_tanggalcair,cg_nilai,cg_rek_bank,rek_nama '
   + ' from tpencairangiro inner join trekening on rek_kode=cg_rek_bank where cg_nomor = ' + Quot(akode) ;
@@ -189,7 +189,8 @@ begin
              + Quot(cxLookupRekening.EditValue)
              + ');';
 end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 end;
 
@@ -241,10 +242,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmPencairanGiro.cxButton8Click(Sender: TObject);
@@ -274,10 +275,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 

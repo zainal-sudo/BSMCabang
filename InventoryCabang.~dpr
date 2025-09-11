@@ -161,7 +161,8 @@ uses
   ufrmBrowseJenisKendaraan in 'ufrmBrowseJenisKendaraan.pas' {frmBrowseJenisKendaraan},
   ufrmBrowseEkspedisi in 'ufrmBrowseEkspedisi.pas' {frmBrowseEkspedisi},
   ufrmEkspedisi in 'ufrmEkspedisi.pas' {frmEkspedisi},
-  ufrmBrowseSerahTerimaFaktur2 in 'ufrmBrowseSerahTerimaFaktur2.pas' {frmBrowseSerahTerimaFaktur2};
+  ufrmBrowseSerahTerimaFaktur2 in 'ufrmBrowseSerahTerimaFaktur2.pas' {frmBrowseSerahTerimaFaktur2},
+  ufrmSerahTerimaFaktur2 in 'ufrmSerahTerimaFaktur2.pas' {frmSerahTerimaFaktur2};
 
 {$R *.res}
 

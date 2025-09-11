@@ -53,32 +53,31 @@ implementation
 
 procedure TfrmBrowseCustomer.btnRefreshClick(Sender: TObject);
 begin
-   Self.SQLMaster := 'select cus_kode Kode ,cus_nama Nama,cus_alamat '
-  + ' Alamat,gc_nama Golongan,cus_kota Kota,cus_Telp Telp,cus_fax Fax,cus_CP Contact,cus_piutang Piutang ,'
-  + ' jc_nama Jenis_Customer,cus_npwp NPWP,cus_namanpwp NAMANPWP,cus_alamatnpwp ALAMATNPWP, '
-  + ' (select  byc_tanggal from tbayarcus_hdr where byc_cus_kode=cus_kode order by byc_tanggal desc limit 1) last_paid,cus_top Top ,if(cus_locked=0,"Open","Locked") Locked,'
-  + ' (select sls_nama from tsalescustomer inner join tsalesman on sls_kode=sc_sls_kode where sc_cus_kode=cus_kode limit 1) Marketing '
-  + ' from tcustomer left join tgolongancustomer on cus_gc_kode=gc_kode '
-  + ' left join tjeniscustomer on jc_kode=cus_jc_kode'
-  + ' where cus_cabang ='+Quot(frmMenu.KDCABANG);
-   inherited;
-    cxGrdMaster.ApplyBestFit();
-    cxGrdMaster.Columns[0].Width :=100;
-    cxGrdMaster.Columns[1].Width :=200;
-    cxGrdMaster.Columns[2].Width :=300;
-    cxGrdMaster.Columns[3].Width :=100;
-    cxGrdMaster.Columns[4].Width :=100;
-    cxGrdMaster.Columns[5].Width :=100;
-    cxGrdMaster.Columns[6].Width :=100;
-    cxGrdMaster.Columns[7].Width :=100;
-    cxGrdMaster.Columns[8].Summary.FooterKind:=skSum;
-    cxGrdMaster.Columns[8].Summary.FooterFormat:='###,###,###,###';
-
+  Self.SQLMaster := ' select cus_kode Kode, cus_nama Nama, cus_alamat '
+                  + ' Alamat, gc_nama Golongan, cus_kota Kota, cus_Telp Telp, cus_fax Fax, cus_CP Contact, cus_piutang Piutang, '
+                  + ' jc_nama Jenis_Customer, cus_npwp NPWP, cus_namanpwp NAMANPWP, cus_alamatnpwp ALAMATNPWP, '
+                  + ' (select  byc_tanggal from tbayarcus_hdr where byc_cus_kode = cus_kode order by byc_tanggal desc limit 1) last_paid, cus_top Top, if(cus_locked=0,"Open","Locked") Locked, '
+                  + ' (select sls_nama from tsalescustomer inner join tsalesman on sls_kode = sc_sls_kode where sc_cus_kode = cus_kode limit 1) Marketing '
+                  + ' from tcustomer left join tgolongancustomer on cus_gc_kode = gc_kode '
+                  + ' left join tjeniscustomer on jc_kode = cus_jc_kode'
+                  + ' where cus_cabang = '+Quot(frmMenu.KDCABANG);
+  inherited;
+  cxGrdMaster.ApplyBestFit();
+  cxGrdMaster.Columns[0].Width :=100;
+  cxGrdMaster.Columns[1].Width :=200;
+  cxGrdMaster.Columns[2].Width :=300;
+  cxGrdMaster.Columns[3].Width :=100;
+  cxGrdMaster.Columns[4].Width :=100;
+  cxGrdMaster.Columns[5].Width :=100;
+  cxGrdMaster.Columns[6].Width :=100;
+  cxGrdMaster.Columns[7].Width :=100;
+  cxGrdMaster.Columns[8].Summary.FooterKind:=skSum;
+  cxGrdMaster.Columns[8].Summary.FooterFormat:='###,###,###,###';
 end;
 
 procedure TfrmBrowseCustomer.FormShow(Sender: TObject);
 begin
-    ShowWindowAsync(Handle, SW_MAXIMIZE);
+  ShowWindowAsync(Handle, SW_MAXIMIZE);
   inherited;
   btnRefreshClick(Self);
 end;
@@ -88,13 +87,14 @@ var
   frmCustomer: TfrmCustomer;
 begin
   inherited;
-    if ActiveMDIChild.Caption <> 'Master Customer' then
-   begin
-      frmCustomer  := frmmenu.ShowForm(TfrmCustomer) as TfrmCustomer;
-//      frmCustomer.edtKode.Text := frmCustomer.getmaxkode;
-      frmCustomer.edtkode.setfocus;
-   end;
-   frmCustomer.Show;
+  if ActiveMDIChild.Caption <> 'Master Customer' then
+  begin
+    frmCustomer  := frmmenu.ShowForm(TfrmCustomer) as TfrmCustomer;
+    //      frmCustomer.edtKode.Text := frmCustomer.getmaxkode;
+    frmCustomer.edtkode.setfocus;
+  end;
+  
+  frmCustomer.Show;
 end;
 
 procedure TfrmBrowseCustomer.cxButton1Click(Sender: TObject);
@@ -103,17 +103,18 @@ var
 begin
   inherited;
   If CDSMaster.FieldByname('KODE').IsNull then exit;
-  if ActiveMDIChild.Caption <> 'Master Gudang' then
-   begin
-//      ShowForm(TfrmBrowseBarang).Show;
-      frmCustomer  := frmmenu.ShowForm(TfrmCustomer) as TfrmCustomer;
-      frmCustomer.ID := CDSMaster.FieldByname('KODE').AsString;
-      frmCustomer.FLAGEDIT := True;
-      frmCustomer.edtKode.Text := CDSMaster.FieldByname('KODE').AsString;
-      frmCustomer.loaddata(CDSMaster.FieldByname('KODE').AsString);
 
-   end;
-   frmCustomer.Show;
+  if ActiveMDIChild.Caption <> 'Master Gudang' then
+  begin
+    //      ShowForm(TfrmBrowseBarang).Show;
+    frmCustomer  := frmmenu.ShowForm(TfrmCustomer) as TfrmCustomer;
+    frmCustomer.ID := CDSMaster.FieldByname('KODE').AsString;
+    frmCustomer.FLAGEDIT := True;
+    frmCustomer.edtKode.Text := CDSMaster.FieldByname('KODE').AsString;
+    frmCustomer.loaddata(CDSMaster.FieldByname('KODE').AsString);
+  end;
+  
+  frmCustomer.Show;
 end;
 
 procedure TfrmBrowseCustomer.cxButton6Click(Sender: TObject);
@@ -127,44 +128,49 @@ var
   s:string;
 begin
   inherited;
-     try
-       if not cekdelete(frmMenu.KDUSER,'frmCustomer') then
-      begin
-         MessageDlg('Anda tidak berhak Menghapus di Modul ini',mtWarning, [mbOK],0);
-         Exit;
-      End;
-      if MessageDlg('Yakin ingin hapus ?',mtCustom,
-                                  [mbYes,mbNo], 0)= mrNo
-      then Exit ;
-       s:='delete from tCustomer '
-        + ' where cus_kode = ' + quot(CDSMaster.FieldByname('KODE').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+  try
+    if not cekdelete(frmMenu.KDUSER,'frmCustomer') then
+    begin
+      MessageDlg('Anda tidak berhak Menghapus di Modul ini',mtWarning, [mbOK],0);
+      Exit;
+    End;
 
+    if MessageDlg('Yakin ingin hapus ?',mtCustom,
+                          [mbYes,mbNo], 0)= mrNo
+    then Exit ;
 
-      CDSMaster.Delete;
-   except
-     MessageDlg('Gagal Hapus',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
-     Exit;
-   end;
-    xCommit(frmMenu.conn);
+    s:='delete from tCustomer '
+    + ' where cus_kode = ' + quot(CDSMaster.FieldByname('KODE').AsString) + ';' ;
+    EnsureConnected(frmMenu.conn);
+    ExecSQLDirect(frmMenu.conn, s);
 
+    CDSMaster.Delete;
+  except
+    MessageDlg('Gagal Hapus',mtError, [mbOK],0);
+    Exit;
+  end;
 end;
 
 procedure TfrmBrowseCustomer.Open1Click(Sender: TObject);
+var
+  s:string;
 begin
   inherited;
-          Application.CreateForm(TfrmOtorisasi,frmOtorisasi);
-          frmOtorisasi.ShowModal;
-          if frmMenu.otorisasi then
-          begin
-            xExecQuery('update tcustomer set cus_locked=0 where cus_kode='+Quot(CDSMaster.FieldByname('KODE').AsString)+';',frmMenu.conn);
-            xCommit(frmMenu.conn);
-            If CDSMaster.State <> dsEdit then CDSMaster.Edit;
-                CDSMaster.FieldByname('Locked').AsString:='Open';
-                CDSMaster.Post;
-          end;
+  Application.CreateForm(TfrmOtorisasi,frmOtorisasi);
+  frmOtorisasi.ShowModal;
 
+  if frmMenu.otorisasi then
+  begin
+    s := 'update tcustomer set cus_locked=0 where cus_kode='+Quot(CDSMaster.FieldByname('KODE').AsString)+';';
+
+    EnsureConnected(frmMenu.conn);
+    ExecSQLDirect(frmMenu.conn,s);
+
+    If CDSMaster.State <> dsEdit then CDSMaster.Edit;
+    
+    CDSMaster.FieldByname('Locked').AsString:='Open';
+    CDSMaster.Post;
+  end;
 end;
 
 procedure TfrmBrowseCustomer.UpdatestatusLocked1Click(Sender: TObject);
@@ -172,11 +178,14 @@ var
   s:string;
 begin
   inherited;
-  xExecQuery('update tcustomer set cus_locked=1 where cus_kode='+Quot(CDSMaster.FieldByname('KODE').AsString)+';',frmMenu.conn);
-  xCommit(frmMenu.conn);
-    If CDSMaster.State <> dsEdit then CDSMaster.Edit;
-          CDSMaster.FieldByname('Locked').AsString:='Locked';
-          CDSMaster.Post;
+  s := 'update tcustomer set cus_locked = 1 where cus_kode = ' + Quot(CDSMaster.FieldByname('KODE').AsString) + ';';
+
+  EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn,s);
+  
+  If CDSMaster.State <> dsEdit then CDSMaster.Edit;
+  CDSMaster.FieldByname('Locked').AsString:='Locked';
+  CDSMaster.Post;
 end;
 
 procedure TfrmBrowseCustomer.cxGrdMasterStylesGetContentStyle(
@@ -188,9 +197,8 @@ begin
   AColumn := (Sender as TcxGridDBTableView).GetColumnByFieldName('Locked');
 
   if (AColumn <> nil)  and (ARecord <> nil) and (AItem <> nil) and
-     (VarToStr(ARecord.Values[AColumn.Index]) ='Locked') then
+  (VarToStr(ARecord.Values[AColumn.Index]) ='Locked') then
     AStyle := cxStyle1;
 end;
-
 
 end.

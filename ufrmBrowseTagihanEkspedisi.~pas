@@ -43,7 +43,7 @@ var
   frmBrowseTagihanEkspedisi: TfrmBrowseTagihanEkspedisi;
 
 implementation
-   uses ufrmTagihanEkspedisi,Ulib, MAIN, uModuleConnection, ufrmTagihanEkspedisiManual;
+   uses ufrmTagihanEkspedisi,Ulib, MAIN, uModuleConnection;
 {$R *.dfm}
 
 procedure TfrmBrowseTagihanEkspedisi.btnRefreshClick(Sender: TObject);
@@ -134,7 +134,7 @@ end;
 procedure TfrmBrowseTagihanEkspedisi.bacafile2;
 var
 s:string;
-tsql:tsqlquery;
+tsql:TmyQuery;
 
  begin
    s:='select ahost,adatabase,auser,apassword from tsetingdb where nama like '+Quot('default1') +';';

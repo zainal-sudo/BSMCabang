@@ -1,6 +1,6 @@
 object frmListJual5: TfrmListJual5
-  Left = 4
-  Top = 1
+  Left = 202
+  Top = 109
   AutoScroll = False
   Caption = 'List Penjualan per Faktur with Margin'
   ClientHeight = 520
@@ -3573,7 +3573,7 @@ object frmListJual5: TfrmListJual5
     Left = 411
     Top = 217
   end
-  object sqlqry1: TSQLQuery
+  object sqlqry2: TSQLQuery
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -3640,5 +3640,9 @@ object frmListJual5: TfrmListJual5
       Caption = 'Lihat Faktur Penjualan'
       OnClick = LihatFakturPenjualan1Click
     end
+  end
+  object sqlqry1: TMyQuery
+    Left = 384
+    Top = 264
   end
 end

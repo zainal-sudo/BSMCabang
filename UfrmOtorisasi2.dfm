@@ -366,8 +366,8 @@ object frmOtorisasi2: TfrmOtorisasi2
     object Label2: TLabel
       Left = 114
       Top = 7
-      Width = 95
-      Height = 21
+      Width = 107
+      Height = 22
       Caption = 'OTORISASI'
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText

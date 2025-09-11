@@ -10,7 +10,7 @@ uses
   DBClient, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage,
   cxEdit, DB, cxDBData, cxSpinEdit, cxButtonEdit, cxTextEdit, cxGridLevel,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxClasses,
-  cxControls, cxGridCustomView, cxGrid, AdvEdBtn, cxCurrencyEdit;
+  cxControls, cxGridCustomView, cxGrid, AdvEdBtn, cxCurrencyEdit, MyAccess;
 
 type
   TfrmSettingKomisi = class(TForm)
@@ -174,10 +174,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
   end;
 end;
 
@@ -190,7 +190,7 @@ end;
 procedure TfrmSettingKomisi.loaddata(akode:string) ;
 var
   s: string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
   s:= 'select * from '
@@ -293,7 +293,8 @@ begin
       + floattostr(cStrToFloat(edtHETAtas.Text)) + ','
       + floattostr(cStrToFloat(edthna.Text)) + ');';
   end;
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
      tt := TStringList.Create;
    s:= ' delete from tprodukmarketing_dtl '
@@ -340,7 +341,8 @@ begin
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -376,10 +378,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmSettingKomisi.cxButton8Click(Sender: TObject);
@@ -409,10 +411,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 procedure TfrmSettingKomisi.FormShow(Sender: TObject);

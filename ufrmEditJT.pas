@@ -12,7 +12,7 @@ uses
   cxCustomData, cxFilter, cxData, cxDataStorage, DB, cxDBData, cxGridLevel,
   cxClasses, cxGridCustomView, cxGridCustomTableView, cxGridTableView,
   cxGridDBTableView, cxGrid, cxSpinEdit, cxCurrencyEdit, AdvEdBtn,DateUtils,
-  cxCalendar, cxCheckBox, cxButtonEdit, frxClass, frxExportPDF;
+  cxCalendar, cxCheckBox, cxButtonEdit, frxClass, frxExportPDF, MyAccess;
 
 type
   TfrmEditJT = class(TForm)
@@ -255,10 +255,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmEditJT.cxButton8Click(Sender: TObject);
@@ -301,10 +301,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -429,7 +429,8 @@ begin
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
           end;
       finally
         tt.Free;
@@ -440,7 +441,7 @@ end;
 procedure TfrmEditJT.loaddataDO(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
 
@@ -530,7 +531,7 @@ end;
 procedure TfrmEditJT.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtyterima : Integer;
@@ -664,7 +665,7 @@ end;
 procedure TfrmEditJT.chkDPClick(Sender: TObject);
 var
   s:string;
-  tsql :TSQLQuery ;
+  tsql :TmyQuery ;
   adp,ainvdp :double;
   anomorso :string;
 begin
@@ -712,7 +713,7 @@ end;
 procedure TfrmEditJT.chkCNClick(Sender: TObject);
 var
   s:string;
-  tsql :TSQLQuery ;
+  tsql :TmyQuery ;
   acn : Double;
   apotong : double;
 
@@ -780,16 +781,16 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 function TfrmEditJT.gettop(akode:String):integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select cus_top from tcustomer where cus_kode='+ Quot(akode) ;
@@ -819,7 +820,7 @@ end;
 function TfrmEditJT.getnilairetur(anomor:String):double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select sum(retj_amount) from tretj_hdr  where retj_fp_nomor = '+ Quot(anomor) ;
@@ -838,7 +839,7 @@ end;
 function TfrmEditJT.getdisccn(akodebarang : Integer ; akode:String):double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select fpd_cn from tfp_hdr inner join tfp_dtl on fpd_fp_nomor=fp_nomor '
@@ -864,7 +865,7 @@ end;
 function TfrmEditJT.getnilairetur2(anomor:String):double;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select sum(retj_amount) from tretj_hdr  where retj_fp_nomor = '+ Quot(anomor) ;

@@ -25,6 +25,7 @@ type
     cxButton5: TcxButton;
     SaveDialog1: TSaveDialog;
     cxButton9: TcxButton;
+    cxButton10: TcxButton;
   procedure btnRefreshClick(Sender: TObject);
   procedure FormShow(Sender: TObject);
     procedure cxButton2Click(Sender: TObject);
@@ -33,6 +34,7 @@ type
     procedure cxButton4Click(Sender: TObject);
     procedure cxButton3Click(Sender: TObject);
     procedure cxButton9Click(Sender: TObject);
+    procedure cxButton10Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -43,7 +45,7 @@ var
   frmBrowseFakturPajak: TfrmBrowseFakturPajak;
 
 implementation
-   uses ufrmFakturPajak3,ufrmFakturPajak,Ulib, MAIN, uModuleConnection;
+   uses ufrmFakturPajak2,ufrmFakturPajak3,ufrmFakturPajak,Ulib, MAIN, uModuleConnection;
 {$R *.dfm}
 
 procedure TfrmBrowseFakturPajak.btnRefreshClick(Sender: TObject);
@@ -150,20 +152,22 @@ begin
       then Exit ;
        s:='delete from tfakturpajak_dtl '
         + ' where fpd_fp_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
        s:='delete from tfakturpajak_hdr '
         + ' where fp_nomor = ' + quot(CDSMaster.FieldByname('Nomor').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+        EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
 
       CDSMaster.Delete;
    except
      MessageDlg('Gagal Hapus',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 
 end;
 
@@ -171,8 +175,8 @@ end;
 procedure TfrmBrowseFakturPajak.cxButton3Click(Sender: TObject);
 var
 newFile : TextFile;
-tsql : TSQLQuery;
-tsql2 : tsqlquery;
+tsql : TmyQuery;
+tsql2 : TmyQuery;
 s : string ;
 anamanpwp,aalamatnpwp : string;
 sheader,sheader2,sdetail :String;
@@ -355,6 +359,18 @@ begin
 
    end;
    frmFakturPajak3.Show;
+end;
+
+procedure TfrmBrowseFakturPajak.cxButton10Click(Sender: TObject);
+begin
+  inherited;
+    if ActiveMDIChild.Caption <> 'Faktur Pajak Versi 2' then
+   begin
+      frmFakturPajak2 := frmmenu.ShowForm(TfrmFakturPajak2) as TfrmFakturPajak2;
+
+   end;
+   frmFakturPajak2.Show;
+
 end;
 
 end.

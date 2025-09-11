@@ -37,21 +37,21 @@ var
   frmBrowseJC: TfrmBrowseJC;
 
 implementation
-   uses ufrmJC,Ulib, MAIN, uModuleConnection;
+   uses ufrmJC, Ulib, MAIN, uModuleConnection;
 {$R *.dfm}
 
 procedure TfrmBrowseJC.btnRefreshClick(Sender: TObject);
 begin
-  Self.SQLMaster := 'select jc_kode Kode ,jc_nama Nama from tjeniscustomer';
-   inherited;
-    cxGrdMaster.ApplyBestFit();
-    cxGrdMaster.Columns[0].Width :=100;
-    cxGrdMaster.Columns[1].Width :=200;
+  Self.SQLMaster := 'select jc_kode Kode, jc_nama Nama from tjeniscustomer';
+  inherited;
+  cxGrdMaster.ApplyBestFit();
+  cxGrdMaster.Columns[0].Width := 100;
+  cxGrdMaster.Columns[1].Width := 200;
 end;
 
 procedure TfrmBrowseJC.FormShow(Sender: TObject);
 begin
-    ShowWindowAsync(Handle, SW_MAXIMIZE);
+  ShowWindowAsync(Handle, SW_MAXIMIZE);
   inherited;
   btnRefreshClick(Self);
 end;
@@ -61,14 +61,15 @@ var
   frmJC: TfrmJC;
 begin
   inherited;
-    if ActiveMDIChild.Caption <> 'Master Cost Center' then
-   begin
-      frmJC  := frmmenu.ShowForm(TfrmJC) as TfrmJC;
-      frmJC.edtKode.Text := frmJC.getmaxkode;
-      frmJC.edtKode.Enabled :=false;
-      frmjc.edtnama.setfocus;
-   end;
-   frmJC.Show;
+  if ActiveMDIChild.Caption <> 'Master Cost Center' then
+  begin
+    frmJC := frmmenu.ShowForm(TfrmJC) as TfrmJC;
+    frmJC.edtKode.Text := frmJC.getmaxkode;
+    frmJC.edtKode.Enabled := false;
+    frmjc.edtnama.setfocus;
+  end;
+  
+  frmJC.Show;
 end;
 
 procedure TfrmBrowseJC.cxButton1Click(Sender: TObject);
@@ -77,18 +78,20 @@ var
 begin
   inherited;
   If CDSMaster.FieldByname('KODE').IsNull then exit;
+
   if ActiveMDIChild.Caption <> 'Master Jenis Customer' then
-   begin
-//      ShowForm(TfrmBrowseBarang).Show;
-      frmjeniscustomer  := frmmenu.ShowForm(TfrmJC) as TfrmJC;
-      frmjeniscustomer.ID := CDSMaster.FieldByname('KODE').AsString;
-      frmjeniscustomer.FLAGEDIT := True;
-      frmjeniscustomer.edtKode.Text := CDSMaster.FieldByname('KODE').AsString;
-      frmjeniscustomer.loaddata(CDSMaster.FieldByname('KODE').AsString);
-      frmjeniscustomer.edtKode.Enabled := False;
-      frmjeniscustomer.edtnama.setfocus;
-   end;
-   frmjeniscustomer.Show;
+  begin
+    //      ShowForm(TfrmBrowseBarang).Show;
+    frmjeniscustomer := frmmenu.ShowForm(TfrmJC) as TfrmJC;
+    frmjeniscustomer.ID := CDSMaster.FieldByname('KODE').AsString;
+    frmjeniscustomer.FLAGEDIT := True;
+    frmjeniscustomer.edtKode.Text := CDSMaster.FieldByname('KODE').AsString;
+    frmjeniscustomer.loaddata(CDSMaster.FieldByname('KODE').AsString);
+    frmjeniscustomer.edtKode.Enabled := False;
+    frmjeniscustomer.edtnama.setfocus;
+  end;
+  
+  frmjeniscustomer.Show;
 end;
 
 procedure TfrmBrowseJC.cxButton6Click(Sender: TObject);
@@ -99,31 +102,30 @@ end;
 
 procedure TfrmBrowseJC.cxButton4Click(Sender: TObject);
 var
-  s:string;
+  s: String;
 begin
   inherited;
-     try
-       if not cekdelete(frmMenu.KDUSER,'frmJC') then
-      begin
-         MessageDlg('Anda tidak berhak Menghapus di Modul ini',mtWarning, [mbOK],0);
-         Exit;
-      End;
-      if MessageDlg('Yakin ingin hapus ?',mtCustom,
-                                  [mbYes,mbNo], 0)= mrNo
-      then Exit ;
-       s:='delete from tjeniscustomer '
-        + ' where jc_kode = ' + quot(CDSMaster.FieldByname('KODE').AsString) + ';' ;
-      xExecQuery(s,frmmenu.conn);
+  try
+    if not cekdelete(frmMenu.KDUSER, 'frmJC') then
+    begin
+      MessageDlg('Anda tidak berhak Menghapus di Modul ini', mtWarning, [mbOK], 0);
+      Exit;
+    End;
+    
+    if MessageDlg('Yakin ingin hapus ?',mtCustom,
+                           [mbYes,mbNo], 0)= mrNo
+    then Exit;
 
+    s := ' delete from tjeniscustomer '
+       + ' where jc_kode = ' + quot(CDSMaster.FieldByname('KODE').AsString) + ';';
+    EnsureConnected(frmMenu.conn);
+    ExecSQLDirect(frmMenu.conn, s);
 
-      CDSMaster.Delete;
-   except
-     MessageDlg('Gagal Hapus',mtError, [mbOK],0);
-     xRollback(frmMenu.conn);
-     Exit;
-   end;
-    xCommit(frmMenu.conn);
-
+    CDSMaster.Delete;
+  except
+    MessageDlg('Gagal Hapus', mtError, [mbOK], 0);
+    Exit;
+  end;
 end;
 
 end.

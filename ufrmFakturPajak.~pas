@@ -267,10 +267,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 procedure TfrmFakturPajak.cxButton8Click(Sender: TObject);
@@ -305,10 +305,10 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
     Release;
 end;
 
@@ -445,7 +445,8 @@ begin
     aistax := 0;
   s:='delete from Tfakturpajak_HDR  '
     + ' where fp_nomor = ' + quot(edtnomor.text) + ';';
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
   s :=  ' insert into Tfakturpajak_HDR '
              + ' (fp_nomor,fp_do_nomor,fp_tanggal,fp_jthtempo,fp_memo,fp_fakturpajak,fp_tanggalpajak,fp_cus_kode,fp_disc_faktur,'
              + ' fp_disc_fakturpr,fp_amount,fp_taxamount,fp_istax,ismanual,date_create,user_create) '
@@ -467,7 +468,8 @@ begin
              + QuotD(cGetServerTime,True) + ','
              + Quot(frmMenu.KDUSER)+')';
 
-  xExecQuery(s,frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
      tt := TStringList.Create;
    s:= ' delete from tfakturpajak_dtl '
@@ -501,7 +503,8 @@ begin
      try
         for i:=0 to tt.Count -1 do
         begin
-            xExecQuery(tt[i],frmMenu.conn);
+            EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -542,7 +545,7 @@ end;
 procedure TfrmFakturPajak.loaddataDO(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   i:Integer;
 begin
 
@@ -633,7 +636,7 @@ end;
 procedure TfrmFakturPajak.loaddataall(akode : string);
 var
   s: string ;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i:Integer;
   aketemu:Boolean;
   aqtypo,qtyterima : Integer;
@@ -845,7 +848,7 @@ end;
 procedure TfrmFakturPajak.chkDPClick(Sender: TObject);
 var
   s:string;
-  tsql :TSQLQuery ;
+  tsql :TmyQuery ;
   adp,ainvdp :double;
   anomorso :string;
 begin
@@ -893,7 +896,7 @@ end;
 procedure TfrmFakturPajak.chkCNClick(Sender: TObject);
 var
   s:string;
-  tsql :TSQLQuery ;
+  tsql :TmyQuery ;
   acn : Double;
   apotong : double;
 
@@ -996,14 +999,15 @@ end;
 procedure TfrmFakturPajak.insertketampungan(anomor:string);
 var
   s:string;
-  tsql : TSQLQuery;
+  tsql : TmyQuery;
   a,i,x:integer;
   tt : TStrings;
 begin
   a:=9;
   s:='delete from tampung ';
-  xExecQuery(s,frmMenu.conn);
-  xCommit(frmmenu.conn);
+    EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+  
   s := 'select fpd_brg_kode,fpd_expired from tfp_dtl where fpd_fp_nomor =' + Quot(anomor) ;
   tsql := xOpenQuery(s,frmMenu.conn) ;
   x:=0;
@@ -1047,12 +1051,13 @@ begin
    try
     for i:=0 to tt.Count -1 do
     begin
-        xExecQuery(tt[i],frmMenu.conn);
+        EnsureConnected(frmMenu.conn);
+ExecSQLDirect(frmMenu.conn, tt[i]);
     end;
   finally
     tt.Free;
   end;
-    xCommit(frmmenu.conn);
+    
 
 end;
 
@@ -1060,7 +1065,7 @@ end;
 procedure TfrmFakturPajak.doslip2(anomor : string );
 var
   s: string ;
-  tsql2,tsql : TSQLQuery;
+  tsql2,tsql : TmyQuery;
   abaris,i,a:Integer;
   anamabarang,TERBILANG : String;
   anilaipiutang:double;
@@ -1283,16 +1288,16 @@ begin
       refreshdata;
    except
      ShowMessage('Gagal Simpan');
-     xRollback(frmMenu.conn);
+     
      Exit;
    end;
-    xCommit(frmMenu.conn);
+    
 end;
 
 function TfrmFakturPajak.gettop(akode:String):integer;
 var
   s:string;
-  tsql:TSQLQuery;
+  tsql:TmyQuery;
 begin
   result := 0;
   s:='select cus_top from tcustomer where cus_kode='+ Quot(akode) ;
