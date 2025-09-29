@@ -19,7 +19,8 @@ uses
   dxSkinOffice2007Blue, dxSkinOffice2007Green, dxSkinOffice2007Pink,
   dxSkinOffice2007Silver, dxSkinPumpkin, dxSkinSilver, dxSkinSpringTime,
   dxSkinStardust, dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue,
-  dxSkinDarkRoom, dxSkinFoggy, dxSkinSeven, dxSkinSharp, MyAccess;
+  dxSkinDarkRoom, dxSkinFoggy, dxSkinSeven, dxSkinSharp, MyAccess, MemDS,
+  DBAccess;
 
 type
   TfrmDO = class(TForm)
@@ -71,6 +72,8 @@ type
     cxButton3: TcxButton;
     chkEceran: TCheckBox;
     clidbatch: TcxGridDBColumn;
+    MyQuery1: TMyQuery;
+    MyConnection1: TMyConnection;
     procedure refreshdata;
    procedure initgrid;
     procedure FormKeyPress(Sender: TObject; var Key: Char);
@@ -150,7 +153,7 @@ var
 const
    NOMERATOR = 'DO';
 implementation
-uses MAIN,uModuleConnection,uFrmbantuan,Ulib,uReport,ufrmCetak;
+uses MAIN,uModuleConnection,uFrmbantuan,Ulib,uReport,ufrmCetak,uSyncDOThread,uDBWorker;
 
 {$R *.dfm}
 
@@ -315,7 +318,8 @@ begin
     LoadFromCDS(CDSGudang, 'Kode','Gudang',['Kode'],Self);
 
      TcxDBGridHelper(cxGrdMain).LoadFromCDS(CDS, False, False);
-   
+
+
 end;
 
 function TfrmDO.GetCDS: TClientDataSet;
@@ -500,7 +504,7 @@ begin
 end;
     EnsureConnected(frmMenu.conn);
   ExecSQLDirect(frmMenu.conn, s);
-
+//DBWorker.EnqueueSQL(S);
 
      tt := TStringList.Create;
    s:= ' delete from tdo_dtl '
@@ -509,11 +513,12 @@ end;
    tt.Append(s);
    CDS.First;
     i:=1;
+   S:='insert into tdo_dtl (dod_do_nomor,dod_brg_kode,dod_brg_satuan,dod_qty,dod_tgl_expired,dod_nourut,dod_status,dod_gdg_kode,dod_idbatch) values  ';
   while not CDS.Eof do
   begin
    if CDS.FieldByName('qty').AsInteger >  0 then
    begin
-    S:='insert into tdo_dtl (dod_do_nomor,dod_brg_kode,dod_brg_satuan,dod_qty,dod_tgl_expired,dod_nourut,dod_status,dod_gdg_kode,dod_idbatch) values ('
+         s:=s+'('
       + Quot(edtNomor.Text) +','
       + IntToStr(CDS.FieldByName('SKU').AsInteger) +','
       + Quot(CDS.FieldByName('satuan').AsString) +','
@@ -523,22 +528,64 @@ end;
       + IntToStr(CDS.FieldByName('closed').AsInteger)+','
       + Quot(CDS.FieldByName('gudang').AsString)+','
       + Quot(CDS.FieldByName('idbatch').AsString)
-      + ');';
-    tt.Append(s);
+     + ')';
+
    end;
     CDS.Next;
+    if not cds.eof then
+       s:=s+','
+    else
+      s:=s+';';
     Inc(i);
   end;
-
+    tt.Append(s);
      try
+
         for i:=0 to tt.Count -1 do
         begin
+//          MyConnection1.StartTransaction;
+//          try
+//            MyQuery1.SQL.Text :=tt[i] ;
+//            MyQuery1.Execute;
+//            MyConnection1.Commit;
+//          except
+//            MyConnection1.Rollback; // kalau gagal, batalkan semua
+//            raise;
+//          end;
+//          DBWorker.EnqueueSQL(tt[i]);
             EnsureConnected(frmMenu.conn);
-ExecSQLDirect(frmMenu.conn, tt[i]);
+            ExecSQLDirect(frmMenu.conn, tt[i]);
+
         end;
       finally
         tt.Free;
       end;
+
+//     if ProcedureExists(frmMenu.conn, 'sp_sync_do') then
+//     begin
+//       if FLAGEDIT then
+//       begin
+//            s:='CALL sp_sync_do('+quot(edtNomor.Text)+', "CANCEL");';
+//
+//            EnsureConnected(frmMenu.conn);
+//            ExecSQLDirect(frmMenu.conn, s);
+//       end;
+//
+//          s:='CALL sp_sync_do('+quot(edtNomor.Text)+', "INSERT");';
+//          EnsureConnected(frmMenu.conn);
+//          ExecSQLDirect(frmMenu.conn, s);
+//     end;
+//
+//if FLAGEDIT then
+//begin
+//  s := 'CALL sp_sync_do(' + QuOT(edtNomor.Text) + ', "CANCEL");';
+////  TSyncDOThread.Create(s);  // jalan di background
+//DBWorker.EnqueueSQL(S);
+//end;
+//
+//s := 'CALL sp_sync_do(' + QuOT(edtNomor.Text) + ', "INSERT");';
+////TSyncDOThread.Create(s);  // jalan di background
+//DBWorker.EnqueueSQL(S);
 end;
 
 

@@ -374,6 +374,7 @@ type
   public
     { Public declarations }
     conn: TMyConnection;
+//    conn2: TMyConnection;
     // conn: TSQLConnection;
     connmy: TMyConnection;
 
@@ -396,6 +397,7 @@ var
   frmMenu: TfrmMenu;
 
 //  for help / bantuan...
+ ThreadBusy: Boolean = False;
   varglobal : string;
   varglobal1 : string;
   varglobal2 : string;
@@ -489,6 +491,8 @@ begin
   StatusBar1.Panels[2].Text := 'Database  ' + aDatabase;
 
   conn := xCreateConnection(ctMySQL,aHost,aDatabase,auser,apassword, aport);
+//  conn2 := xCreateConnection(ctMySQL,aHost,aDatabase,auser,apassword, aport);
+
   // connmy:= xCreateConnection2(ctMySQL,aHost,aDatabase,auser,apassword);
   conn.Connected := True;
 
@@ -498,7 +502,7 @@ begin
   DecimalSeparator := '.';
   Application.UpdateFormatSettings := True;
 
-  zVersi := '5.0.93';
+  zVersi := '5.0.99';
   StatusBar1.Panels[4].Text := 'Versi ' + zVersi;
 
   // cek ver si

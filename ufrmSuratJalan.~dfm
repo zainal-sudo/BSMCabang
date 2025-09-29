@@ -893,11 +893,4 @@ object frmSuratJalan: TfrmSuratJalan
       Color = clYellow
     end
   end
-  object frxDotMatrixExport1: TfrxDotMatrixExport
-    GraphicFrames = False
-    SaveToFile = False
-    UseIniSettings = True
-    Left = 544
-    Top = 193
-  end
 end

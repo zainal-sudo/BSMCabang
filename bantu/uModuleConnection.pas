@@ -139,6 +139,7 @@ var
 begin
   if (AConn = nil) then Exit;
 
+  // Kalau koneksi belum aktif
   if not AConn.Connected then
   begin
     Retry := 0;
@@ -157,11 +158,20 @@ begin
   else
   begin
     try
+      // Test koneksi
       AConn.Ping;
     except
+      // Kalau Ping gagal, pastikan benar-benar disconnect
       if AConn.Connected then
-        AConn.Disconnect;
+      begin
+        try
+          AConn.Disconnect;
+        except
+          // abaikan kalau error disconnect
+        end;
+      end;
 
+      // Coba reconnect
       Retry := 0;
       while Retry < 3 do
       begin

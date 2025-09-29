@@ -61,6 +61,7 @@ type
     procedure SetReadOnly(IsReadOnly: Boolean);
     procedure SetVisibleColumns(ColumnSets: Array Of String; IsVisible: Boolean);
         overload;
+
     procedure SetColumnsWidth(ColumnSets: Array Of String; Widths: Array Of
         Integer); overload;
     procedure SetExtLookupCombo(ExtLookup: TcxExtLookupComboBox; IDField,
@@ -149,6 +150,7 @@ function getangkappn(atanggal:TDateTime) : Double;
 function getangkappn2(atanggal:TDateTime) : Double;
 function cekKoneksi : boolean;
  function getcurrentusername : string ;
+ function ProcedureExists(const Conn: TMyConnection; const ProcName: string): Boolean;
 function getid (atable : string; afielkunci : string ;afilter :string;   afieldambil : string ;afielkunci2 : string ='';afilter2 :string = ''): integer;
 function getnominal (atable : string; afielkunci : string ;afilter :string; afieldambil : string  ): double;
 function QuotD(aDate : TDateTime; aTambahJam235959 : Boolean = false): String;
@@ -2236,6 +2238,28 @@ begin
   SetLength(sUserName, dwUserNameLen);
   Result := sUserName;
 end;
+
+function ProcedureExists(const Conn: TMyConnection; const ProcName: string): Boolean;
+var
+  Q: TMyQuery;
+begin
+  Result := False;
+  Q := TMyQuery.Create(nil);
+  try
+    Q.Connection := Conn;
+    Q.SQL.Text := 'SELECT COUNT(*) FROM information_schema.ROUTINES ' +
+                  'WHERE ROUTINE_SCHEMA = DATABASE() ' +
+                  'AND ROUTINE_TYPE="PROCEDURE" ' +
+                  'AND ROUTINE_NAME=:pname';
+    Q.ParamByName('pname').AsString := ProcName;
+    Q.Open;
+    Result := Q.Fields[0].AsInteger > 0;
+  finally
+    Q.Free;
+  end;
+
+end;
+
 
 end.
 

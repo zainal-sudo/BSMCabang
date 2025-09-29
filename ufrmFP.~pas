@@ -20,7 +20,7 @@ uses
   dxSkinOffice2007Pink, dxSkinOffice2007Silver, dxSkinPumpkin,
   dxSkinSilver, dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008,
   dxSkinValentine, dxSkinXmas2008Blue, dxSkinDarkRoom, dxSkinFoggy,
-  dxSkinSeven, dxSkinSharp, frxDMPExport;
+  dxSkinSeven, dxSkinSharp, frxDMPExport, MyAccess;
 
 type
   TfrmFP = class(TForm)
@@ -98,9 +98,6 @@ type
     clIdBatch: TcxGridDBColumn;
     chkKatalog: TCheckBox;
     chkeceran: TCheckBox;
-    frxDotMatrixExport1: TfrxDotMatrixExport;
-    frxDotMatrixExport2: TfrxDotMatrixExport;
-    frxDotMatrixExport3: TfrxDotMatrixExport;
     procedure refreshdata;
    procedure initgrid;
     procedure FormKeyPress(Sender: TObject; var Key: Char);
@@ -587,11 +584,12 @@ end;
    tt.Append(s);
    CDS.First;
     i:=1;
+    S:='insert into tfp_dtl (fpd_fp_nomor,fpd_brg_kode,fpd_idbatch,fpd_brg_satuan,fpd_qty,fpd_discpr,fpd_harga,fpd_nourut,fpd_expired, '
+    + ' fpd_cn,fpd_gdg_kode,fpd_hrg_min) values ';
   while not CDS.Eof do
   begin
 
-    S:='insert into tfp_dtl (fpd_fp_nomor,fpd_brg_kode,fpd_idbatch,fpd_brg_satuan,fpd_qty,fpd_discpr,fpd_harga,fpd_nourut,fpd_expired, '
-    + ' fpd_cn,fpd_gdg_kode,fpd_hrg_min) values ('
+     s:=s+'('
       + Quot(edtNomor.Text) +','
       + IntToStr(CDS.FieldByName('SKU').AsInteger) +','
       + Quot(CDS.FieldByName('idbatch').AsString) +','
@@ -604,18 +602,25 @@ end;
       + FloatToStr(cVarToFloat(CDS.FieldByName('cn').AsFloat))+','
       + Quot(CDS.FieldByName('gudang').AsString) + ','
       + FloatToStr(cVarToFloat(CDS.FieldByName('hrg_min').AsFloat))
-      + ');';
-    tt.Append(s);
+      + ')';
+
 
     CDS.Next;
+    if not cds.eof then
+       s:=s+','
+    else
+      s:=s+';';
+         
     Inc(i);
   end;
-//      tt.SaveToFile('ss.txt');
+
+  tt.Append((s));
+  tt.SaveToFile('s.txt');
      try
         for i:=0 to tt.Count -1 do
         begin
             EnsureConnected(frmMenu.conn);
-ExecSQLDirect(frmMenu.conn, tt[i]);
+            ExecSQLDirect(frmMenu.conn, tt[i]);
         end;
       finally
         tt.Free;
@@ -988,7 +993,7 @@ begin
          if not eof then
          begin
             flagedit := True;
-            edtNomordo.Enabled :=False;
+            edtNomordo.Enabled :=true;
             apajak :=fieldbyname('fp_istax').AsInteger;
             acatalog := fieldbyname('fp_iscatalog').AsInteger;
             if apajak =1 then
@@ -2343,7 +2348,7 @@ end;
 // begin
 //   s:='update tfp_hdr set fp_iscetak=1 where fp_nomor = '+ Quot(anomor);
 //     EnsureConnected(frmMenu.conn);
-  ExecSQLDirect(frmMenu.conn, s);
+//  ExecSQLDirect(frmMenu.conn, s);
 //   xCommit(frmMenu.conn);
 // end
 // else

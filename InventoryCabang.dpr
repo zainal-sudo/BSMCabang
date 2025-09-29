@@ -44,7 +44,7 @@ uses
   ufrmReturBeli in 'ufrmReturBeli.pas' {frmReturBeli},
   ufrmBrowseMutasiCabang2 in 'ufrmBrowseMutasiCabang2.pas' {frmBrowseMutasiCabang2},
   ufrmMutasiCabang2 in 'ufrmMutasiCabang2.pas' {frmMutasiCabang2},
-  ufrmPermintaanBarang in 'ufrmPermintaanBarang.pas' {frmDO},
+  ufrmPermintaanBarang in 'ufrmPermintaanBarang.pas' {frmPermintaanBarang},
   ufrmBrowsePermintaanBarang in 'ufrmBrowsePermintaanBarang.pas' {frmBrowsePermintaanBarang},
   ufrmBrowseFP in 'ufrmBrowseFP.pas' {frmBrowseFP},
   ufrmFP in 'ufrmFP.pas' {frmFP},
@@ -162,7 +162,11 @@ uses
   ufrmBrowseEkspedisi in 'ufrmBrowseEkspedisi.pas' {frmBrowseEkspedisi},
   ufrmEkspedisi in 'ufrmEkspedisi.pas' {frmEkspedisi},
   ufrmBrowseSerahTerimaFaktur2 in 'ufrmBrowseSerahTerimaFaktur2.pas' {frmBrowseSerahTerimaFaktur2},
-  ufrmSerahTerimaFaktur2 in 'ufrmSerahTerimaFaktur2.pas' {frmSerahTerimaFaktur2};
+  ufrmSerahTerimaFaktur2 in 'ufrmSerahTerimaFaktur2.pas' {frmSerahTerimaFaktur2},
+  ufrmBrowseDO in 'ufrmBrowseDO.pas' {frmBrowseDO},
+  ufrmDO in 'ufrmDO.pas' {frmDO},
+  uSyncDOThread in 'uSyncDOThread.pas',
+  uDBWorker in 'uDBWorker.pas';
 
 {$R *.res}
 

@@ -253,6 +253,7 @@ var
   totaltarget : double;
   tsql : TmyQuery;
 akhir,akhir2 : TDateTime;
+ cAwal, cAkhir: string;
 begin
       if  cbbBulan.itemindex <> 0 then
       begin
@@ -264,6 +265,14 @@ begin
         akhir := EndOfTheMonth(StrToDate('12/01/'+inttostr(StrToInt(edtTahun.text)-1)));
         akhir2 := EndOfTheMonth(StrToDate(IntToStr(cbbBulan.itemindex+1 )+'/01/'+edttahun.Text));
       end;
+ s:='SET @bulan1=' +inttostr(cbbBulan.itemindex+1);
+  EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
+
+
+ s:='SET @tahun1=' + edtTahun.Text;
+  EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
 
     ssql:='SELECT distinct sls_kode,sls_nama salesman,CAST(0 AS DECIMAL(15,2)) targetbulanini,CAST(0 AS DECIMAL(15,2)) targetsdbulanini, '
         + ' cast(0 as decimal(5,2)) pfratio,cast(0 as decimal(5,2)) growth,cast(0 as decimal(5,2)) growth2,cast(0 as decimal) riilbulaninilalu,'
@@ -289,7 +298,9 @@ begin
       try
         while not eof do
         begin
-             if ds3.Locate('salesman',FieldByName('salesman').AsString,[loCaseInsensitive]) then
+             ds3.IndexFieldNames := 'salesman';
+             if ds3.findkey([FieldByName('salesman').AsString]) then
+
              begin
                If ds3.State <> dsEdit then ds3.Edit;
                 ds3.FieldByName('targetBulanini').AsFloat := FieldByName('target').AsFloat/1000;
@@ -312,7 +323,8 @@ begin
       try
         while not eof do
         begin
-             if ds3.Locate('salesman',FieldByName('salesman').AsString,[loCaseInsensitive]) then
+             ds3.IndexFieldNames := 'salesman';
+             if ds3.findkey([FieldByName('salesman').AsString]) then
              begin
                If ds3.State <> dsEdit then ds3.Edit;
                 ds3.FieldByName('targetsdbulanini').AsFloat := FieldByName('targetsdbulanini').AsFloat/1000;
@@ -324,23 +336,45 @@ begin
       end;
     end;
 // riill
+ cAwal  := FormatDateTime('yyyy-mm-dd',
+           EncodeDate(StrToInt(edttahun.Text),
+                      cbbBulan.ItemIndex + 1,
+                      1));
 
-  ssql :='SELECT salesman,riil-ifnull(retur,0) Riilbulanini FROM ('
-+ ' SELECT b.sls_nama salesman ,SUM(if(year(tanggal)>2021,dpp,total)-biaya_promosi-kontrak) riil,'
-+ ' (select sum(ifnull(if(year(retj_tanggal)>2021,retj_amount-retj_taxamount,retj_amount),0)) from tretj_hdr inner join tfp_hdr on retj_fp_nomor=fp_nomor'
-+ ' inner join tdo_hdr on do_nomor=fp_do_nomor inner join tso_hdr on so_nomor=do_so_nomor'
-+ ' where so_sls_kode = a.salesman  and month(retj_tanggal)='+ IntToStr(cbbBulan.itemindex +1)+' and year(retj_tanggal)='+ edtTahun.Text
-+ ' group by so_sls_kode) Retur'
-+ ' FROM penjualan a INNER JOIN tsalesman b ON sls_kode=salesman '
-+ ' WHERE MONTH(tanggal) = '+ IntToStr(cbbBulan.itemindex +1) +' AND YEAR(tanggal)='+ edttahun.text
-+ ' GROUP BY b.sls_nama) final ';
+cAkhir := FormatDateTime('yyyy-mm-dd',
+           IncMonth(EncodeDate(StrToInt(edttahun.Text),
+                               cbbBulan.ItemIndex + 1,
+                               1), 1) - 1);
+
+//  ssql :='SELECT salesman,riil-ifnull(retur,0) Riilbulanini FROM ('
+//+ ' SELECT b.sls_nama salesman ,SUM(if(year(tanggal)>2021,dpp,total)-biaya_promosi-kontrak) riil,'
+//+ ' (select sum(ifnull(if(year(retj_tanggal)>2021,retj_amount-retj_taxamount,retj_amount),0)) '
+//+ ' from tretj_hdr inner join tfp_hdr on retj_fp_nomor=fp_nomor'
+//+ ' inner join tdo_hdr on do_nomor=fp_do_nomor inner join tso_hdr on so_nomor=do_so_nomor'
+//+ ' where so_sls_kode = a.salesman  and month(retj_tanggal)='+ IntToStr(cbbBulan.itemindex +1)
+//+' and year(retj_tanggal)='+ edtTahun.Text
+//+ ' group by so_sls_kode) Retur'
+//+ ' FROM penjualan a INNER JOIN tsalesman b ON sls_kode=salesman '
+//+ ' where tanggal between  '+quot(cAwal)+' AND '+quot(cAkhir)
+////+ ' WHERE MONTH(tanggal) = '+ IntToStr(cbbBulan.itemindex +1) +' AND YEAR(tanggal)='+ edttahun.text
+//+ ' GROUP BY b.sls_nama) final ';
+
+ssql := 'CALL sp_laporan_penjualan('
+      + QuotedStr(cAwal) + ','
+      + QuotedStr(cAkhir) + ','
+      + IntToStr(cbbBulan.ItemIndex + 1) + ','
+      + edttahun.Text + ')';
+
+
+
     tsql := xOpenQuery(ssql,frmMenu.conn);
     with tsql do
     begin
       try
         while not eof do
         begin
-             if ds3.Locate('salesman',FieldByName('salesman').AsString,[loCaseInsensitive]) then
+             ds3.IndexFieldNames := 'salesman';
+             if ds3.findkey([FieldByName('salesman').AsString]) then
              begin
                If ds3.State <> dsEdit then ds3.Edit;
                 ds3.FieldByName('riilbulanini').AsFloat := FieldByName('riilbulanini').AsFloat/1000;
@@ -350,54 +384,92 @@ begin
              end;
           Next;
         end;
+        Sleep(3);  // 10ms cukup
+        Application.ProcessMessages; // biar UI tetap responsif
       finally
         Free;
       end;
     end;
 
 // riill
+ cAwal  := FormatDateTime('yyyy-mm-dd',
+           EncodeDate(StrToInt(edttahun.Text),
+                      1,
+                      1));
 
-  ssql :='SELECT salesman,riil-ifnull(retur,0) Riilsdbulanini FROM ('
-+ ' SELECT b.sls_nama salesman ,SUM(if(year(tanggal)>2021,dpp,total)-biaya_promosi-kontrak) riil,'
-+ ' (select sum(ifnull(if(year(retj_tanggal)>2021,retj_amount-retj_taxamount,retj_amount),0)) from tretj_hdr inner join tfp_hdr on retj_fp_nomor=fp_nomor'
-+ ' inner join tdo_hdr on do_nomor=fp_do_nomor inner join tso_hdr on so_nomor=do_so_nomor'
-+ ' where so_sls_kode = a.salesman  and month(retj_tanggal)<='+ IntToStr(cbbBulan.itemindex +1)+' and year(retj_tanggal)='+ edtTahun.Text
-+ ' group by so_sls_kode) Retur'
-+ ' FROM penjualan a INNER JOIN tsalesman b ON sls_kode=salesman'
-+ ' WHERE MONTH(tanggal) <= '+ IntToStr(cbbBulan.itemindex +1) +' AND YEAR(tanggal)='+ edttahun.text
-+ ' GROUP BY b.sls_nama) final ';
+cAkhir := FormatDateTime('yyyy-mm-dd',
+           IncMonth(EncodeDate(StrToInt(edttahun.Text),
+                               cbbBulan.ItemIndex + 1,
+                               1), 1) - 1);
+
+ssql := 'CALL sp_laporan_penjualan('
+      + QuotedStr(cAwal) + ','
+      + QuotedStr(cAkhir) + ','
+      + IntToStr(cbbBulan.ItemIndex + 1) + ','
+      + edttahun.Text + ')';
+
+
+//  ssql :='SELECT salesman,riil-ifnull(retur,0) Riilsdbulanini FROM ('
+//+ ' SELECT b.sls_nama salesman ,SUM(if(year(tanggal)>2021,dpp,total)-biaya_promosi-kontrak) riil,'
+//+ ' (select sum(ifnull(if(year(retj_tanggal)>2021,retj_amount-retj_taxamount,retj_amount),0)) from tretj_hdr inner join tfp_hdr on retj_fp_nomor=fp_nomor'
+//+ ' inner join tdo_hdr on do_nomor=fp_do_nomor inner join tso_hdr on so_nomor=do_so_nomor'
+//+ ' where so_sls_kode = a.salesman  and month(retj_tanggal)<='+ IntToStr(cbbBulan.itemindex +1)+' and year(retj_tanggal)='+ edtTahun.Text
+//+ ' group by so_sls_kode) Retur'
+//+ ' FROM penjualan a INNER JOIN tsalesman b ON sls_kode=salesman'
+//+ ' where tanggal between  '+quot(cAwal)+' AND '+quot(cAkhir)
+////+ ' WHERE MONTH(tanggal) <= '+ IntToStr(cbbBulan.itemindex +1) +' AND YEAR(tanggal)='+ edttahun.text
+//+ ' GROUP BY b.sls_nama) final ';
     tsql := xOpenQuery(ssql,frmMenu.conn);
     with tsql do
     begin
       try
         while not eof do
         begin
-             if ds3.Locate('salesman',FieldByName('salesman').AsString,[loCaseInsensitive]) then
+             ds3.IndexFieldNames := 'salesman';
+             if ds3.findkey([FieldByName('salesman').AsString]) then
              begin
                If ds3.State <> dsEdit then ds3.Edit;
-                ds3.FieldByName('riilsdbulanini').AsFloat := FieldByName('riilsdbulanini').AsFloat/1000;
+                ds3.FieldByName('riilsdbulanini').AsFloat := FieldByName('riilbulanini').AsFloat/1000;
                 if ds3.FieldByName('targetsdbulanini').AsFloat > 0 then
                 ds3.FieldByName('persensdbulanini').AsFloat :=ds3.FieldByName('riilsdbulanini').AsFloat/(ds3.FieldByName('targetsdbulanini').AsFloat)*100;
                 ds3.Post;
              end;
           Next;
         end;
+        Sleep(3);  // 10ms cukup
+      Application.ProcessMessages; // biar UI tetap responsif
       finally
         Free;
       end;
     end;
 
 // riill tahun lalu
+ cAwal  := FormatDateTime('yyyy-mm-dd',
+           EncodeDate(StrToInt(edttahun.Text)-1,
+                      cbbBulan.ItemIndex + 1,
+                      1));
 
-  ssql :='SELECT salesman,riil-ifnull(retur,0) Riilbulaninilalu FROM ('
-+ ' SELECT b.sls_nama salesman ,SUM(if(year(tanggal)>2021,dpp,total)-biaya_promosi-kontrak) riil,'
-+ ' (select sum(ifnull(if(year(retj_tanggal)>2021,retj_amount-retj_taxamount,retj_amount),0)) from tretj_hdr inner join tfp_hdr on retj_fp_nomor=fp_nomor'
-+ ' inner join tdo_hdr on do_nomor=fp_do_nomor inner join tso_hdr on so_nomor=do_so_nomor'
-+ ' where so_sls_kode = a.salesman  and month(retj_tanggal)='+ IntToStr(cbbBulan.itemindex +1)+' and year(retj_tanggal)='+ inttostr(strtoint(edtTahun.Text)-1)
-+ ' group by so_sls_kode) Retur'
-+ ' FROM penjualan a INNER JOIN tsalesman b ON sls_kode=salesman'
-+ ' WHERE MONTH(tanggal) = '+ IntToStr(cbbBulan.itemindex +1) +' AND YEAR(tanggal)='+ inttostr(strtoint(edtTahun.Text)-1)
-+ ' GROUP BY b.sls_nama) final ';
+cAkhir := FormatDateTime('yyyy-mm-dd',
+           IncMonth(EncodeDate(StrToInt(edttahun.Text)-1,
+                               cbbBulan.ItemIndex + 1,
+                               1), 1) - 1);
+ssql := 'CALL sp_laporan_penjualan('
+      + QuotedStr(cAwal) + ','
+      + QuotedStr(cAkhir) + ','
+      + IntToStr(cbbBulan.ItemIndex + 1) + ','
+      + edttahun.Text + ')';
+
+
+//  ssql :='SELECT salesman,riil-ifnull(retur,0) Riilbulaninilalu FROM ('
+//+ ' SELECT b.sls_nama salesman ,SUM(if(year(tanggal)>2021,dpp,total)-biaya_promosi-kontrak) riil,'
+//+ ' (select sum(ifnull(if(year(retj_tanggal)>2021,retj_amount-retj_taxamount,retj_amount),0)) from tretj_hdr inner join tfp_hdr on retj_fp_nomor=fp_nomor'
+//+ ' inner join tdo_hdr on do_nomor=fp_do_nomor inner join tso_hdr on so_nomor=do_so_nomor'
+//+ ' where so_sls_kode = a.salesman  and month(retj_tanggal)='+ IntToStr(cbbBulan.itemindex +1)+' and year(retj_tanggal)='+ inttostr(strtoint(edtTahun.Text)-1)
+//+ ' group by so_sls_kode) Retur'
+//+ ' FROM penjualan a INNER JOIN tsalesman b ON sls_kode=salesman'
+//+ ' where tanggal between  '+quot(cAwal)+' AND '+quot(cAkhir)
+////+ ' WHERE MONTH(tanggal) = '+ IntToStr(cbbBulan.itemindex +1) +' AND YEAR(tanggal)='+ inttostr(strtoint(edtTahun.Text)-1)
+//+ ' GROUP BY b.sls_nama) final ';
     tsql := xOpenQuery(ssql,frmMenu.conn);
     with tsql do
     begin
@@ -405,17 +477,20 @@ begin
         while not eof do
         begin
 
-             if ds3.Locate('salesman',FieldByName('salesman').AsString,[loCaseInsensitive]) then
+             ds3.IndexFieldNames := 'salesman';
+             if ds3.findkey([FieldByName('salesman').AsString]) then
              begin
                If ds3.State <> dsEdit then ds3.Edit;
-                ds3.FieldByName('riilbulaninilalu').AsFloat := FieldByName('riilbulaninilalu').AsFloat/1000;
-              if FieldByName('riilbulaninilalu').AsFloat > 0 then
-                ds3.FieldByName('growth').AsFloat :=ds3.FieldByName('riilbulanini').AsFloat/(FieldByName('riilbulaninilalu').AsFloat/1000)*100;
+                ds3.FieldByName('riilbulaninilalu').AsFloat := FieldByName('riilbulanini').AsFloat/1000;
+              if ds3.FieldByName('riilbulaninilalu').AsFloat > 0 then
+                ds3.FieldByName('growth').AsFloat :=ds3.FieldByName('riilbulanini').AsFloat/(FieldByName('riilbulanini').AsFloat/1000)*100;
 
 
              end;
           Next;
         end;
+        Sleep(3);  // 10ms cukup
+//      Application.ProcessMessages; // biar UI tetap responsif
       finally
         Free;
       end;
@@ -423,31 +498,54 @@ begin
 
 // riill tahun lalu
 
-  ssql :='SELECT salesman,riil-ifnull(retur,0) Riilsdbulaninilalu FROM ('
-+ ' SELECT b.sls_nama salesman ,SUM(if(year(tanggal)>2021,dpp,total)-biaya_promosi-kontrak) riil,'
-+ ' (select sum(ifnull(if(year(retj_tanggal)>2021,retj_amount-retj_taxamount,retj_amount),0)) from tretj_hdr inner join tfp_hdr on retj_fp_nomor=fp_nomor'
-+ ' inner join tdo_hdr on do_nomor=fp_do_nomor inner join tso_hdr on so_nomor=do_so_nomor'
-+ ' where so_sls_kode = a.salesman  and month(retj_tanggal)<='+ IntToStr(cbbBulan.itemindex +1)+' and year(retj_tanggal)='+ inttostr(strtoint(edtTahun.Text)-1)
-+ ' group by so_sls_kode) Retur'
-+ ' FROM penjualan a INNER JOIN tsalesman b ON sls_kode=salesman'
-+ ' WHERE MONTH(tanggal) <= '+ IntToStr(cbbBulan.itemindex +1) +' AND YEAR(tanggal)='+ inttostr(strtoint(edtTahun.Text)-1)
-+ ' GROUP BY b.sls_nama) final ';
+// riill
+ cAwal  := FormatDateTime('yyyy-mm-dd',
+           EncodeDate(StrToInt(edttahun.Text)-1,
+                      1,
+                      1));
+
+cAkhir := FormatDateTime('yyyy-mm-dd',
+           IncMonth(EncodeDate(StrToInt(edttahun.Text)-1,
+                               cbbBulan.ItemIndex + 1,
+                               1), 1) - 1);
+
+ssql := 'CALL sp_laporan_penjualan('
+      + QuotedStr(cAwal) + ','
+      + QuotedStr(cAkhir) + ','
+      + IntToStr(cbbBulan.ItemIndex + 1) + ','
+      + edttahun.Text + ')';
+
+
+//  ssql :='SELECT salesman,riil-ifnull(retur,0) Riilsdbulaninilalu FROM ('
+//+ ' SELECT b.sls_nama salesman ,SUM(if(year(tanggal)>2021,dpp,total)-biaya_promosi-kontrak) riil,'
+//+ ' (select sum(ifnull(if(year(retj_tanggal)>2021,retj_amount-retj_taxamount,retj_amount),0)) from tretj_hdr inner join tfp_hdr on retj_fp_nomor=fp_nomor'
+//+ ' inner join tdo_hdr on do_nomor=fp_do_nomor inner join tso_hdr on so_nomor=do_so_nomor'
+//+ ' where so_sls_kode = a.salesman  and month(retj_tanggal)<='+ IntToStr(cbbBulan.itemindex +1)+' and year(retj_tanggal)='+ inttostr(strtoint(edtTahun.Text)-1)
+//+ ' group by so_sls_kode) Retur'
+//+ ' FROM penjualan a INNER JOIN tsalesman b ON sls_kode=salesman'
+//+ ' where tanggal between  '+quot(cAwal)+' AND '+quot(cAkhir)
+////+ ' WHERE MONTH(tanggal) <= '+ IntToStr(cbbBulan.itemindex +1) +' AND YEAR(tanggal)='+ inttostr(strtoint(edtTahun.Text)-1)
+//+ ' GROUP BY b.sls_nama) final ';
     tsql := xOpenQuery(ssql,frmMenu.conn);
     with tsql do
     begin
       try
         while not eof do
         begin
-             if ds3.Locate('salesman',FieldByName('salesman').AsString,[loCaseInsensitive]) then
+             ds3.IndexFieldNames := 'salesman';
+             if ds3.findkey([FieldByName('salesman').AsString]) then
+
              begin
                If ds3.State <> dsEdit then ds3.Edit;
-                ds3.FieldByName('riilsdbulaninilalu').AsFloat := FieldByName('riilsdbulaninilalu').AsFloat/1000;
-                if FieldByName('riilsdbulaninilalu').AsFloat > 0 then
-                ds3.FieldByName('growth2').AsFloat :=ds3.FieldByName('riilsdbulanini').AsFloat/(FieldByName('riilsdbulaninilalu').AsFloat/1000)*100;
+                ds3.FieldByName('riilsdbulaninilalu').AsFloat := FieldByName('riilbulanini').AsFloat/1000;
+                if ds3.FieldByName('riilsdbulaninilalu').AsFloat > 0 then
+                ds3.FieldByName('growth2').AsFloat :=ds3.FieldByName('riilsdbulanini').AsFloat/(FieldByName('riilbulanini').AsFloat/1000)*100;
                 ds3.Post;
              end;
           Next;
         end;
+        Sleep(3);  // 10ms cukup
+      Application.ProcessMessages; // biar UI tetap responsif
       finally
         Free;
       end;
@@ -463,7 +561,9 @@ begin
       try
         while not eof do
         begin
-             if ds3.Locate('salesman',FieldByName('salesman').AsString,[loCaseInsensitive]) then
+             ds3.IndexFieldNames := 'salesman';
+             if ds3.findkey([FieldByName('salesman').AsString]) then
+
              begin
                If ds3.State <> dsEdit then ds3.Edit;
                 ds3.FieldByName('targettahunan').AsFloat := FieldByName('targettahunan').AsFloat/1000;
@@ -506,7 +606,9 @@ begin
       try
         while not eof do
         begin
-             if ds3.Locate('salesman',FieldByName('salesman').AsString,[loCaseInsensitive]) then
+             ds3.IndexFieldNames := 'salesman';
+             if ds3.findkey([FieldByName('salesman').AsString]) then
+
              begin
                If ds3.State <> dsEdit then ds3.Edit;
                 ds3.FieldByName('pf').AsFloat := FieldByName('pf').AsFloat/1000;
@@ -546,40 +648,6 @@ ssql := 'SELECT sls_nama salesman,SUM(debet-kredit) - '
 + ' WHERE tanggal <= '+quotd(akhir)+' AND jthtempo < '+quotd(akhir2)
 + ' GROUP BY sls_nama';
 
-//
-//         ssql:= 'select sls_nama Salesman,'
-//            + ' (Piutang) Target_Piutang,'
-//            + ' ifnull(inkaso,0) Realisasi,inkaso/(Piutang+ifnull(tunai2,0))*100 Persentase'
-//            + '  from ('
-//            + ' select salesman, '
-//            + ' sum(IF ((select count(*) from tjatuhtempofp where jt_fp_nomor=nomor) > 0 ,'
-//            + ' (select sum(jt_nilai) from tjatuhtempofp where jt_fp_nomor=nomor and jt_tanggaljt <= '+quotd(akhir2)+') , total)) -  '
-//            + ' ifnull((select sum(bayar_cash+bayar_transfer+giro+potongan+ppn+pph- '
-//            + ' ifnull((select sum(bycd_bayar) from tbayarcus_dtl '
-//            + ' inner join tfp_hdr on fp_nomor=bycd_fp_nomor '
-//            + ' where bycd_byc_nomor=xx.nomor and fp_jthtempo > '+quotd(akhir2)+'),0)) '
-//            + ' from pembayaran xx where salesman=a.salesman and tanggal <= '+quotd(akhir)+'),0) -'
-//            + ' ifnull((select sum(retur) from retur inner join tfp_hdr on fp_nomor=retj_fp_nomor where fp_jthtempo <= '+quotd(akhir2)+'  and salesman=a.salesman and tanggal <= '+quotd(akhir)+'),0) piutang,'
-//            + ' (select sum(bycd_bayar) from tbayarcus_dtl inner join tbayarcus_hdr on byc_nomor=bycd_byc_nomor '
-//            + ' inner join  tfp_hdr on fp_nomor=bycd_fp_nomor'
-//            + ' inner join tdo_hdr on do_nomor=fp_do_nomor'
-//            + ' inner join tso_hdr on so_nomor=do_so_nomor'
-//            + ' where so_sls_kode=a.salesman and fp_tanggal > '+quotd(akhir)
-//            + ' and month(byc_tanggal)='+IntToStr(cbbBulan.itemindex +1)+' ) tunai,'
-//              + ' (select sum(bycd_bayar) from tbayarcus_dtl inner join tbayarcus_hdr on byc_nomor=bycd_byc_nomor '
-//            + ' inner join  tfp_hdr on fp_nomor=bycd_fp_nomor'
-//            + ' inner join tdo_hdr on do_nomor=fp_do_nomor'
-//            + ' inner join tso_hdr on so_nomor=do_so_nomor'
-//            + ' where so_sls_kode=a.salesman and fp_jthtempo > '+quotd(akhir2)
-//            + ' and month(byc_tanggal)='+IntToStr(cbbBulan.itemindex +1)+' and year(byc_tanggal)='+edttahun.Text+') tunai2,'
-////            + ' where so_sls_kode=a.salesman  and fp_jthtempo > '+quotd(akhir2)
-////            + ' and month(byc_tanggal)='+IntToStr(cbbBulan.itemindex +1)+') tunai2,'
-//            + ' (select sum(ifnull(bayar_cash,0)+ifnull(bayar_transfer,0)+ifnull(giro,0)+ifnull(potongan,0)+ifnull(pph,0)+ifnull(ppn,0)) from pembayaran where month(tanggal)='+IntToStr(cbbBulan.itemindex +1)+' and year(tanggal)='+edttahun.Text
-//            + ' and salesman=a.salesman) inkaso'
-//            + ' from penjualan a'
-//            + ' inner join tfp_hdr on fp_nomor=nomor'
-//            + ' where  fp_jthtempo <= '+quotd(akhir2)
-//            + ' group by salesman) a inner join tsalesman on a.salesman=sls_kode';
 
         tsql :=xOpenQuery(ssql,frmMenu.conn);
         with tsql do
@@ -588,7 +656,9 @@ ssql := 'SELECT sls_nama salesman,SUM(debet-kredit) - '
             while not Eof do
             begin
 //             showmessage(FieldByName('salesman').AsString);
-             if ds3.Locate('salesman',FieldByName('salesman').AsString,[loCaseInsensitive]) then
+             ds3.IndexFieldNames := 'salesman';
+             if ds3.findkey([FieldByName('salesman').AsString]) then
+
              begin
                If ds3.State <> dsEdit then ds3.Edit;
                 ds3.FieldByName('targetpiutang').AsFloat := FieldByName('target_piutang').AsFloat/1000;
@@ -628,7 +698,8 @@ ssql := 'SELECT sls_nama salesman,SUM(debet-kredit) - '
           try
             while not Eof do
             begin
-             if ds3.Locate('salesman',FieldByName('salesman').AsString,[loCaseInsensitive]) then
+             ds3.IndexFieldNames := 'salesman';
+             if ds3.findkey([FieldByName('salesman').AsString]) then
              begin
                If ds3.State <> dsEdit then ds3.Edit;
                 ds3.FieldByName('newcustomer').AsFloat := Fields[1].AsFloat;
@@ -656,7 +727,9 @@ ssql := 'SELECT sls_nama salesman,SUM(debet-kredit) - '
           try
             while not Eof do
             begin
-             if ds3.Locate('salesman',FieldByName('salesman').AsString,[loCaseInsensitive]) then
+             ds3.IndexFieldNames := 'salesman';
+             if ds3.findkey([FieldByName('salesman').AsString]) then
+
              begin
                If ds3.State <> dsEdit then ds3.Edit;
                 ds3.FieldByName('rsklinik').AsFloat := Fields[1].AsFloat;

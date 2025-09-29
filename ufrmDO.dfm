@@ -1108,4 +1108,19 @@ object frmDO: TfrmDO
       Color = clYellow
     end
   end
+  object MyQuery1: TMyQuery
+    Connection = MyConnection1
+    Left = 376
+    Top = 225
+  end
+  object MyConnection1: TMyConnection
+    Database = 'bsmcabang'
+    Username = 'root'
+    Password = 'BsmCabang321?'
+    Server = '103.103.22.7'
+    Connected = True
+    LoginPrompt = False
+    Left = 480
+    Top = 209
+  end
 end

@@ -122,7 +122,7 @@ begin
        + ' left join  tfp_hdr z on fp_nomor=ttd_fp_nomor '
        + ' where '
        + ' tt_nomor=' + quot(CDSMaster.FieldByname('nomor').AsString)
-       + ' order by ttd_nourut ';
+       + ' order by ttd_fp_nomor ';
 
 tsql := xOpenQuery(s,frmMenu.conn);
 with tsql do

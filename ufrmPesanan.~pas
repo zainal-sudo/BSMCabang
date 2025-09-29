@@ -683,7 +683,7 @@ begin
 
   //--- update eksekusi
 
-  s:='update tampung.tso_hdr set so_statuseksekusi=1 where so_nomor='+QuotedStr(edtNomorsosales.Text)+';';
+  s := 'update tampung.tso_hdr set so_statuseksekusi=1 where so_nomor='+QuotedStr(edtNomorsosales.Text)+';';
   EnsureConnected(frmMenu.conn);
   ExecSQLDirect(frmMenu.conn, s);
 end;

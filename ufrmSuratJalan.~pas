@@ -19,7 +19,7 @@ uses
   dxSkinOffice2007Blue, dxSkinOffice2007Green, dxSkinOffice2007Pink,
   dxSkinOffice2007Silver, dxSkinPumpkin, dxSkinSilver, dxSkinSpringTime,
   dxSkinStardust, dxSkinSummer2008, dxSkinValentine, dxSkinXmas2008Blue,
-  frxClass, frxDMPExport;
+  frxClass, frxDMPExport, MyAccess;
 
 type
   TfrmSuratJalan = class(TForm)

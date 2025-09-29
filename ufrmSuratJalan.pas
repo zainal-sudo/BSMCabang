@@ -57,7 +57,6 @@ type
     clStatus: TcxGridDBColumn;
     clgudang: TcxGridDBColumn;
     cxButton3: TcxButton;
-    frxDotMatrixExport1: TfrxDotMatrixExport;
     Label5: TLabel;
     edtKeterangan: TAdvEdit;
     cxGrdMainColumn1: TcxGridDBColumn;

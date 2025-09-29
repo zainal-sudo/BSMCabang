@@ -201,10 +201,10 @@ begin
          + QuotD(cGetServerTime,True) + ','
          + Quot(frmMenu.KDUSER)+')';
    end;
-//     EnsureConnected(frmMenu.conn);
-  ExecSQLDirect(frmMenu.conn, s);                                                                                             
+     EnsureConnected(frmMenu.conn);
+  ExecSQLDirect(frmMenu.conn, s);
    tt := TStringList.Create;
-   tt.Append(s);
+
    s:= ' delete from tjurnalitem '
       + ' where  jurd_jur_no =' + quot(FID) ;
    tt.Append(s);

@@ -623,6 +623,8 @@ object frmLapBulanan4: TfrmLapBulanan4
             end
             object cxGrid1DBBandedTableView1Column21: TcxGridDBBandedColumn
               DataBinding.FieldName = 'pfratio'
+              PropertiesClassName = 'TcxCurrencyEditProperties'
+              Properties.DisplayFormat = ',0.00;(,0.00)'
               OnCustomDrawCell = cxGrid1DBBandedTableView1Column21CustomDrawCell
               Options.Editing = False
               OnCustomDrawFooterCell = cxGrid1DBBandedTableView1Column21CustomDrawFooterCell
@@ -642,6 +644,8 @@ object frmLapBulanan4: TfrmLapBulanan4
             end
             object clAllratio: TcxGridDBBandedColumn
               DataBinding.FieldName = 'allratio'
+              PropertiesClassName = 'TcxCurrencyEditProperties'
+              Properties.DisplayFormat = ',0.00;(,0.00)'
               OnCustomDrawCell = cxGrid1DBBandedTableView1Column19CustomDrawCell
               OnCustomDrawFooterCell = cxGrid1DBBandedTableView1Column19CustomDrawFooterCell
               Position.BandIndex = 27

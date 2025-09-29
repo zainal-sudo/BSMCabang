@@ -34,7 +34,7 @@ var
   transDBX: TTransactionDesc;
 
   function xCreateConnection(aConnection: TConnectionType; aHost: string;
-    aDatabase: string; aUserName: string; aPassword: string; aPort: string): TMyConnection;
+    aDatabase: string; aUserName: string; aPassword: string; aPort: Integer = 3306): TMyConnection;
   function xOpenQuery(aSQL: string; out RecCount: Integer; aMyConn: TMyConnection = nil): TMyQuery; overload;
   function xOpenQuery(aSQL: string; aMyConn: TMyConnection = nil): TMyQuery; overload;
   procedure EnsureConnected(AConn: TMyConnection);
@@ -57,7 +57,7 @@ implementation
 {* MyDAC Connection *}
 
 function xCreateConnection(aConnection: TConnectionType; aHost: string;
-  aDatabase: string; aUserName: string; aPassword: string; aPort: string): TMyConnection;
+  aDatabase: string; aUserName: string; aPassword: string; aPort: Integer = 3306): TMyConnection;
 begin
   Result := TMyConnection.Create(nil);
   with Result do
